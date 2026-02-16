@@ -713,8 +713,11 @@
       .hero-left{text-align:center}
       .countBox{margin-left:auto;margin-right:auto}
       .hex{width:min(420px, 92vw)}
-      .parentsGrid{grid-template-columns:1fr;gap:10px}
-      .parentsGrid .and{display:none}
+      .parentsGrid{grid-template-columns:1fr auto 1fr;gap:10px;align-items:start}
+      .parentsGrid .and{display:flex;align-items:center;justify-content:center;padding-top:0;font-size:22px}
+      .parentsCol{font-size:14px;letter-spacing:1px}
+      .parentRole{font-size:11px}
+      .parentName{font-size:18px}
       .twoCols{grid-template-columns:1fr}
       .split2{grid-template-columns:1fr}
       .galleryGrid{grid-template-columns:repeat(6, 1fr)}
