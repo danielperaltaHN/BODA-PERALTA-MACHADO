@@ -1,4 +1,6 @@
-html = """<!DOCTYPE html>
+# Crear el archivo con otro nombre para evitar conflicto de permisos
+
+html_final = """<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
@@ -30,10 +32,6 @@ h1,h2{font-family:'Playfair Display',serif}
   background-size:cover;
   background-position:center;
 }
-.hero h1{font-size:48px;letter-spacing:2px}
-.hero h2{margin:10px 0;font-size:28px}
-.hero p{margin-top:10px;font-size:20px}
-
 button{
   padding:12px 28px;
   border:none;
@@ -47,13 +45,9 @@ button{
   font-size:15px;
 }
 button:hover{background:#f5f1e8}
-button:disabled{opacity:.6;cursor:not-allowed}
-
 .beige{background:#f3e8d8;color:#0f2e1d}
 .dark{background:#1c3b29}
-
 .countdown{font-size:22px;margin-top:20px;font-weight:500}
-
 input{
   padding:12px 14px;
   width:80%;
@@ -63,9 +57,6 @@ input{
   margin:15px 0 10px;
   font-size:14px;
 }
-
-small{display:block;opacity:.85;margin-top:10px}
-
 footer{
   padding:40px;
   background:#0a1f13;
@@ -79,7 +70,6 @@ a{text-decoration:none}
 
 <body>
 
-<!-- Música: sube un archivo llamado musica.mp3 al repo -->
 <audio id="music" loop>
   <source src="musica.mp3" type="audio/mpeg">
 </audio>
@@ -90,7 +80,6 @@ a{text-decoration:none}
   <h1>Ana Josse</h1>
   <p>Nos Casamos</p>
   <button onclick="startInvitation()">Abrir Invitación</button>
-  <small>(Si tu navegador bloquea el audio, toca el botón otra vez)</small>
 </section>
 
 <section>
@@ -117,9 +106,7 @@ a{text-decoration:none}
       El Mirador HN<br>
       El Hatillo, Tegucigalpa, Honduras
     </p>
-
-    <!-- ✅ Ubicación exacta actualizada -->
-    <a href="https://maps.app.goo.gl/ruHVNbzbjQC7MS3q7" target="_blank" rel="noopener">
+    <a href="https://maps.app.goo.gl/ruHVNbzbjQC7MS3q7" target="_blank">
       <button>Ver Ubicación</button>
     </a>
   </div>
@@ -131,7 +118,10 @@ a{text-decoration:none}
     <p style="margin-top:20px;"><strong>Etiqueta</strong></p>
     <p style="line-height:1.6;">
       Hombres: Traje formal o smoking<br>
-      Mujeres: Vestido largo o cóctel elegante
+      Mujeres: Vestido largo elegante
+    </p>
+    <p style="margin-top:20px; font-weight:600;">
+      Colores no permitidos: rojo, blanco y beige
     </p>
   </div>
 </section>
@@ -140,24 +130,19 @@ a{text-decoration:none}
   <div class="wrap">
     <h2>Confirmación de Asistencia</h2>
 
-    <p style="margin-top:20px;">Confirmar por WhatsApp:</p>
-    <a href="https://wa.me/50431790033?text=Hola%20confirmo%20mi%20asistencia%20a%20la%20boda%20de%20Daniel%20y%20Ana" target="_blank" rel="noopener">
+    <a href="https://wa.me/50431790033?text=Hola%20confirmo%20mi%20asistencia%20a%20la%20boda%20de%20Daniel%20y%20Ana" target="_blank">
       <button>Confirmar por WhatsApp</button>
     </a>
 
-    <p style="margin-top:40px;">O confirma aquí (se guarda en Google Sheets):</p>
+    <p style="margin-top:40px;">O confirma aquí:</p>
 
-    <form onsubmit="sendToSheet(event)" style="margin-top:10px;">
+    <form onsubmit="sendToSheet(event)">
       <input type="text" id="name" placeholder="Tu nombre completo" required />
       <br>
-      <button id="submitBtn" type="submit">Confirmar Asistencia</button>
+      <button type="submit">Confirmar Asistencia</button>
     </form>
 
-    <p id="formMessage" style="margin-top:15px; line-height:1.5;"></p>
-
-    <small>
-      Nota: para que se guarde en Sheets, debes configurar Google Apps Script (te dejo el paso a paso).
-    </small>
+    <p id="formMessage" style="margin-top:15px;"></p>
   </div>
 </section>
 
@@ -166,98 +151,57 @@ a{text-decoration:none}
 </footer>
 
 <script>
-/** ========= Música + scroll ========= */
 function startInvitation(){
   const audio = document.getElementById('music');
-  audio.play().catch(() => {/* algunos navegadores requieren interacción; ya la hubo */});
+  audio.play();
   window.scrollTo({top: window.innerHeight, behavior:'smooth'});
 }
 
-/** ========= Cuenta regresiva ========= */
-const countdown = document.getElementById("countdown");
-// Honduras: UTC-6. Para evitar desfases por zona, usamos hora local del visitante, pero fijada a 17:00.
 const weddingDate = new Date("2026-03-28T17:00:00").getTime();
-
 setInterval(function(){
   const now = new Date().getTime();
   const distance = weddingDate - now;
-
-  if(distance <= 0){
-    countdown.innerHTML = "¡Hoy es el gran día! 💍✨";
-    return;
-  }
-
   const days = Math.floor(distance / (1000*60*60*24));
   const hours = Math.floor((distance % (1000*60*60*24)) / (1000*60*60));
   const minutes = Math.floor((distance % (1000*60*60)) / (1000*60));
   const seconds = Math.floor((distance % (1000*60)) / 1000);
-
-  countdown.innerHTML = `${days} días ${hours} horas ${minutes} minutos ${seconds} segundos`;
+  document.getElementById("countdown").innerHTML =
+    days + " días " + hours + " horas " + minutes + " minutos " + seconds + " segundos";
 }, 1000);
 
-/** ========= RSVP -> Google Sheets =========
- *  1) Crea un Apps Script como Web App y pega su URL aquí.
- *  2) Debe aceptar POST y devolver JSON.
- */
-const GOOGLE_SCRIPT_WEBAPP_URL = "PEGA_AQUI_TU_URL_DE_APPS_SCRIPT";
+const GOOGLE_SCRIPT_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxfeRPWkBwkugwnm6Dar373SV2b0U6SxwDCbTbGxVwD78pbLb3zUBWJTrGCy8Gn6dTn7g/exec";
 
 async function sendToSheet(event){
   event.preventDefault();
+  const name = document.getElementById("name").value.trim();
+  const msg = document.getElementById("formMessage");
 
-  const nameEl = document.getElementById("name");
-  const msgEl = document.getElementById("formMessage");
-  const btn = document.getElementById("submitBtn");
+  const body = new URLSearchParams({
+    name,
+    ua: navigator.userAgent
+  }).toString();
 
-  const name = (nameEl.value || "").trim();
-  if(!name){
-    msgEl.textContent = "Por favor escribe tu nombre.";
-    return;
+  const res = await fetch(GOOGLE_SCRIPT_WEBAPP_URL, {
+    method: "POST",
+    headers: {"Content-Type": "application/x-www-form-urlencoded"},
+    body
+  });
+
+  if(res.ok){
+    msg.innerHTML = "Gracias " + name + ", hemos recibido tu confirmación ❤️";
+    document.getElementById("name").value = "";
+  } else {
+    msg.innerHTML = "Hubo un error al guardar la confirmación.";
   }
-
-  if(GOOGLE_SCRIPT_WEBAPP_URL.includes("PEGA_AQUI")){
-    msgEl.textContent = "Falta conectar Google Sheets: pega la URL del Apps Script en el código (GOOGLE_SCRIPT_WEBAPP_URL).";
-    return;
-  }
-
-  btn.disabled = true;
-  msgEl.textContent = "Enviando confirmación...";
-
-  try{
-    // Enviamos como form-urlencoded para máxima compatibilidad con Apps Script
-    const body = new URLSearchParams({ name }).toString();
-
-    const res = await fetch(GOOGLE_SCRIPT_WEBAPP_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
-      body
-    });
-
-    const data = await res.json().catch(() => ({}));
-
-    if(res.ok && (data.status === "ok" || data.result === "success")){
-      msgEl.innerHTML = `Gracias <strong>${escapeHtml(name)}</strong>, hemos recibido tu confirmación ❤️`;
-      nameEl.value = "";
-    }else{
-      msgEl.textContent = "No se pudo guardar en Sheets. Revisa la configuración del Apps Script.";
-    }
-  }catch(err){
-    msgEl.textContent = "Error de conexión. Intenta de nuevo en unos segundos.";
-  }finally{
-    btn.disabled = false;
-  }
-}
-
-function escapeHtml(str){
-  return str.replace(/[&<>"']/g, (m) => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
-  }[m]));
 }
 </script>
 
 </body>
 </html>
 """
-path = "/mnt/data/index.html"
-with open(path, "w", encoding="utf-8") as f:
-    f.write(html)
-path
+
+file_path = "/mnt/data/index_boda_final.html"
+with open(file_path, "w", encoding="utf-8") as f:
+    f.write(html_final)
+
+file_path
