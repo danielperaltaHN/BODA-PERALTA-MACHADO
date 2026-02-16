@@ -1,3 +1,5 @@
+from pathlib import Path, PurePosixPath
+
 html = r"""<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -5,25 +7,33 @@ html = r"""<!DOCTYPE html>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ana Josse & Daniel | Invitación</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+  <!-- Fuentes (similar feel a la referencia) -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
 
   <style>
     :root{
-      /* Paleta verde fresca (sin rojo / blanco / beige) */
-      --bg0:#051c12;
-      --bg1:#083021;
+      /* Verde fresco + dorado (sin rojo/blanco/beige) */
+      --bg0:#041a11;
+      --bg1:#073021;
       --bg2:#0c4a31;
-      --mint:#22b37a;
+      --mint:#2cc38a;
 
-      --paper:#e9f3ee;     /* papel verdoso (no blanco) */
-      --paper2:#d7ece2;    /* variante verdosa (no beige) */
-      --ink:#062114;
+      /* “Papel” verdoso (evita blanco/beige) */
+      --paper:#e7f2ec;
+      --paper2:#d7ebe1;
+      --paper3:#cfe6db;
+
+      --ink:#061f14;
+      --muted:#2b5a43;
 
       --gold:#b89455;
       --gold2:#d2b47a;
 
-      --shadow: 0 22px 85px rgba(0,0,0,.32);
+      --shadow: 0 20px 70px rgba(0,0,0,.28);
+      --soft: 0 14px 34px rgba(0,0,0,.14);
       --radius:22px;
+
+      --container: 1080px;
     }
 
     *{margin:0;padding:0;box-sizing:border-box}
@@ -31,20 +41,66 @@ html = r"""<!DOCTYPE html>
     body{
       font-family:'Montserrat',sans-serif;
       color:#eef6f1;
+      background:
+        radial-gradient(1100px 680px at 50% 18%, rgba(44,195,138,.16), transparent 62%),
+        radial-gradient(1300px 820px at 18% 88%, rgba(12,74,49,.30), transparent 60%),
+        radial-gradient(1100px 740px at 88% 82%, rgba(7,48,33,.36), transparent 62%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
       text-align:center;
       scroll-behavior:smooth;
-      background:
-        radial-gradient(1100px 680px at 50% 18%, rgba(34,179,122,.18), transparent 62%),
-        radial-gradient(1300px 820px at 18% 88%, rgba(12,74,49,.35), transparent 60%),
-        radial-gradient(1100px 740px at 88% 82%, rgba(8,48,33,.40), transparent 62%),
-        linear-gradient(180deg, var(--bg0), var(--bg1));
+      overflow-x:hidden;
     }
 
-    h1,h2{font-family:'Playfair Display',serif}
-    a{text-decoration:none;color:inherit}
-    .wrap{max-width:920px;margin:0 auto}
+    h1,h2,h3{font-family:'Playfair Display',serif}
+    a{color:inherit;text-decoration:none}
 
-    /* ===== Gate / Sobre (inspirado en portada tipo Celebremos, pero limpio) ===== */
+    .container{max-width:var(--container);margin:0 auto;padding:0 20px}
+    .section{padding:78px 0}
+    .paper{background:var(--paper2); color:var(--ink)}
+    .paper-soft{background:var(--paper); color:var(--ink)}
+    .dark{background:rgba(7,48,33,.82)}
+    .divider{
+      width:min(540px, 80vw);
+      height:1px;
+      margin:18px auto 0;
+      background:linear-gradient(90deg, transparent, rgba(184,148,85,.65), transparent);
+    }
+    .mini-divider{
+      width:120px;height:1px;margin:14px auto;background:rgba(184,148,85,.55);
+    }
+
+    /* ============ BOTONES ============ */
+    .btn{
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      justify-content:center;
+      border:none;
+      border-radius:16px;
+      padding:14px 22px;
+      font-weight:600;
+      cursor:pointer;
+      background:linear-gradient(180deg, var(--gold2), var(--gold));
+      color:var(--ink);
+      box-shadow: 0 12px 18px rgba(0,0,0,.14);
+      transition:transform .15s ease, filter .15s ease;
+    }
+    .btn:hover{transform:translateY(-1px); filter:brightness(1.03)}
+    .btn:active{transform:translateY(0px) scale(.99)}
+    .btn.small{padding:10px 16px;border-radius:14px;font-size:13px}
+    .btn.outline{
+      background:transparent;
+      border:1px solid rgba(184,148,85,.55);
+      color:var(--ink);
+      box-shadow:none;
+    }
+
+    .icon{
+      width:20px;height:20px;display:inline-block;vertical-align:middle;
+      fill:none;stroke:rgba(6,31,20,.92);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;
+    }
+
+    /* ============ PORTADA (SOBRE) ============ */
     .gate{
       position:fixed; inset:0;
       display:flex; align-items:center; justify-content:center;
@@ -55,26 +111,24 @@ html = r"""<!DOCTYPE html>
       content:"";
       position:absolute; inset:0;
       background:
-        radial-gradient(1100px 680px at 50% 18%, rgba(34,179,122,.16), transparent 62%),
-        radial-gradient(1300px 820px at 18% 88%, rgba(12,74,49,.30), transparent 60%),
-        radial-gradient(1100px 740px at 88% 82%, rgba(8,48,33,.34), transparent 62%),
-        linear-gradient(180deg, rgba(5,28,18,.86), rgba(8,48,33,.92));
+        radial-gradient(1100px 680px at 50% 18%, rgba(44,195,138,.16), transparent 62%),
+        radial-gradient(1300px 820px at 18% 88%, rgba(12,74,49,.28), transparent 60%),
+        radial-gradient(1100px 740px at 88% 82%, rgba(7,48,33,.34), transparent 62%),
+        linear-gradient(180deg, rgba(4,26,17,.86), rgba(7,48,33,.92));
       backdrop-filter: blur(8px);
     }
 
-    .card{
+    .gate-card{
       position:relative;
-      width:min(980px, 94vw);
-      background:rgba(233,243,238,.98);
+      width:min(920px, 94vw);
+      background:rgba(231,242,236,.98);
       color:var(--ink);
       border-radius:var(--radius);
       box-shadow:var(--shadow);
-      padding:48px 22px 40px;
+      padding:52px 22px 42px;
       overflow:hidden;
     }
-
-    /* textura suave (sin beige) */
-    .card::after{
+    .gate-card::after{
       content:"";
       position:absolute; inset:0;
       background:
@@ -87,469 +141,1289 @@ html = r"""<!DOCTYPE html>
       mix-blend-mode:multiply;
     }
 
-    .names{
+    .gate-names{
+      position:relative; z-index:2;
       font-size:58px;
-      letter-spacing:.4px;
+      letter-spacing:.3px;
       line-height:1.05;
-      position:relative;
-      z-index:2;
     }
-    .names .amp{
-      color:rgba(184,148,85,.90);
-      font-weight:700;
-    }
-
-    .rule{
-      width:min(560px, 80vw);
-      height:1px;
-      margin:16px auto 0;
-      background:linear-gradient(90deg, transparent, rgba(184,148,85,.60), transparent);
-      position:relative;
-      z-index:2;
-    }
-
-    .guest{
+    .gate-names .amp{color:rgba(184,148,85,.92);font-weight:700}
+    .guestLine{
+      position:relative; z-index:2;
       margin-top:14px;
       font-size:18px;
-      letter-spacing:.9px;
+      letter-spacing:1px;
       text-transform:uppercase;
       opacity:.88;
-      position:relative;
-      z-index:2;
     }
-    .count{
+    .paxLine{
+      position:relative; z-index:2;
       margin-top:6px;
       font-size:18px;
       color:rgba(184,148,85,1);
-      position:relative;
-      z-index:2;
     }
-    .hint{
+    .gate-hint{
+      position:relative; z-index:2;
       margin-top:22px;
       font-size:16px;
       opacity:.78;
-      position:relative;
-      z-index:2;
     }
 
-    /* ===== Envelope SVG ===== */
-    .envelope-wrap{
+    .env-wrap{
+      position:relative; z-index:2;
       margin:18px auto 0;
       width:min(440px, 88vw);
       cursor:pointer;
       user-select:none;
       outline:none;
-      position:relative;
-      z-index:2;
     }
-    .env-svg{
-      width:100%;
-      display:block;
-      filter: drop-shadow(0 16px 20px rgba(0,0,0,.12));
-    }
+    .env-svg{width:100%;display:block;filter: drop-shadow(0 16px 20px rgba(0,0,0,.12));}
     .env-shadow{
-      width:92%;
-      height:18px;
-      margin:10px auto 0;
+      width:92%;height:18px;margin:10px auto 0;
       background:radial-gradient(closest-side, rgba(0,0,0,.22), transparent 74%);
       filter:blur(1px);
     }
-
-    /* flap */
-    .env-flap{
+    .flap{
       transform-box: fill-box;
       transform-origin: 50% 10%;
       transform: rotateX(0deg);
       transition: transform 900ms cubic-bezier(.2,.85,.1,1);
     }
-    .open .env-flap{ transform: rotateX(160deg); }
+    .open .flap{ transform: rotateX(160deg); }
 
-    .tap{
+    .gate-tip{
+      position:relative; z-index:2;
       margin-top:16px;
       font-size:13px;
-      opacity:.70;
-      position:relative;
-      z-index:2;
+      opacity:.72;
     }
 
-    /* hojas suaves abajo */
-    .floral{
+    .gate-floral{
       position:absolute;
       left:50%;
       bottom:-24px;
       transform:translateX(-50%);
-      width:min(720px, 94vw);
-      opacity:.36;
+      width:min(760px, 94vw);
+      opacity:.34;
       pointer-events:none;
       z-index:1;
     }
 
-    /* ===== Invitación ===== */
-    section{padding:80px 20px}
+    /* ============ HERO ============ */
     .hero{
       min-height:100vh;
       display:flex;
-      flex-direction:column;
-      justify-content:center;
       align-items:center;
-      padding:100px 20px 70px;
+      justify-content:center;
+      padding:88px 0 64px;
       background:
-        radial-gradient(900px 520px at 50% 18%, rgba(34,179,122,.18), transparent 60%),
-        linear-gradient(rgba(5,28,18,.82), rgba(5,28,18,.82)),
-        url('https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=1600&q=80');
+        radial-gradient(900px 520px at 50% 18%, rgba(44,195,138,.12), transparent 62%),
+        linear-gradient(rgba(4,26,17,.78), rgba(4,26,17,.78)),
+        url('https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=1800&q=80');
       background-size:cover;
       background-position:center;
     }
-    .hero h1{font-size:54px; letter-spacing:1px}
-    .hero h2{margin:10px 0; font-size:28px; opacity:.95}
-    .hero p{margin-top:12px; font-size:18px; opacity:.92}
 
-    .btn{
-      padding:12px 28px;
+    .hero-grid{
+      display:grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap:42px;
+      align-items:center;
+      width:100%;
+      max-width:var(--container);
+      padding:0 20px;
+    }
+
+    .hero-left{
+      text-align:left;
+      color:var(--paper);
+    }
+    .playRow{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+    .playLabel{font-size:13px;opacity:.85}
+    .playBtn{
+      background:rgba(184,148,85,.96);
+      color:var(--ink);
       border:none;
-      background:var(--gold2);
-      color:var(--ink);
-      font-weight:700;
+      border-radius:10px;
+      padding:8px 14px;
       cursor:pointer;
-      border-radius:30px;
-      margin-top:18px;
-      transition:.25s;
-      font-size:15px;
+      font-weight:700;
+      box-shadow:0 10px 18px rgba(0,0,0,.18);
     }
-    .btn:hover{filter:brightness(1.06)}
 
-    .paper{background:var(--paper2); color:var(--ink)}
-    .dark{background:rgba(8,48,33,.80)}
-    .countdown{font-size:22px;margin-top:18px;font-weight:500}
+    .heroTitle{
+      margin-top:20px;
+      font-size:68px;
+      line-height:1.0;
+      letter-spacing:.3px;
+    }
+    .heroAmp{
+      display:inline-block;
+      color:rgba(184,148,85,.96);
+      font-weight:700;
+      transform:translateY(-2px);
+    }
 
-    input{
-      padding:12px 14px;
-      width:80%;
-      max-width:340px;
-      border-radius:25px;
-      border:1px solid rgba(6,33,20,.18);
-      margin:15px 0 10px;
-      font-size:14px;
-      background:rgba(233,243,238,.9);
+    .ornament{
+      margin-top:10px;
+      width:320px;max-width:80%;
+      opacity:.95;
+    }
+
+    .countBox{
+      margin-top:28px;
+      background:rgba(215,235,225,.86);
+      border:1px solid rgba(184,148,85,.20);
+      border-radius:18px;
+      padding:22px 18px;
+      box-shadow:var(--soft);
       color:var(--ink);
+      max-width:520px;
+    }
+    .countBox h3{font-size:26px}
+    .countNums{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns: repeat(4,1fr);
+      gap:10px;
+    }
+    .countCell{
+      background:rgba(231,242,236,.85);
+      border-radius:14px;
+      padding:12px 10px;
+      border:1px solid rgba(6,31,20,.08);
+    }
+    .countVal{font-size:22px;font-weight:700;color:rgba(184,148,85,.96);}
+    .countLab{margin-top:2px;font-size:11px;opacity:.8}
+
+    .hero-right{
+      display:flex;align-items:center;justify-content:center;
     }
 
+    /* Marco hexagonal tipo referencia */
+    .hex{
+      width:min(420px, 82vw);
+      aspect-ratio: 1/1;
+      position:relative;
+      filter: drop-shadow(0 18px 24px rgba(0,0,0,.20));
+    }
+    .hex::before{
+      content:"";
+      position:absolute; inset:-18px;
+      background:rgba(215,235,225,.55);
+      clip-path: polygon(25% 6%, 75% 6%, 98% 50%, 75% 94%, 25% 94%, 2% 50%);
+      border:1px solid rgba(184,148,85,.35);
+      transform:rotate(-10deg);
+      border-radius:14px;
+    }
+    .hex::after{
+      content:"";
+      position:absolute; inset:-5px;
+      background:rgba(233,242,236,.90);
+      clip-path: polygon(25% 6%, 75% 6%, 98% 50%, 75% 94%, 25% 94%, 2% 50%);
+      border:2px solid rgba(184,148,85,.35);
+      transform:rotate(-10deg);
+      border-radius:14px;
+    }
+    .hexImg{
+      position:absolute; inset:14px;
+      clip-path: polygon(25% 6%, 75% 6%, 98% 50%, 75% 94%, 25% 94%, 2% 50%);
+      transform:rotate(-10deg);
+      background:
+        url('https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+      border-radius:14px;
+    }
+    .hexDecor{
+      position:absolute;
+      right:-10px; bottom:-18px;
+      width:190px;
+      opacity:.82;
+      pointer-events:none;
+      transform:rotate(-8deg);
+    }
+
+    /* ============ PADRES / FECHA ============ */
+    .parentsTop{
+      font-size:16px;
+      letter-spacing:.6px;
+      color:rgba(184,148,85,.92);
+    }
+    .parentsGrid{
+      margin-top:24px;
+      display:grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap:18px;
+      align-items:start;
+      text-transform:uppercase;
+      letter-spacing:1.2px;
+    }
+    .parentsGrid .and{
+      color:rgba(184,148,85,.9);
+      font-size:28px;
+      padding-top:8px;
+    }
+    .parentsCol{
+      font-size:18px;
+      line-height:1.35;
+      font-weight:500;
+    }
+
+    .dateIntro{
+      margin-top:46px;
+      font-size:18px;
+      color:rgba(6,31,20,.72);
+    }
+    .dateCard{
+      margin:22px auto 0;
+      width:min(560px, 94vw);
+      display:grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items:center;
+      gap:14px;
+      padding:18px 18px;
+      border-radius:20px;
+      background:rgba(215,235,225,.85);
+      border:1px solid rgba(184,148,85,.22);
+      box-shadow:var(--soft);
+    }
+    .dateSide{
+      font-family:'Playfair Display',serif;
+      text-transform:uppercase;
+      letter-spacing:2px;
+      font-size:18px;
+      color:rgba(6,31,20,.78);
+    }
+    .dateMid{
+      font-family:'Playfair Display',serif;
+      font-size:74px;
+      line-height:1;
+      color:rgba(184,148,85,.96);
+      padding:0 10px;
+    }
+    .dateBottom{
+      margin-top:10px;
+      font-family:'Playfair Display',serif;
+      letter-spacing:2px;
+      color:rgba(6,31,20,.72);
+    }
+    .calRow{
+      margin-top:20px;
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:center;
+      color:rgba(6,31,20,.75);
+      font-size:14px;
+    }
+
+    /* ============ CITA ============ */
+    .quoteBox{
+      margin:42px auto 0;
+      width:min(720px, 94vw);
+      padding:26px 22px;
+      border-radius:18px;
+      background:linear-gradient(180deg, rgba(210,180,122,.28), rgba(184,148,85,.22));
+      border:1px solid rgba(184,148,85,.22);
+      box-shadow:var(--soft);
+      color:rgba(6,31,20,.88);
+      text-align:left;
+      line-height:1.7;
+    }
+
+    /* ============ CEREMONIA / RECEPCIÓN ============ */
+    .twoCols{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:26px;
+      align-items:start;
+      margin-top:40px;
+    }
+    .eventCard{
+      background:rgba(231,242,236,.88);
+      border:1px solid rgba(184,148,85,.18);
+      border-radius:18px;
+      padding:26px 18px 24px;
+      box-shadow:var(--soft);
+    }
+    .eventIcon{
+      width:62px;height:62px;margin:0 auto 10px;
+      stroke:rgba(184,148,85,.95);
+      fill:none;stroke-width:2;
+    }
+    .eventTitle{
+      font-family:'Playfair Display',serif;
+      font-size:22px;
+      letter-spacing:1.8px;
+      text-transform:uppercase;
+      color:rgba(6,31,20,.88);
+    }
+    .eventPlace{
+      margin-top:10px;
+      color:rgba(184,148,85,.98);
+      font-weight:600;
+    }
+    .eventMeta{
+      margin-top:14px;
+      color:rgba(6,31,20,.72);
+      line-height:1.7;
+      font-size:14px;
+    }
+    .eventBtnRow{margin-top:18px}
+
+    /* ============ GALERÍA MOSAICO ============ */
+    .galleryGrid{
+      margin-top:34px;
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:16px;
+    }
+    .ph{
+      border-radius:18px;
+      overflow:hidden;
+      box-shadow:var(--soft);
+      border:1px solid rgba(6,31,20,.10);
+      background:#0000;
+      position:relative;
+      min-height:180px;
+    }
+    .ph::before{
+      content:"";
+      position:absolute; inset:0;
+      background-size:cover;
+      background-position:center;
+      filter:saturate(1.02);
+      transform:scale(1.02);
+    }
+    /* col spans */
+    .ph.a{grid-column:1 / span 5; grid-row:1 / span 2; min-height:420px;}
+    .ph.b{grid-column:6 / span 4; grid-row:1 / span 1; min-height:200px;}
+    .ph.c{grid-column:10 / span 3; grid-row:1 / span 1; min-height:200px;}
+    .ph.d{grid-column:6 / span 4; grid-row:2 / span 1; min-height:200px;}
+    .ph.e{grid-column:10 / span 3; grid-row:2 / span 2; min-height:420px;}
+    .ph.f{grid-column:6 / span 4; grid-row:3 / span 1; min-height:200px;}
+    .ph.g{grid-column:1 / span 5; grid-row:3 / span 1; min-height:200px;}
+
+    .ph.a::before{background-image:url('https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=1200&q=80');}
+    .ph.b::before{background-image:url('https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=1200&q=80');}
+    .ph.c::before{background-image:url('https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80');}
+    .ph.d::before{background-image:url('https://images.unsplash.com/photo-1523437237164-d442d57cc3c9?auto=format&fit=crop&w=1200&q=80');}
+    .ph.e::before{background-image:url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80');}
+    .ph.f::before{background-image:url('https://images.unsplash.com/photo-1521714161819-15534968fc5f?auto=format&fit=crop&w=1200&q=80');}
+    .ph.g::before{background-image:url('https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=1200&q=80'); opacity:.92;}
+
+    /* ============ RSVP + VESTIMENTA + REGALOS ============ */
+    .rsvpBanner{
+      width:min(880px, 96vw);
+      margin:0 auto;
+      padding:28px 22px;
+      border-radius:18px;
+      background:rgba(210,180,122,.22);
+      border:1px solid rgba(184,148,85,.22);
+      box-shadow:var(--soft);
+      color:rgba(6,31,20,.82);
+    }
+    .rsvpBanner p{line-height:1.5}
+    .rsvpBanner .btn{margin-top:16px}
+
+    .split2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:26px;
+      align-items:start;
+      margin-top:46px;
+    }
+    .infoBlock{
+      padding:18px 10px 10px;
+      text-align:center;
+    }
+    .infoIcon{
+      width:70px;height:70px;margin:0 auto 10px;
+      stroke:rgba(184,148,85,.95);
+      fill:none;stroke-width:2;
+    }
+    .infoTitle{
+      font-family:'Playfair Display',serif;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      font-size:20px;
+      color:rgba(6,31,20,.86);
+    }
+    .infoText{
+      margin-top:12px;
+      color:rgba(6,31,20,.72);
+      line-height:1.65;
+      max-width:420px;
+      margin-left:auto;margin-right:auto;
+    }
+
+    /* modal opciones regalo */
+    .modal{
+      position:fixed; inset:0;
+      background:rgba(0,0,0,.45);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:99999;
+    }
+    .modal.show{display:flex}
+    .modalCard{
+      width:min(720px, 96vw);
+      background:rgba(231,242,236,.98);
+      color:var(--ink);
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      padding:22px 18px 18px;
+      text-align:left;
+    }
+    .modalHead{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding-bottom:10px;border-bottom:1px solid rgba(6,31,20,.10);
+    }
+    .modalTitle{font-family:'Playfair Display',serif;font-size:22px}
+    .xBtn{
+      border:none;background:transparent;font-size:28px;cursor:pointer;color:rgba(6,31,20,.55);
+      line-height:1;padding:0 8px;
+    }
+    .optList{margin-top:14px;line-height:1.75}
+    .optHint{margin-top:10px;font-size:13px;color:rgba(6,31,20,.70)}
+
+    /* ============ MENSAJE A LOS NOVIOS ============ */
+    .msgHead{
+      color:rgba(184,148,85,.92);
+      letter-spacing:.6px;
+      font-size:16px;
+    }
+    .msgTitle{
+      margin-top:10px;
+      font-size:26px;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      color:rgba(6,31,20,.86);
+    }
+    .msgSub{
+      margin-top:12px;
+      color:rgba(6,31,20,.70);
+      line-height:1.6;
+      max-width:760px;
+      margin-left:auto;margin-right:auto;
+    }
+
+    .formWrap{
+      margin:30px auto 0;
+      width:min(980px, 96vw);
+      padding:0 10px;
+    }
+    .field{
+      width:100%;
+      border:1px solid rgba(6,31,20,.12);
+      background:rgba(215,235,225,.55);
+      border-radius:10px;
+      padding:14px 14px;
+      font-size:14px;
+      color:var(--ink);
+      outline:none;
+      display:block;
+    }
+    textarea.field{min-height:140px;resize:vertical}
+    .fieldRow{margin-top:14px}
+    .captchaRow{
+      margin-top:14px;
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:flex-end;
+      flex-wrap:wrap;
+      color:rgba(6,31,20,.70);
+      font-size:14px;
+    }
+    .captchaInput{
+      width:90px;
+      text-align:center;
+      padding:12px 10px;
+      border-radius:10px;
+      border:1px solid rgba(6,31,20,.14);
+      background:rgba(231,242,236,.9);
+    }
+    .sendRow{
+      margin-top:12px;
+      display:flex;
+      justify-content:flex-end;
+    }
+    .statusMsg{margin-top:12px;min-height:22px;color:rgba(6,31,20,.78)}
+
+    /* ============ FOOTER ============ */
     footer{
-      padding:40px;
-      background:rgba(5,28,18,.94);
+      padding:40px 0;
+      background:rgba(4,26,17,.94);
       font-size:14px;
       letter-spacing:1px;
       color:#eef6f1;
     }
 
+    /* ============ MODO OSCURO (toggle visual) ============ */
+    .modeToggle{
+      position:fixed;
+      right:18px;
+      bottom:18px;
+      width:56px;height:28px;
+      border-radius:999px;
+      background:rgba(231,242,236,.92);
+      border:1px solid rgba(6,31,20,.10);
+      box-shadow:0 10px 18px rgba(0,0,0,.14);
+      display:flex;
+      align-items:center;
+      padding:3px;
+      cursor:pointer;
+      z-index:9999;
+    }
+    .modeKnob{
+      width:22px;height:22px;border-radius:999px;
+      background:linear-gradient(180deg, var(--gold2), var(--gold));
+      transform:translateX(0);
+      transition:transform .22s ease;
+    }
+    body.light{
+      background:linear-gradient(180deg, var(--paper3), var(--paper2));
+      color:var(--ink);
+    }
+    body.light .modeKnob{transform:translateX(28px)}
+    body.light .modeToggle{background:rgba(4,26,17,.10)}
+    body.light .hero{color:var(--ink)}
+
+    /* ============ RESPONSIVE ============ */
+    @media (max-width: 960px){
+      .hero-grid{grid-template-columns:1fr;gap:28px}
+      .hero-left{text-align:center}
+      .countBox{margin-left:auto;margin-right:auto}
+      .hex{width:min(420px, 92vw)}
+      .parentsGrid{grid-template-columns:1fr;gap:10px}
+      .parentsGrid .and{display:none}
+      .twoCols{grid-template-columns:1fr}
+      .split2{grid-template-columns:1fr}
+      .galleryGrid{grid-template-columns:repeat(6, 1fr)}
+      .ph.a{grid-column:1 / span 6; grid-row:auto; min-height:320px}
+      .ph.b,.ph.c,.ph.d,.ph.f,.ph.g{grid-column:1 / span 6; min-height:220px}
+      .ph.e{grid-column:1 / span 6; min-height:320px}
+    }
     @media (max-width:520px){
-      .card{padding:34px 16px 28px}
-      .names{font-size:42px}
-      .hero h1{font-size:44px}
+      .gate-card{padding:34px 16px 28px}
+      .gate-names{font-size:42px}
+      .heroTitle{font-size:52px}
+      .dateMid{font-size:64px}
+      .countNums{grid-template-columns:repeat(2,1fr)}
     }
   </style>
 </head>
 
 <body>
+  <!-- Música (pon tu archivo musica.mp3 en el repo) -->
+  <audio id="music" loop>
+    <source src="musica.mp3" type="audio/mpeg">
+  </audio>
 
-<audio id="music" loop>
-  <source src="musica.mp3" type="audio/mpeg">
-</audio>
+  <!-- ============ PORTADA / SOBRE ============ -->
+  <div class="gate" id="gate" aria-label="Portada de invitación">
+    <div class="gate-card" role="dialog" aria-modal="true">
+      <div class="gate-names">Ana Josse <span class="amp">&</span> Daniel</div>
+      <div class="divider"></div>
 
-<!-- ===== Portada / Sobre ===== -->
-<div class="gate" id="gate" aria-label="Portada de invitación">
-  <div class="card">
-    <div class="names">Ana Josse <span class="amp">&</span> Daniel</div>
-    <div class="rule"></div>
+      <div class="guestLine" id="guestLine">INVITADO ESPECIAL</div>
+      <div class="paxLine" id="paxLine">- 2 PERSONAS -</div>
 
-    <div class="guest" id="guestLine">INVITADO ESPECIAL</div>
-    <div class="count" id="countLine">- 2 PERSONAS -</div>
+      <div class="gate-hint">Haz clic en el sobre para abrir la invitación:</div>
 
-    <div class="hint">Haz clic en el sobre para abrir la invitación:</div>
+      <div class="env-wrap" id="envWrap" tabindex="0" aria-label="Abrir invitación">
+        <svg class="env-svg" viewBox="0 0 760 480" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Sobre">
+          <defs>
+            <linearGradient id="paperGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#e7f2ec"/>
+              <stop offset="1" stop-color="#d7ebe1"/>
+            </linearGradient>
+            <linearGradient id="paperGrad2" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#edf7f2"/>
+              <stop offset="1" stop-color="#cfe6db"/>
+            </linearGradient>
+            <linearGradient id="goldSeal" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#d2b47a"/>
+              <stop offset="1" stop-color="#9f7c3d"/>
+            </linearGradient>
+            <filter id="softShadow" x="-20%" y="-20%" width="140%" height="160%">
+              <feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#000" flood-opacity="0.12"/>
+            </filter>
+          </defs>
 
-    <div class="envelope-wrap" id="envelopeWrap" tabindex="0" aria-label="Abrir invitación">
-      <svg class="env-svg" viewBox="0 0 760 480" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Sobre">
+          <rect x="70" y="100" width="620" height="300" rx="28" fill="url(#paperGrad)" stroke="rgba(6,31,20,0.14)" stroke-width="2"/>
+          <rect x="86" y="116" width="588" height="268" rx="24" fill="none" stroke="rgba(0,0,0,0.03)" stroke-width="6"/>
+
+          <path d="M70 100 L380 280 L70 400 Z" fill="rgba(215,235,225,0.98)"/>
+          <path d="M690 100 L380 280 L690 400 Z" fill="rgba(215,235,225,0.98)"/>
+          <path d="M70 400 L380 245 L690 400 Z" fill="rgba(207,230,219,0.98)"/>
+
+          <g class="flap" id="flap">
+            <path d="M70 100 L380 280 L690 100 Z" fill="url(#paperGrad2)" filter="url(#softShadow)"/>
+            <path d="M110 126 L380 265 L650 126" fill="none" stroke="rgba(0,0,0,0.06)" stroke-width="4" stroke-linecap="round"/>
+          </g>
+
+          <g>
+            <circle cx="380" cy="290" r="56" fill="url(#goldSeal)"/>
+            <circle cx="360" cy="270" r="24" fill="rgba(255,255,255,0.14)"/>
+            <text x="380" y="304" text-anchor="middle" font-family="Playfair Display, serif" font-size="34" font-weight="700" fill="rgba(6,31,20,0.85)">A&amp;D</text>
+          </g>
+        </svg>
+
+        <div class="env-shadow"></div>
+      </div>
+
+      <div class="gate-tip">IMPORTANTE: desactiva el modo oscuro del navegador y sube el volumen.</div>
+
+      <!-- flor verde -->
+      <svg class="gate-floral" viewBox="0 0 1000 260" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <defs>
-          <!-- papel verdoso -->
-          <linearGradient id="paperGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#e9f3ee"/>
-            <stop offset="1" stop-color="#d7ece2"/>
+          <linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="rgba(44,195,138,0.62)"/>
+            <stop offset="1" stop-color="rgba(7,48,33,0.62)"/>
           </linearGradient>
-          <linearGradient id="paperGrad2" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stop-color="#edf7f2"/>
-            <stop offset="1" stop-color="#cfe6dc"/>
+          <linearGradient id="leaf2" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="rgba(44,195,138,0.34)"/>
+            <stop offset="1" stop-color="rgba(7,48,33,0.34)"/>
           </linearGradient>
-          <linearGradient id="goldSeal" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#d2b47a"/>
-            <stop offset="1" stop-color="#9f7c3d"/>
-          </linearGradient>
-          <filter id="softShadow" x="-20%" y="-20%" width="140%" height="160%">
-            <feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#000" flood-opacity="0.12"/>
-          </filter>
         </defs>
-
-        <!-- back plate -->
-        <rect x="70" y="100" width="620" height="300" rx="28" fill="url(#paperGrad)" stroke="rgba(6,33,20,0.14)" stroke-width="2"/>
-        <rect x="86" y="116" width="588" height="268" rx="24" fill="none" stroke="rgba(0,0,0,0.03)" stroke-width="6"/>
-
-        <!-- left/right/bottom -->
-        <path d="M70 100 L380 280 L70 400 Z" fill="rgba(215,236,226,0.98)"/>
-        <path d="M690 100 L380 280 L690 400 Z" fill="rgba(215,236,226,0.98)"/>
-        <path d="M70 400 L380 245 L690 400 Z" fill="rgba(207,230,220,0.98)"/>
-
-        <!-- top flap -->
-        <g class="env-flap" id="flapGroup">
-          <path d="M70 100 L380 280 L690 100 Z" fill="url(#paperGrad2)" filter="url(#softShadow)"/>
-          <path d="M110 126 L380 265 L650 126" fill="none" stroke="rgba(0,0,0,0.06)" stroke-width="4" stroke-linecap="round"/>
-        </g>
-
-        <!-- seal -->
-        <g>
-          <circle cx="380" cy="290" r="56" fill="url(#goldSeal)"/>
-          <circle cx="360" cy="270" r="24" fill="rgba(255,255,255,0.14)"/>
-          <text x="380" y="304" text-anchor="middle" font-family="Playfair Display, serif" font-size="34" font-weight="700" fill="rgba(6,33,20,0.85)">A&amp;D</text>
+        <g transform="translate(70,46)">
+          <path d="M120 170 C170 120, 250 120, 300 170 C250 220, 170 220, 120 170Z" fill="url(#leaf)"/>
+          <path d="M250 180 C290 140, 350 140, 390 180 C350 220, 290 220, 250 180Z" fill="url(#leaf2)"/>
+          <path d="M520 170 C570 120, 650 120, 700 170 C650 220, 570 220, 520 170Z" fill="url(#leaf)"/>
+          <path d="M640 185 C680 150, 730 150, 770 185 C730 220, 680 220, 640 185Z" fill="url(#leaf2)"/>
+          <circle cx="430" cy="190" r="10" fill="rgba(184,148,85,0.40)"/>
+          <circle cx="460" cy="204" r="7" fill="rgba(184,148,85,0.30)"/>
+          <circle cx="500" cy="192" r="8" fill="rgba(184,148,85,0.26)"/>
         </g>
       </svg>
-
-      <div class="env-shadow"></div>
     </div>
-
-    <div class="tap">TIP: sube el volumen para escuchar la música.</div>
-
-    <!-- hojas -->
-    <svg class="floral" viewBox="0 0 1000 260" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <defs>
-        <linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="rgba(34,179,122,0.60)"/>
-          <stop offset="1" stop-color="rgba(8,48,33,0.60)"/>
-        </linearGradient>
-        <linearGradient id="leaf2" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="rgba(34,179,122,0.32)"/>
-          <stop offset="1" stop-color="rgba(8,48,33,0.32)"/>
-        </linearGradient>
-      </defs>
-      <g transform="translate(70,46)">
-        <path d="M120 170 C170 120, 250 120, 300 170 C250 220, 170 220, 120 170Z" fill="url(#leaf)"/>
-        <path d="M250 180 C290 140, 350 140, 390 180 C350 220, 290 220, 250 180Z" fill="url(#leaf2)"/>
-        <path d="M520 170 C570 120, 650 120, 700 170 C650 220, 570 220, 520 170Z" fill="url(#leaf)"/>
-        <path d="M640 185 C680 150, 730 150, 770 185 C730 220, 680 220, 640 185Z" fill="url(#leaf2)"/>
-        <circle cx="430" cy="190" r="10" fill="rgba(184,148,85,0.40)"/>
-        <circle cx="460" cy="204" r="7" fill="rgba(184,148,85,0.30)"/>
-        <circle cx="500" cy="192" r="8" fill="rgba(184,148,85,0.26)"/>
-      </g>
-    </svg>
   </div>
-</div>
 
-<!-- ===== Invitación ===== -->
-<section class="hero" id="top">
-  <h1>Daniel Fernando</h1>
-  <h2>&</h2>
-  <h1>Ana Josse</h1>
-  <p>Nos Casamos</p>
-  <button class="btn" onclick="scrollToDetails()">Ver detalles</button>
-</section>
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="inicio">
+    <div class="hero-grid">
+      <div class="hero-left">
+        <div class="playRow">
+          <span class="playLabel">Presiona Play/Pausa para escuchar nuestra canción:</span>
+          <button class="playBtn" id="playBtn" type="button">Play</button>
+        </div>
 
-<section>
-  <div class="wrap">
-    <h2>Con la bendición de Dios</h2>
-    <p style="margin-top:20px; line-height:1.7;">
-      “Y si alguno prevaleciere contra uno, dos le resistirán;<br>
-      y cordón de tres dobleces no se rompe pronto.”<br>
-      <strong>Eclesiastés 4:12</strong>
-    </p>
+        <div class="heroTitle">
+          Ana Josse<span class="heroAmp"> &amp; </span>Daniel
+        </div>
+
+        <!-- ornamento -->
+        <svg class="ornament" viewBox="0 0 600 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M40 62 C130 20, 200 20, 300 62 C400 104, 470 104, 560 62" fill="none" stroke="rgba(184,148,85,.92)" stroke-width="6" stroke-linecap="round"/>
+          <path d="M84 62 C100 44, 120 44, 136 62 C120 80, 100 80, 84 62Z" fill="rgba(184,148,85,.92)"/>
+          <path d="M464 62 C480 44, 500 44, 516 62 C500 80, 480 80, 464 62Z" fill="rgba(184,148,85,.92)"/>
+          <circle cx="300" cy="62" r="10" fill="rgba(184,148,85,.92)"/>
+        </svg>
+
+        <div class="countBox">
+          <h3>Nos casamos en:</h3>
+          <div class="countNums" id="countNums">
+            <div class="countCell"><div class="countVal" id="cdDays">0</div><div class="countLab">Día(s)</div></div>
+            <div class="countCell"><div class="countVal" id="cdHours">0</div><div class="countLab">Hora(s)</div></div>
+            <div class="countCell"><div class="countVal" id="cdMins">0</div><div class="countLab">Minuto(s)</div></div>
+            <div class="countCell"><div class="countVal" id="cdSecs">0</div><div class="countLab">Segundo(s)</div></div>
+          </div>
+          <div style="margin-top:14px;">
+            <button class="btn small outline" type="button" onclick="document.getElementById('fecha').scrollIntoView({behavior:'smooth'});">Ver la invitación</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <div class="hex" aria-label="Foto (placeholder)">
+          <div class="hexImg"></div>
+          <svg class="hexDecor" viewBox="0 0 260 210" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M40 165 C55 120, 92 110, 130 140 C168 170, 205 170, 226 130 C210 190, 144 210, 110 198 C76 186, 56 182, 40 165Z"
+                  fill="rgba(44,195,138,0.40)"/>
+            <path d="M38 170 C70 200, 120 205, 170 190" fill="none" stroke="rgba(184,148,85,0.55)" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FECHA / PADRES / CITA ============ -->
+  <section class="section paper-soft" id="fecha">
+    <div class="container">
+      <div class="parentsTop">Con la bendición de nuestros padres</div>
+
+      <div class="parentsGrid">
+        <div class="parentsCol">
+          <div>PADRE DEL NOVIO</div>
+          <div>MADRE DEL NOVIO</div>
+        </div>
+        <div class="and">&amp;</div>
+        <div class="parentsCol">
+          <div>PADRE DE LA NOVIA</div>
+          <div>MADRE DE LA NOVIA</div>
+        </div>
+      </div>
+
+      <div class="dateIntro">Tenemos el honor de invitarlos a nuestra boda el día:</div>
+
+      <!-- 28 / Marzo / 2026 / 5:00 PM -->
+      <div class="dateCard" aria-label="Fecha del evento">
+        <div>
+          <div class="dateSide">SÁBADO</div>
+          <div class="mini-divider"></div>
+          <div class="dateSide">MARZO</div>
+        </div>
+
+        <div>
+          <div class="dateMid">28</div>
+          <div class="dateBottom">2026</div>
+        </div>
+
+        <div>
+          <div class="dateSide">5:00 PM</div>
+          <div class="mini-divider"></div>
+          <div class="dateSide">TEGUCIGALPA</div>
+        </div>
+      </div>
+
+      <div class="calRow">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3v3M16 3v3M4 8h16M6 12h4M6 16h4M14 12h4M14 16h4"/><path d="M6 5h12a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/></svg>
+        <a href="#" id="addToCalendar" class="btn small outline">Agregar fecha a mi calendario</a>
+      </div>
+
+      <div class="quoteBox">
+        <div style="font-style:italic;">
+          “Y si alguno prevaleciere contra uno, dos le resistirán;<br>
+          y cordón de tres dobleces no se rompe pronto.”
+        </div>
+        <div style="margin-top:10px;font-weight:700;color:rgba(184,148,85,.96);">Eclesiastés 4:12</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CEREMONIA / RECEPCIÓN ============ -->
+  <section class="section paper" id="lugares">
+    <div class="container">
+      <div style="max-width:860px;margin:0 auto;">
+        <svg style="width:min(560px, 80vw);opacity:.42;margin:0 auto 10px;display:block" viewBox="0 0 800 180" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M80 110 C200 40, 300 40, 400 110 C500 180, 600 180, 720 110" fill="none" stroke="rgba(44,195,138,.35)" stroke-width="10" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <div class="twoCols">
+        <div class="eventCard">
+          <svg class="eventIcon" viewBox="0 0 64 64" aria-hidden="true">
+            <path d="M32 6v10"/>
+            <path d="M18 22h28"/>
+            <path d="M12 54V28l20-14 20 14v26z"/>
+            <path d="M26 54V38h12v16"/>
+          </svg>
+          <div class="eventTitle">Ceremonia religiosa</div>
+          <div class="eventPlace">El Mirador HN</div>
+          <div class="mini-divider"></div>
+          <div class="eventMeta">
+            5:00 PM<br>
+            El Hatillo, Tegucigalpa, Honduras
+          </div>
+          <div class="eventBtnRow">
+            <a href="https://maps.app.goo.gl/ruHVNbzbjQC7MS3q7" target="_blank" rel="noopener">
+              <button class="btn" type="button">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-4.5 7-11a7 7 0 1 0-14 0c0 6.5 7 11 7 11z"/><path d="M12 10.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/></svg>
+                Google Maps
+              </button>
+            </a>
+          </div>
+        </div>
+
+        <div class="eventCard">
+          <svg class="eventIcon" viewBox="0 0 64 64" aria-hidden="true">
+            <path d="M20 10l6 18"/>
+            <path d="M44 10l-6 18"/>
+            <path d="M14 28h18"/>
+            <path d="M32 28h18"/>
+            <path d="M18 28c0 10 6 24 14 24"/>
+            <path d="M46 28c0 10-6 24-14 24"/>
+            <path d="M26 20h12"/>
+            <path d="M30 40h4"/>
+            <path d="M28 44h8"/>
+          </svg>
+          <div class="eventTitle">Recepción</div>
+          <div class="eventPlace">El Mirador HN</div>
+          <div class="mini-divider"></div>
+          <div class="eventMeta">
+            5:00 PM<br>
+            El Hatillo, Tegucigalpa, Honduras
+          </div>
+          <div class="eventBtnRow">
+            <a href="https://maps.app.goo.gl/ruHVNbzbjQC7MS3q7" target="_blank" rel="noopener">
+              <button class="btn" type="button">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-4.5 7-11a7 7 0 1 0-14 0c0 6.5 7 11 7 11z"/><path d="M12 10.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/></svg>
+                Google Maps
+              </button>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ GALERÍA ============ -->
+  <section class="section paper-soft" id="galeria">
+    <div class="container">
+      <div class="galleryGrid" aria-label="Galería (placeholder)">
+        <div class="ph a"></div>
+        <div class="ph b"></div>
+        <div class="ph c"></div>
+        <div class="ph d"></div>
+        <div class="ph e"></div>
+        <div class="ph f"></div>
+        <div class="ph g"></div>
+      </div>
+      <div style="margin-top:18px;color:rgba(6,31,20,.65);font-size:13px;">
+        (Luego reemplazamos estas fotos por las de ustedes 😊)
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RSVP / VESTIMENTA / REGALOS ============ -->
+  <section class="section paper" id="rsvp">
+    <div class="container">
+      <div class="rsvpBanner">
+        <p>Será de gran ayuda confirmar a nuestros invitados, por favor haz clic en el siguiente botón y háznoslo saber:</p>
+        <button class="btn" type="button" onclick="document.getElementById('confirmacion').scrollIntoView({behavior:'smooth'});">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+          Confirmar Asistencia
+        </button>
+      </div>
+
+      <div class="split2">
+        <div class="infoBlock">
+          <svg class="infoIcon" viewBox="0 0 64 64" aria-hidden="true">
+            <path d="M16 40c12 8 20 8 32 0"/>
+            <path d="M16 24c12-8 20-8 32 0"/>
+            <path d="M20 20l-8-6"/>
+            <path d="M44 20l8-6"/>
+            <path d="M20 44l-8 6"/>
+            <path d="M44 44l8 6"/>
+            <path d="M22 32h20"/>
+          </svg>
+          <div class="infoTitle">Código de vestimenta</div>
+          <div class="infoText">
+            <strong>Etiqueta</strong><br>
+            Hombres: Traje formal o smoking<br>
+            Mujeres: Vestido largo elegante<br><br>
+            <strong>Colores no permitidos:</strong> rojo, blanco y beige
+          </div>
+        </div>
+
+        <div class="infoBlock">
+          <svg class="infoIcon" viewBox="0 0 64 64" aria-hidden="true">
+            <path d="M14 24h36v28H14z"/>
+            <path d="M20 24c0-6 4-10 12-10s12 4 12 10"/>
+            <path d="M32 24v28"/>
+            <path d="M14 34h36"/>
+            <path d="M26 14h12"/>
+            <path d="M48 18l6-6"/>
+          </svg>
+          <div class="infoTitle">Regalos</div>
+          <div class="infoText">
+            Nuestro mejor regalo es tu presencia, pero si quieres darnos un presente puedes ver las siguientes opciones:
+          </div>
+          <div style="margin-top:16px;">
+            <button class="btn" type="button" id="openGiftModal">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12v10H4V12"/><path d="M22 7H2v5h20z"/><path d="M12 22V7"/><path d="M12 7H8.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h3.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7z"/></svg>
+              Ver opciones
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modal Regalos -->
+  <div class="modal" id="giftModal" role="dialog" aria-modal="true" aria-label="Opciones de regalo">
+    <div class="modalCard">
+      <div class="modalHead">
+        <div class="modalTitle">Opciones de regalo</div>
+        <button class="xBtn" id="closeGiftModal" aria-label="Cerrar">×</button>
+      </div>
+      <div class="optList" id="giftOptions">
+        <div><strong>Opción 1:</strong> (pendiente)</div>
+        <div><strong>Opción 2:</strong> (pendiente)</div>
+        <div><strong>Opción 3:</strong> (pendiente)</div>
+      </div>
+      <div class="optHint">
+        Cuando me pases tus opciones reales (cuentas/links), las ponemos aquí con botones.
+      </div>
+    </div>
   </div>
-</section>
 
-<section class="paper" id="date">
-  <h2>28 de Marzo 2026</h2>
-  <p style="margin-top:10px;">5:00 PM</p>
-  <div class="countdown" id="countdown"></div>
-</section>
+  <!-- ============ CONFIRMACIÓN (WhatsApp + Sheet) ============ -->
+  <section class="section paper-soft" id="confirmacion">
+    <div class="container">
+      <h2 style="color:rgba(6,31,20,.88);">Confirmación de Asistencia</h2>
+      <div class="divider"></div>
 
-<section class="dark">
-  <div class="wrap">
-    <h2>Ceremonia & Recepción</h2>
-    <p style="margin-top:20px; line-height:1.7;">
-      El Mirador HN<br>
-      El Hatillo, Tegucigalpa, Honduras
-    </p>
-    <a href="https://maps.app.goo.gl/ruHVNbzbjQC7MS3q7" target="_blank" rel="noopener">
-      <button class="btn">Ver Ubicación</button>
-    </a>
+      <div style="margin-top:22px;">
+        <a href="https://wa.me/50431790033?text=Hola%20confirmo%20mi%20asistencia%20a%20la%20boda%20de%20Daniel%20y%20Ana%20Josse" target="_blank" rel="noopener">
+          <button class="btn" type="button">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 11.6a8.5 8.5 0 0 1-12.7 7.3L3 20l1.2-4.6a8.5 8.5 0 1 1 16.3-3.8z"/><path d="M8.5 8.8c.6-1.1 1.2-1.1 1.7-.9.5.2 1.1 1.5 1 1.9-.1.4-.3.7-.6 1 .7 1.4 1.8 2.5 3.2 3.2.3-.3.6-.5 1-.6.4-.1 1.7.5 1.9 1 .2.5.2 1.1-.9 1.7"/></svg>
+            Confirmar por WhatsApp
+          </button>
+        </a>
+      </div>
+
+      <div style="margin-top:26px;color:rgba(6,31,20,.72);">O confirma aquí:</div>
+
+      <div class="formWrap">
+        <form id="rsvpForm">
+          <div class="fieldRow">
+            <input class="field" type="text" id="rsvpName" placeholder="Nombre completo" required>
+          </div>
+          <div class="sendRow">
+            <button class="btn" id="rsvpBtn" type="submit">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg>
+              Enviar confirmación
+            </button>
+          </div>
+          <div class="statusMsg" id="rsvpMsg"></div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MENSAJE A LOS NOVIOS ============ -->
+  <section class="section paper" id="mensaje">
+    <div class="container">
+      <div class="msgHead">¡Para nosotros será un honor contar con tu presencia en este hermoso día!</div>
+      <div class="msgTitle">Mensaje para los novios</div>
+      <div class="msgSub">
+        Utiliza el siguiente formulario para enviarnos un mensaje que guardaremos como recuerdo de este día especial:
+      </div>
+
+      <div class="formWrap">
+        <form id="msgForm">
+          <div class="fieldRow">
+            <input class="field" type="text" id="msgName" placeholder="Nombre" required>
+          </div>
+          <div class="fieldRow">
+            <textarea class="field" id="msgText" placeholder="Mensaje" required></textarea>
+          </div>
+
+          <div class="captchaRow">
+            <span>Antes de enviar, realiza la suma</span>
+            <span id="sumLabel" style="font-weight:700;color:rgba(184,148,85,.96);">0 + 0 =</span>
+            <input class="captchaInput" id="sumInput" type="number" inputmode="numeric" placeholder="?" required>
+            <button class="btn" id="msgBtn" type="submit">Enviar</button>
+          </div>
+
+          <div class="statusMsg" id="msgStatus"></div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Daniel &amp; Ana Josse • 28/03/2026 • Tegucigalpa, Honduras
+  </footer>
+
+  <!-- Toggle visual (solo para emular el switch de la referencia) -->
+  <div class="modeToggle" id="modeToggle" aria-label="Cambiar modo">
+    <div class="modeKnob"></div>
   </div>
-</section>
-
-<section class="paper">
-  <div class="wrap">
-    <h2>Código de Vestimenta</h2>
-    <p style="margin-top:20px;"><strong>Etiqueta</strong></p>
-    <p style="line-height:1.7;">
-      Hombres: Traje formal o smoking<br>
-      Mujeres: Vestido largo elegante
-    </p>
-    <p style="margin-top:20px; font-weight:600;">
-      Colores no permitidos: rojo, blanco y beige
-    </p>
-  </div>
-</section>
-
-<section>
-  <div class="wrap">
-    <h2>Confirmación de Asistencia</h2>
-
-    <a href="https://wa.me/50431790033?text=Hola%20confirmo%20mi%20asistencia%20a%20la%20boda%20de%20Daniel%20y%20Ana" target="_blank" rel="noopener">
-      <button class="btn">Confirmar por WhatsApp</button>
-    </a>
-
-    <p style="margin-top:40px;">O confirma aquí:</p>
-
-    <form onsubmit="sendToSheet(event)">
-      <input type="text" id="name" placeholder="Tu nombre completo" required />
-      <br>
-      <button class="btn" id="submitBtn" type="submit">Confirmar Asistencia</button>
-    </form>
-
-    <p id="formMessage" style="margin-top:15px; line-height:1.5;"></p>
-  </div>
-</section>
-
-<footer>
-  Daniel & Ana • 28/03/2026 • Tegucigalpa, Honduras
-</footer>
 
 <script>
-/** Personalización por URL:
- *  ?nombre=Familia%20Gomez&personas=2
- */
-function applyPersonalizationFromUrl(){
-  const p = new URLSearchParams(window.location.search);
-  const nombre = (p.get("nombre") || p.get("invitado") || p.get("guest") || "").trim();
-  const personasRaw = (p.get("personas") || p.get("pax") || p.get("cantidad") || "").trim();
+  /* ===============================
+     CONFIG
+  =============================== */
+  const GOOGLE_SCRIPT_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxfeRPWkBwkugwnm6Dar373SV2b0U6SxwDCbTbGxVwD78pbLb3zUBWJTrGCy8Gn6dTn7g/exec";
+  const WEDDING_DATE_ISO = "2026-03-28T17:00:00"; // 5:00 PM
 
-  const guestLine = document.getElementById("guestLine");
-  const countLine = document.getElementById("countLine");
+  /* ===============================
+     PERSONALIZACIÓN POR URL
+     ?nombre=Manrique%20Villatoro%2C%20Sra%20e%20Hijo&personas=4
+  =============================== */
+  function applyPersonalizationFromUrl(){
+    const p = new URLSearchParams(window.location.search);
+    const nombre = (p.get("nombre") || p.get("invitado") || p.get("guest") || "").trim();
+    const personasRaw = (p.get("personas") || p.get("pax") || p.get("cantidad") || "").trim();
 
-  guestLine.textContent = nombre ? nombre.toUpperCase() : "INVITADO ESPECIAL";
+    const guestLine = document.getElementById("guestLine");
+    const paxLine = document.getElementById("paxLine");
 
-  const n = parseInt(personasRaw, 10);
-  if(!isNaN(n) && n > 0){
-    countLine.textContent = `- ${n} PERSONA${n === 1 ? "" : "S"} -`;
-  }else{
-    countLine.textContent = "- 2 PERSONAS -";
-  }
-}
-applyPersonalizationFromUrl();
+    guestLine.textContent = nombre ? nombre.toUpperCase() : "INVITADO ESPECIAL";
 
-/** Sobre */
-const gate = document.getElementById("gate");
-const envelopeWrap = document.getElementById("envelopeWrap");
-const flapGroup = document.getElementById("flapGroup");
-
-function openInvitation(){
-  envelopeWrap.classList.add("open");
-  flapGroup.style.transform = "rotateX(160deg)";
-
-  // música
-  const audio = document.getElementById("music");
-  audio.play().catch(() => {});
-
-  // quitar overlay
-  gate.style.transition = "opacity 550ms ease";
-  gate.style.opacity = "0";
-
-  setTimeout(() => {
-    gate.style.display = "none";
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, 760);
-}
-
-envelopeWrap.addEventListener("click", openInvitation);
-envelopeWrap.addEventListener("keydown", (e) => {
-  if(e.key === "Enter" || e.key === " "){ e.preventDefault(); openInvitation(); }
-});
-
-/** Detalles */
-function scrollToDetails(){
-  document.getElementById("date").scrollIntoView({behavior:"smooth"});
-}
-
-/** Cuenta regresiva */
-const weddingDate = new Date("2026-03-28T17:00:00").getTime();
-setInterval(function(){
-  const now = new Date().getTime();
-  const distance = weddingDate - now;
-  const el = document.getElementById("countdown");
-
-  if(distance <= 0){
-    el.textContent = "¡Hoy es el gran día! 💍✨";
-    return;
-  }
-
-  const days = Math.floor(distance / (1000*60*60*24));
-  const hours = Math.floor((distance % (1000*60*60*24)) / (1000*60*60));
-  const minutes = Math.floor((distance % (1000*60*60)) / (1000*60));
-  const seconds = Math.floor((distance % (1000*60)) / 1000);
-
-  el.textContent = `${days} días ${hours} horas ${minutes} minutos ${seconds} segundos`;
-}, 1000);
-
-/** RSVP -> Google Sheets */
-const GOOGLE_SCRIPT_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxfeRPWkBwkugwnm6Dar373SV2b0U6SxwDCbTbGxVwD78pbLb3zUBWJTrGCy8Gn6dTn7g/exec";
-
-async function sendToSheet(event){
-  event.preventDefault();
-  const nameEl = document.getElementById("name");
-  const msg = document.getElementById("formMessage");
-  const btn = document.getElementById("submitBtn");
-
-  const name = (nameEl.value || "").trim();
-  if(!name){
-    msg.textContent = "Por favor escribe tu nombre.";
-    return;
-  }
-
-  btn.disabled = true;
-  msg.textContent = "Enviando confirmación...";
-
-  try{
-    const body = new URLSearchParams({
-      name,
-      ua: navigator.userAgent
-    }).toString();
-
-    const res = await fetch(GOOGLE_SCRIPT_WEBAPP_URL, {
-      method: "POST",
-      headers: {"Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"},
-      body
-    });
-
-    const data = await res.json().catch(() => ({}));
-
-    if(res.ok && (data.status === "ok" || data.result === "success")){
-      msg.innerHTML = `Gracias <strong>${escapeHtml(name)}</strong>, hemos recibido tu confirmación 💚`;
-      nameEl.value = "";
+    const n = parseInt(personasRaw, 10);
+    if(!isNaN(n) && n > 0){
+      paxLine.textContent = `- ${n} PERSONA${n === 1 ? "" : "S"} -`;
     }else{
-      msg.textContent = "No se pudo guardar. Revisa tu Apps Script (acceso: Cualquiera).";
+      paxLine.textContent = "- 2 PERSONAS -";
     }
-  }catch(e){
-    msg.textContent = "Error de conexión. Intenta de nuevo.";
-  }finally{
-    btn.disabled = false;
   }
-}
+  applyPersonalizationFromUrl();
 
-function escapeHtml(str){
-  return str.replace(/[&<>"']/g, (m) => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
-  }[m]));
-}
+  /* ===============================
+     SOBRE (abrir)
+  =============================== */
+  const gate = document.getElementById("gate");
+  const envWrap = document.getElementById("envWrap");
+  const flap = document.getElementById("flap");
+
+  function openInvitation(){
+    envWrap.classList.add("open");
+    flap.style.transform = "rotateX(160deg)";
+
+    // No forzamos autoplay (navegadores lo bloquean). Se habilita con Play.
+    gate.style.transition = "opacity 550ms ease";
+    gate.style.opacity = "0";
+
+    setTimeout(() => {
+      gate.style.display = "none";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 760);
+  }
+
+  envWrap.addEventListener("click", openInvitation);
+  envWrap.addEventListener("keydown", (e) => {
+    if(e.key === "Enter" || e.key === " "){ e.preventDefault(); openInvitation(); }
+  });
+
+  /* ===============================
+     PLAY / PAUSE
+  =============================== */
+  const audio = document.getElementById("music");
+  const playBtn = document.getElementById("playBtn");
+  let playing = false;
+
+  playBtn.addEventListener("click", async () => {
+    try{
+      if(!playing){
+        await audio.play();
+        playing = true;
+        playBtn.textContent = "Pausa";
+      }else{
+        audio.pause();
+        playing = false;
+        playBtn.textContent = "Play";
+      }
+    }catch(e){
+      alert("Tu navegador bloqueó el audio. Intenta nuevamente.");
+    }
+  });
+
+  /* ===============================
+     COUNTDOWN
+  =============================== */
+  const weddingDate = new Date(WEDDING_DATE_ISO).getTime();
+  function tick(){
+    const now = Date.now();
+    const d = weddingDate - now;
+
+    const cdDays = document.getElementById("cdDays");
+    const cdHours = document.getElementById("cdHours");
+    const cdMins = document.getElementById("cdMins");
+    const cdSecs = document.getElementById("cdSecs");
+
+    if(d <= 0){
+      cdDays.textContent = "0";
+      cdHours.textContent = "0";
+      cdMins.textContent = "0";
+      cdSecs.textContent = "0";
+      return;
+    }
+    const days = Math.floor(d / (1000*60*60*24));
+    const hours = Math.floor((d % (1000*60*60*24)) / (1000*60*60));
+    const mins = Math.floor((d % (1000*60*60)) / (1000*60));
+    const secs = Math.floor((d % (1000*60)) / 1000);
+
+    cdDays.textContent = String(days);
+    cdHours.textContent = String(hours);
+    cdMins.textContent = String(mins);
+    cdSecs.textContent = String(secs);
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  /* ===============================
+     ADD TO CALENDAR (.ics)
+  =============================== */
+  function buildICS(){
+    // Básico y compatible
+    const start = "20260328T230000Z"; // Tegucigalpa (-06) => 17:00 local ~= 23:00Z (aprox)
+    const end   = "20260329T010000Z"; // +2h
+    const title = "Boda de Daniel y Ana Josse";
+    const loc   = "El Mirador HN, El Hatillo, Tegucigalpa, Honduras";
+    const desc  = "Ceremonia y recepción - El Mirador HN";
+    return [
+      "BEGIN:VCALENDAR",
+      "VERSION:2.0",
+      "PRODID:-//Boda Peralta Machado//ES",
+      "BEGIN:VEVENT",
+      `DTSTAMP:${new Date().toISOString().replace(/[-:]/g,'').split('.')[0]}Z`,
+      `DTSTART:${start}`,
+      `DTEND:${end}`,
+      `SUMMARY:${title}`,
+      `LOCATION:${loc}`,
+      `DESCRIPTION:${desc}`,
+      "END:VEVENT",
+      "END:VCALENDAR"
+    ].join("\r\n");
+  }
+
+  document.getElementById("addToCalendar").addEventListener("click", (e) => {
+    e.preventDefault();
+    const ics = buildICS();
+    const blob = new Blob([ics], {type: "text/calendar;charset=utf-8"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "Boda_Daniel_AnaJosse.ics";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  });
+
+  /* ===============================
+     MODAL REGALOS (placeholder)
+  =============================== */
+  const giftModal = document.getElementById("giftModal");
+  document.getElementById("openGiftModal").addEventListener("click", () => giftModal.classList.add("show"));
+  document.getElementById("closeGiftModal").addEventListener("click", () => giftModal.classList.remove("show"));
+  giftModal.addEventListener("click", (e) => {
+    if(e.target === giftModal) giftModal.classList.remove("show");
+  });
+
+  /* ===============================
+     RSVP a Google Sheets
+  =============================== */
+  const rsvpForm = document.getElementById("rsvpForm");
+  const rsvpBtn  = document.getElementById("rsvpBtn");
+  const rsvpMsg  = document.getElementById("rsvpMsg");
+
+  rsvpForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const name = (document.getElementById("rsvpName").value || "").trim();
+    if(!name){ rsvpMsg.textContent = "Escribe tu nombre."; return; }
+
+    rsvpBtn.disabled = true;
+    rsvpMsg.textContent = "Enviando confirmación...";
+
+    try{
+      const body = new URLSearchParams({
+        type: "rsvp",
+        name,
+        ua: navigator.userAgent
+      }).toString();
+
+      const res = await fetch(GOOGLE_SCRIPT_WEBAPP_URL, {
+        method: "POST",
+        headers: {"Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"},
+        body
+      });
+
+      const data = await res.json().catch(()=> ({}));
+      if(res.ok && (data.status === "ok" || data.result === "success")){
+        rsvpMsg.innerHTML = `Gracias <strong>${escapeHtml(name)}</strong>, hemos recibido tu confirmación 💚`;
+        document.getElementById("rsvpName").value = "";
+      }else{
+        rsvpMsg.textContent = "No se pudo guardar. Revisa tu Apps Script (acceso: Cualquiera).";
+      }
+    }catch(err){
+      rsvpMsg.textContent = "Error de conexión. Intenta de nuevo.";
+    }finally{
+      rsvpBtn.disabled = false;
+    }
+  });
+
+  /* ===============================
+     MENSAJE A LOS NOVIOS (con captcha suma)
+  =============================== */
+  const msgForm = document.getElementById("msgForm");
+  const msgBtn  = document.getElementById("msgBtn");
+  const msgStatus = document.getElementById("msgStatus");
+  const sumLabel = document.getElementById("sumLabel");
+  const sumInput = document.getElementById("sumInput");
+
+  let a = 0, b = 0;
+  function newSum(){
+    a = Math.floor(Math.random()*20) + 1;
+    b = Math.floor(Math.random()*20) + 1;
+    sumLabel.textContent = `${a} + ${b} =`;
+    sumInput.value = "";
+  }
+  newSum();
+
+  msgForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const name = (document.getElementById("msgName").value || "").trim();
+    const text = (document.getElementById("msgText").value || "").trim();
+    const ans  = parseInt(sumInput.value, 10);
+
+    if(!name || !text){
+      msgStatus.textContent = "Completa tu nombre y el mensaje.";
+      return;
+    }
+    if(ans !== (a+b)){
+      msgStatus.textContent = "La suma es incorrecta. Intenta de nuevo 🙂";
+      newSum();
+      return;
+    }
+
+    msgBtn.disabled = true;
+    msgStatus.textContent = "Enviando mensaje...";
+
+    try{
+      const body = new URLSearchParams({
+        type: "mensaje",
+        name,
+        message: text,
+        ua: navigator.userAgent
+      }).toString();
+
+      const res = await fetch(GOOGLE_SCRIPT_WEBAPP_URL, {
+        method: "POST",
+        headers: {"Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"},
+        body
+      });
+
+      const data = await res.json().catch(()=> ({}));
+      if(res.ok && (data.status === "ok" || data.result === "success")){
+        msgStatus.innerHTML = `¡Gracias <strong>${escapeHtml(name)}</strong>! Mensaje enviado 💚`;
+        document.getElementById("msgName").value = "";
+        document.getElementById("msgText").value = "";
+        newSum();
+      }else{
+        msgStatus.textContent = "No se pudo enviar. Revisa tu Apps Script.";
+      }
+    }catch(err){
+      msgStatus.textContent = "Error de conexión. Intenta de nuevo.";
+    }finally{
+      msgBtn.disabled = false;
+    }
+  });
+
+  function escapeHtml(str){
+    return str.replace(/[&<>"']/g, (m) => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
+    }[m]));
+  }
+
+  /* ===============================
+     Toggle visual (modo claro/oscuro del sitio)
+  =============================== */
+  const modeToggle = document.getElementById("modeToggle");
+  modeToggle.addEventListener("click", () => {
+    document.body.classList.toggle("light");
+  });
 </script>
-
 </body>
 </html>
 """
-path="/mnt/data/index_inspirado_celebremos_verde.html"
-with open(path,"w",encoding="utf-8") as f:
-    f.write(html)
-path
+out_path = Path("/mnt/data/index_celebremos_estructura_verde.html")
+out_path.write_text(html, encoding="utf-8")
+str(out_path)
+
