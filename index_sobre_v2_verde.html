@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ana Josse & Daniel | Invitación</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    /* Verdes frescos */
+    --g0:#062116;
+    --g1:#0b3a25;
+    --g2:#0f5b37;
+    --g3:#158f56;
+
+    /* Neutros y acento */
+    --paper:#fbfaf7;
+    --paper2:#f3efe5;
+    --ink:#0b2b1b;
+    --gold:#c5a86a;
+    --shadow: 0 18px 70px rgba(0,0,0,.28);
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    font-family:'Montserrat',sans-serif;
+    color:#f5f1e8;
+    text-align:center;
+    scroll-behavior:smooth;
+    background:
+      radial-gradient(900px 520px at 50% 22%, rgba(21,143,86,.32), transparent 60%),
+      radial-gradient(1100px 700px at 20% 85%, rgba(15,91,55,.35), transparent 60%),
+      radial-gradient(900px 600px at 85% 80%, rgba(11,58,37,.42), transparent 62%),
+      linear-gradient(180deg, var(--g0), var(--g1));
+  }
+
+  h1,h2{font-family:'Playfair Display',serif}
+  a{text-decoration:none}
+  .wrap{max-width:860px;margin:0 auto}
+
+  /* ===== Overlay centrado ===== */
+  .gate{
+    position:fixed; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    padding:18px;
+    z-index:9999;
+  }
+  .gate::before{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      radial-gradient(1000px 560px at 50% 22%, rgba(21,143,86,.28), transparent 60%),
+      radial-gradient(1100px 700px at 20% 85%, rgba(15,91,55,.30), transparent 60%),
+      radial-gradient(900px 600px at 85% 80%, rgba(11,58,37,.36), transparent 62%),
+      linear-gradient(180deg, rgba(6,33,22,.90), rgba(11,58,37,.92));
+    backdrop-filter: blur(6px);
+  }
+
+  .card{
+    position:relative;
+    width:min(980px, 94vw);
+    background:rgba(251,250,247,.98);
+    color:var(--ink);
+    border-radius:22px;
+    box-shadow:var(--shadow);
+    padding:44px 22px 34px;
+    overflow:hidden;
+  }
+  .card::after{
+    /* textura sutil tipo papel */
+    content:"";
+    position:absolute; inset:0;
+    background:
+      radial-gradient(2px 2px at 10% 20%, rgba(0,0,0,.03), transparent 60%),
+      radial-gradient(2px 2px at 30% 60%, rgba(0,0,0,.03), transparent 60%),
+      radial-gradient(2px 2px at 70% 40%, rgba(0,0,0,.03), transparent 60%),
+      radial-gradient(2px 2px at 85% 75%, rgba(0,0,0,.03), transparent 60%);
+    opacity:.75;
+    pointer-events:none;
+    mix-blend-mode:multiply;
+  }
+
+  .names{
+    font-size:56px;
+    letter-spacing:.5px;
+    position:relative;
+    line-height:1.05;
+  }
+  .names .amp{color:rgba(197,168,106,.85); font-weight:700;}
+  .guest{
+    margin-top:12px;
+    font-size:18px;
+    letter-spacing:.9px;
+    text-transform:uppercase;
+    opacity:.90;
+    position:relative;
+  }
+  .count{
+    margin-top:6px;
+    font-size:18px;
+    color:rgba(197,168,106,1);
+    position:relative;
+  }
+
+  .hint{
+    margin-top:24px;
+    font-size:16px;
+    opacity:.80;
+    position:relative;
+  }
+
+  .tap{
+    margin-top:14px;
+    font-size:13px;
+    opacity:.72;
+    position:relative;
+  }
+
+  /* ===== Sobre (más realista) ===== */
+  .envelope-wrap{
+    margin:22px auto 0;
+    width:min(420px, 88vw);
+    cursor:pointer;
+    user-select:none;
+    outline:none;
+    position:relative;
+  }
+
+  .envelope{
+    width:100%;
+    aspect-ratio: 16/10;
+    position:relative;
+    transform:translateZ(0);
+    border-radius:18px;
+  }
+
+  /* Cuerpo del sobre */
+  .env-body{
+    position:absolute; inset:0;
+    border-radius:18px;
+    background:
+      linear-gradient(180deg, #ffffff, #f3efe5);
+    border:1px solid rgba(11,43,27,.14);
+    box-shadow: 0 14px 28px rgba(0,0,0,.12);
+    overflow:hidden;
+  }
+
+  /* Líneas suaves para dar "papel" */
+  .env-body::after{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      radial-gradient(260px 120px at 30% 25%, rgba(197,168,106,.18), transparent 60%),
+      radial-gradient(300px 150px at 72% 78%, rgba(11,43,27,.10), transparent 62%),
+      linear-gradient(135deg, rgba(0,0,0,.02), transparent 55%);
+    pointer-events:none;
+  }
+
+  /* Triángulos del frente (izq/der) + base */
+  .tri-left, .tri-right, .tri-bottom{
+    position:absolute;
+    width:0;height:0;
+    border-style:solid;
+  }
+  .tri-left{
+    left:0; top:0;
+    border-width:0 0 62% 52%;
+    border-color:transparent transparent rgba(244,237,224,.98) transparent;
+    filter:drop-shadow(0 2px 0 rgba(0,0,0,.02));
+  }
+  .tri-right{
+    right:0; top:0;
+    border-width:0 52% 62% 0;
+    border-color:transparent transparent rgba(244,237,224,.98) transparent;
+    filter:drop-shadow(0 2px 0 rgba(0,0,0,.02));
+  }
+  .tri-bottom{
+    left:0; right:0; bottom:-1px;
+    margin:auto;
+    border-width:54% 50% 0 50%;
+    border-color:rgba(238,228,210,.98) transparent transparent transparent;
+  }
+
+  /* Solapa superior (flap) */
+  .flap{
+    position:absolute; left:0; right:0; top:0;
+    height:58%;
+    transform-origin:50% 0%;
+    transform:rotateX(0deg);
+    transition:transform 900ms cubic-bezier(.2,.85,.1,1);
+    z-index:5;
+    filter:drop-shadow(0 10px 12px rgba(0,0,0,.08));
+  }
+  .flap::before{
+    content:"";
+    position:absolute; left:0; right:0; top:0;
+    width:0;height:0;
+    margin:auto;
+    border-style:solid;
+    border-width:0 50% 100% 50%;
+    border-color:transparent transparent rgba(252,248,240,.98) transparent;
+  }
+
+  /* Sellito */
+  .seal{
+    position:absolute;
+    left:50%; top:56%;
+    transform:translate(-50%,-50%);
+    width:66px; height:66px;
+    border-radius:999px;
+    background:
+      radial-gradient(circle at 30% 30%, rgba(255,255,255,.35), transparent 52%),
+      radial-gradient(circle at 70% 75%, rgba(0,0,0,.10), transparent 55%),
+      linear-gradient(180deg, rgba(197,168,106,1), rgba(159,124,61,1));
+    box-shadow:0 12px 18px rgba(0,0,0,.16);
+    display:flex; align-items:center; justify-content:center;
+    color:rgba(11,43,27,.85);
+    font-family:'Playfair Display',serif;
+    font-weight:700;
+    z-index:7;
+  }
+  .seal span{font-size:22px; transform:translateY(-1px);}
+
+  /* Sombra debajo del sobre */
+  .env-shadow{
+    width:92%;
+    height:18px;
+    margin:12px auto 0;
+    background:radial-gradient(closest-side, rgba(0,0,0,.22), transparent 72%);
+    filter:blur(1px);
+  }
+
+  /* Estado abierto */
+  .envelope.open .flap{ transform:rotateX(165deg); }
+  .envelope.open .seal{
+    transform:translate(-50%,-50%) scale(.92);
+    opacity:.85;
+    transition:all 700ms;
+  }
+
+  /* ===== Invitación ===== */
+  section{padding:80px 20px}
+  .hero{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    padding:100px 20px 70px;
+    background:
+      radial-gradient(900px 520px at 50% 18%, rgba(21,143,86,.25), transparent 60%),
+      linear-gradient(rgba(6,33,22,.80), rgba(6,33,22,.80)),
+      url('https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=1600&q=80');
+    background-size:cover;
+    background-position:center;
+  }
+  .hero h1{font-size:54px; letter-spacing:1px}
+  .hero h2{margin:10px 0; font-size:28px; opacity:.95}
+  .hero p{margin-top:12px; font-size:18px; opacity:.92}
+
+  .btn{
+    padding:12px 28px;
+    border:none;
+    background:var(--gold);
+    color:var(--ink);
+    font-weight:700;
+    cursor:pointer;
+    border-radius:30px;
+    margin-top:18px;
+    transition:.25s;
+    font-size:15px;
+  }
+  .btn:hover{background:#f5f1e8}
+
+  .beige{background:var(--paper2); color:var(--ink)}
+  .dark{background:rgba(11,58,37,.78)}
+  .countdown{font-size:22px;margin-top:18px;font-weight:500}
+
+  input{
+    padding:12px 14px;
+    width:80%;
+    max-width:340px;
+    border-radius:25px;
+    border:none;
+    margin:15px 0 10px;
+    font-size:14px;
+  }
+
+  footer{
+    padding:40px;
+    background:rgba(6,33,22,.92);
+    font-size:14px;
+    letter-spacing:1px;
+  }
+
+  /* Responsive */
+  @media (max-width:520px){
+    .card{padding:30px 16px 22px}
+    .names{font-size:42px}
+    .hero h1{font-size:44px}
+  }
+</style>
+</head>
+
+<body>
+
+<audio id="music" loop>
+  <source src="musica.mp3" type="audio/mpeg">
+</audio>
+
+<!-- ===== Portada con sobre ===== -->
+<div class="gate" id="gate" aria-label="Portada de invitación">
+  <div class="card">
+    <div class="names">Ana Josse <span class="amp">&</span> Daniel</div>
+
+    <div class="guest" id="guestLine">INVITADO ESPECIAL</div>
+    <div class="count" id="countLine">- 2 PERSONAS -</div>
+
+    <div class="hint">Haz clic en el sobre para abrir la invitación:</div>
+
+    <div class="envelope-wrap" id="envelopeWrap" title="Abrir invitación" tabindex="0">
+      <div class="envelope" id="envelope" aria-hidden="true">
+        <div class="env-body"></div>
+        <div class="tri-left"></div>
+        <div class="tri-right"></div>
+        <div class="tri-bottom"></div>
+
+        <div class="flap"></div>
+        <div class="seal"><span>A&D</span></div>
+      </div>
+      <div class="env-shadow"></div>
+    </div>
+
+    <div class="tap">IMPORTANTE: desactiva el modo oscuro y sube el volumen</div>
+  </div>
+</div>
+
+<!-- ===== Invitación ===== -->
+<section class="hero" id="top">
+  <h1>Daniel Fernando</h1>
+  <h2>&</h2>
+  <h1>Ana Josse</h1>
+  <p>Nos Casamos</p>
+  <button class="btn" onclick="scrollToDetails()">Ver detalles</button>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Con la bendición de Dios</h2>
+    <p style="margin-top:20px; line-height:1.7;">
+      “Y si alguno prevaleciere contra uno, dos le resistirán;<br>
+      y cordón de tres dobleces no se rompe pronto.”<br>
+      <strong>Eclesiastés 4:12</strong>
+    </p>
+  </div>
+</section>
+
+<section class="beige" id="date">
+  <h2>28 de Marzo 2026</h2>
+  <p style="margin-top:10px;">5:00 PM</p>
+  <div class="countdown" id="countdown"></div>
+</section>
+
+<section class="dark">
+  <div class="wrap">
+    <h2>Ceremonia & Recepción</h2>
+    <p style="margin-top:20px; line-height:1.7;">
+      El Mirador HN<br>
+      El Hatillo, Tegucigalpa, Honduras
+    </p>
+    <a href="https://maps.app.goo.gl/ruHVNbzbjQC7MS3q7" target="_blank" rel="noopener">
+      <button class="btn">Ver Ubicación</button>
+    </a>
+  </div>
+</section>
+
+<section class="beige">
+  <div class="wrap">
+    <h2>Código de Vestimenta</h2>
+    <p style="margin-top:20px;"><strong>Etiqueta</strong></p>
+    <p style="line-height:1.7;">
+      Hombres: Traje formal o smoking<br>
+      Mujeres: Vestido largo elegante
+    </p>
+    <p style="margin-top:20px; font-weight:600;">
+      Colores no permitidos: rojo, blanco y beige
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Confirmación de Asistencia</h2>
+
+    <a href="https://wa.me/50431790033?text=Hola%20confirmo%20mi%20asistencia%20a%20la%20boda%20de%20Daniel%20y%20Ana" target="_blank" rel="noopener">
+      <button class="btn">Confirmar por WhatsApp</button>
+    </a>
+
+    <p style="margin-top:40px;">O confirma aquí:</p>
+
+    <form onsubmit="sendToSheet(event)">
+      <input type="text" id="name" placeholder="Tu nombre completo" required />
+      <br>
+      <button class="btn" id="submitBtn" type="submit">Confirmar Asistencia</button>
+    </form>
+
+    <p id="formMessage" style="margin-top:15px; line-height:1.5;"></p>
+  </div>
+</section>
+
+<footer>
+  Daniel & Ana • 28/03/2026 • Tegucigalpa, Honduras
+</footer>
+
+<script>
+/** ===============================
+ *  Personalización por URL
+ *  Ejemplos:
+ *   ?nombre=Manrique%20Villatoro%2C%20Sra%20e%20Hijo&personas=4
+ *   ?nombre=Familia%20Gomez&personas=2
+ *  =============================== */
+function applyPersonalizationFromUrl(){
+  const p = new URLSearchParams(window.location.search);
+  const nombre = (p.get("nombre") || p.get("invitado") || p.get("guest") || "").trim();
+  const personasRaw = (p.get("personas") || p.get("pax") || p.get("cantidad") || "").trim();
+
+  const guestLine = document.getElementById("guestLine");
+  const countLine = document.getElementById("countLine");
+
+  guestLine.textContent = nombre ? nombre.toUpperCase() : "INVITADO ESPECIAL";
+
+  const n = parseInt(personasRaw, 10);
+  if(!isNaN(n) && n > 0){
+    countLine.textContent = `- ${n} PERSONA${n === 1 ? "" : "S"} -`;
+  }else{
+    countLine.textContent = "- 2 PERSONAS -";
+  }
+}
+applyPersonalizationFromUrl();
+
+/** ====== Sobre: abrir y comenzar ====== */
+const gate = document.getElementById("gate");
+const envelope = document.getElementById("envelope");
+const envelopeWrap = document.getElementById("envelopeWrap");
+
+function openInvitation(){
+  envelope.classList.add("open");
+
+  const audio = document.getElementById("music");
+  audio.play().catch(() => {});
+
+  // Fade out overlay
+  gate.style.transition = "opacity 550ms ease";
+  gate.style.opacity = "0";
+
+  setTimeout(() => {
+    gate.style.display = "none";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, 700);
+}
+
+envelopeWrap.addEventListener("click", openInvitation);
+envelopeWrap.addEventListener("keydown", (e) => {
+  if(e.key === "Enter" || e.key === " "){ e.preventDefault(); openInvitation(); }
+});
+
+/** ====== Botón "Ver detalles" ====== */
+function scrollToDetails(){
+  document.getElementById("date").scrollIntoView({behavior:"smooth"});
+}
+
+/** ====== Cuenta regresiva ====== */
+const weddingDate = new Date("2026-03-28T17:00:00").getTime();
+setInterval(function(){
+  const now = new Date().getTime();
+  const distance = weddingDate - now;
+  const el = document.getElementById("countdown");
+
+  if(distance <= 0){
+    el.textContent = "¡Hoy es el gran día! 💍✨";
+    return;
+  }
+
+  const days = Math.floor(distance / (1000*60*60*24));
+  const hours = Math.floor((distance % (1000*60*60*24)) / (1000*60*60));
+  const minutes = Math.floor((distance % (1000*60*60)) / (1000*60));
+  const seconds = Math.floor((distance % (1000*60)) / 1000);
+
+  el.textContent = `${days} días ${hours} horas ${minutes} minutos ${seconds} segundos`;
+}, 1000);
+
+/** ====== RSVP -> Google Sheets ====== */
+const GOOGLE_SCRIPT_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxfeRPWkBwkugwnm6Dar373SV2b0U6SxwDCbTbGxVwD78pbLb3zUBWJTrGCy8Gn6dTn7g/exec";
+
+async function sendToSheet(event){
+  event.preventDefault();
+  const nameEl = document.getElementById("name");
+  const msg = document.getElementById("formMessage");
+  const btn = document.getElementById("submitBtn");
+
+  const name = (nameEl.value || "").trim();
+  if(!name){
+    msg.textContent = "Por favor escribe tu nombre.";
+    return;
+  }
+
+  btn.disabled = true;
+  msg.textContent = "Enviando confirmación...";
+
+  try{
+    const body = new URLSearchParams({
+      name,
+      ua: navigator.userAgent
+    }).toString();
+
+    const res = await fetch(GOOGLE_SCRIPT_WEBAPP_URL, {
+      method: "POST",
+      headers: {"Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"},
+      body
+    });
+
+    const data = await res.json().catch(() => ({}));
+
+    if(res.ok && (data.status === "ok" || data.result === "success")){
+      msg.innerHTML = `Gracias <strong>${escapeHtml(name)}</strong>, hemos recibido tu confirmación ❤️`;
+      nameEl.value = "";
+    }else{
+      msg.textContent = "No se pudo guardar. Revisa tu Apps Script (acceso: Cualquiera).";
+    }
+  }catch(e){
+    msg.textContent = "Error de conexión. Intenta de nuevo.";
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+function escapeHtml(str){
+  return str.replace(/[&<>"']/g, (m) => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
+  }[m]));
+}
+</script>
+</body>
+</html>
