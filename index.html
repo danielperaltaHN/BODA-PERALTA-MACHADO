@@ -1035,7 +1035,7 @@
 
       <div class="gate-hint">Haz clic en el sobre para abrir la invitación:</div>
 
-      <div class="env-wrap" id="envWrap" tabindex="0" aria-label="Abrir invitación">
+      <div class="env-wrap" id="envWrap" tabindex="0" aria-label="Abrir invitación" role="button" tabindex="0" onclick="openInvitation()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openInvitation();}">
         <svg class="env-svg" viewBox="0 0 760 480" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Sobre">
           <defs>
             <linearGradient id="paperGrad" x1="0" y1="0" x2="0" y2="1">
@@ -1764,18 +1764,34 @@ try{
 
   function openInvitation(){
   // Marca como abierta (por si el navegador recarga al enviar formularios)
-  try{ sessionStorage.setItem("inv_opened","1"); }catch(e){}
+  try{ sessionStorage.setItem("inv_opened","1"); }
+
+// Bind apertura del sobre (backup)
+try{
+  const wrapOpen = document.getElementById("envWrap") || document.getElementById("envelopeWrap");
+  if(wrapOpen){
+    wrapOpen.addEventListener("click", openInvitation);
+    wrapOpen.addEventListener("keydown", (e) => {
+      if(e.key === "Enter" || e.key === " "){ e.preventDefault(); openInvitation(); }
+    });
+  }
+}catch(e){}
+
+catch(e){}
 
   if(envelopeWrap) envelopeWrap.classList.add("open");
 
   // Inicia música (permitido porque este clic es una interacción del usuario)
-  const audio = document.getElementById("music");
-  audio.play().then(() => {
+  const audio = document.getElementById("bgMusic") || document.getElementById("music");
+  if(audio){
+audio.play().then(() => {
     syncPlayButton(true);
   }).catch(() => {
     // Si el navegador bloquea autoplay, el botón Play/Pausa seguirá funcionando
     syncPlayButton(false);
   });
+
+  }
 
   // Fade out overlay
   gate.style.transition = "opacity 550ms ease";
