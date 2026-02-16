@@ -1766,7 +1766,7 @@ try{
   // Marca como abierta (por si el navegador recarga al enviar formularios)
   try{ sessionStorage.setItem("inv_opened","1"); }catch(e){}
 
-  envelope.classList.add("open");
+  if(envelopeWrap) envelopeWrap.classList.add("open");
 
   // Inicia música (permitido porque este clic es una interacción del usuario)
   const audio = document.getElementById("music");
@@ -1843,7 +1843,7 @@ try{
   };
 
   // Autoplay when opening envelope (click = user gesture ✅)
-  const wrap = document.getElementById("envelopeWrap");
+  const wrap = document.getElementById("envWrap") || document.getElementById("envelopeWrap");
   if(wrap){
     wrap.addEventListener("click", async () => {
       // If user previously left it "playing", start it automatically
