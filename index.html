@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -363,6 +364,22 @@
       font-size:18px;
       line-height:1.35;
       font-weight:500;
+    }
+    .parentItem{margin-top:10px}
+    .parentItem:first-child{margin-top:0}
+    .parentRole{
+      font-size:12px;
+      letter-spacing:1.8px;
+      color:rgba(6,31,20,.55);
+      font-weight:600;
+    }
+    .parentName{
+      margin-top:6px;
+      font-family:'Playfair Display',serif;
+      font-size:22px;
+      letter-spacing:.3px;
+      text-transform:none;
+      color:rgba(6,31,20,.90);
     }
 
     .dateIntro{
@@ -852,15 +869,29 @@
     <div class="container">
       <div class="parentsTop">Con la bendición de nuestros padres</div>
 
-      <div class="parentsGrid">
+      <div class="parentsGrid" aria-label="Padres de los novios">
         <div class="parentsCol">
-          <div>PADRE DEL NOVIO</div>
-          <div>MADRE DEL NOVIO</div>
+          <div class="parentItem">
+            <div class="parentRole">PADRE DEL NOVIO</div>
+            <div class="parentName">Víctor Peralta</div>
+          </div>
+          <div class="parentItem">
+            <div class="parentRole">MADRE DEL NOVIO</div>
+            <div class="parentName">Mercedes Castro</div>
+          </div>
         </div>
+
         <div class="and">&amp;</div>
+
         <div class="parentsCol">
-          <div>PADRE DE LA NOVIA</div>
-          <div>MADRE DE LA NOVIA</div>
+          <div class="parentItem">
+            <div class="parentRole">PADRE DE LA NOVIA</div>
+            <div class="parentName">Marco Machado</div>
+          </div>
+          <div class="parentItem">
+            <div class="parentRole">MADRE DE LA NOVIA</div>
+            <div class="parentName">Ana Cecilia Gómez</div>
+          </div>
         </div>
       </div>
 
@@ -918,7 +949,7 @@
             <path d="M12 54V28l20-14 20 14v26z"/>
             <path d="M26 54V38h12v16"/>
           </svg>
-          <div class="eventTitle">Ceremonia religiosa</div>
+          <div class="eventTitle">Ceremonia civil y religiosa</div>
           <div class="eventPlace">El Mirador HN</div>
           <div class="mini-divider"></div>
           <div class="eventMeta">
