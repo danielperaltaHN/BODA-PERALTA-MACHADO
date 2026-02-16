@@ -1724,84 +1724,75 @@
   </div>
 
 <script>
-try{
+/* ===============================
+   SOBRE: apertura robusta (V8 Fix)
+   =============================== */
+(function(){
+  const gate = document.getElementById("gate");
+  const wrap = document.getElementById("envWrap") || document.getElementById("envelopeWrap");
+  const audio = document.getElementById("bgMusic") || document.getElementById("music");
 
-  /* ===============================
-     CONFIG
-  =============================== */
-  const GOOGLE_SCRIPT_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbydVohcSn33mosxSOO9tzlRChurWh3UHoaKIgUEpR0R56NukCryGIWKPTSiftAmZrjU9g/exec";
-  const WEDDING_DATE_ISO = "2026-03-28T17:00:00"; // 5:00 PM
-
-  /* ===============================
-     PERSONALIZACIÓN POR URL
-     ?nombre=Manrique%20Villatoro%2C%20Sra%20e%20Hijo&personas=4
-  =============================== */
-  function applyPersonalizationFromUrl(){
-    const p = new URLSearchParams(window.location.search);
-    const nombre = (p.get("nombre") || p.get("invitado") || p.get("guest") || "").trim();
-    const personasRaw = (p.get("personas") || p.get("pax") || p.get("cantidad") || "").trim();
-
-    const guestLine = document.getElementById("guestLine");
-    const paxLine = document.getElementById("paxLine");
-
-    guestLine.textContent = nombre ? nombre.toUpperCase() : "INVITADO ESPECIAL";
-
-    const n = parseInt(personasRaw, 10);
-    if(!isNaN(n) && n > 0){
-      paxLine.textContent = `- ${n} PERSONA${n === 1 ? "" : "S"} -`;
+  function syncPlayButton(isPlaying){
+    const btn = document.getElementById("musicBtn");
+    if(!btn) return;
+    const label = btn.querySelector(".label") || btn;
+    if(isPlaying){
+      btn.classList.add("music-playing");
+      if(label) label.textContent = "⏸ Pausa";
     }else{
-      paxLine.textContent = "- 2 PERSONAS -";
+      btn.classList.remove("music-playing");
+      if(label) label.textContent = "▶ Play";
     }
   }
-  applyPersonalizationFromUrl();
 
-  /* ===============================
-     SOBRE (abrir)
-  =============================== */
-  const gate = document.getElementById("gate");
-  const envWrap = document.getElementById("envWrap");
-  const flap = document.getElementById("flap");
+  window.openInvitation = function(){
+    try{ sessionStorage.setItem("inv_opened","1"); }catch(e){}
 
-  function openInvitation(){
-  // Marca como abierta (por si el navegador recarga al enviar formularios)
-  try{ sessionStorage.setItem("inv_opened","1"); }
+    // animación del sobre (si existe CSS .open)
+    try{
+      if(wrap) wrap.classList.add("open");
+      const env = document.getElementById("envelope");
+      if(env) env.classList.add("open");
+    }catch(e){}
 
-// Bind apertura del sobre (backup)
-try{
-  const wrapOpen = document.getElementById("envWrap") || document.getElementById("envelopeWrap");
-  if(wrapOpen){
-    wrapOpen.addEventListener("click", openInvitation);
-    wrapOpen.addEventListener("keydown", (e) => {
-      if(e.key === "Enter" || e.key === " "){ e.preventDefault(); openInvitation(); }
+    // música: intenta reproducir (permitido por clic)
+    if(audio){
+      audio.play().then(() => syncPlayButton(true)).catch(() => syncPlayButton(false));
+    }
+
+    // cerrar overlay
+    if(gate){
+      gate.style.transition = "opacity 550ms ease";
+      gate.style.opacity = "0";
+      setTimeout(() => {
+        gate.style.display = "none";
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }, 700);
+    }
+  };
+
+  // listeners (click + teclado)
+  if(wrap){
+    wrap.style.cursor = "pointer";
+    wrap.addEventListener("click", (e) => {
+      e.preventDefault();
+      window.openInvitation();
+    });
+    wrap.addEventListener("keydown", (e) => {
+      if(e.key === "Enter" || e.key === " "){
+        e.preventDefault();
+        window.openInvitation();
+      }
     });
   }
-}catch(e){}
 
-catch(e){}
-
-  if(envelopeWrap) envelopeWrap.classList.add("open");
-
-  // Inicia música (permitido porque este clic es una interacción del usuario)
-  const audio = document.getElementById("bgMusic") || document.getElementById("music");
-  if(audio){
-audio.play().then(() => {
-    syncPlayButton(true);
-  }).catch(() => {
-    // Si el navegador bloquea autoplay, el botón Play/Pausa seguirá funcionando
-    syncPlayButton(false);
-  });
-
-  }
-
-  // Fade out overlay
-  gate.style.transition = "opacity 550ms ease";
-  gate.style.opacity = "0";
-
-  setTimeout(() => {
-    gate.style.display = "none";
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, 700);
-}catch(e){console.error(e);}
+  // si el usuario recarga luego de abrir, no volver a mostrar el sobre
+  try{
+    if(sessionStorage.getItem("inv_opened") === "1" && gate){
+      gate.style.display = "none";
+    }
+  }catch(e){}
+})();
 </script>
 
 
