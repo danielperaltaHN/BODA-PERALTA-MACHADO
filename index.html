@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daniel & Ana | Nuestra Boda</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:'Montserrat', sans-serif;
+background:#0f2e1d;
+color:#f5f1e8;
+text-align:center;
+scroll-behavior:smooth;
+}
+
+section{
+padding:80px 20px;
+}
+
+h1,h2{
+font-family:'Playfair Display', serif;
+}
+
+.hero{
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+background:linear-gradient(rgba(15,46,29,0.85), rgba(15,46,29,0.85)),
+url('https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=1600&q=80');
+background-size:cover;
+background-position:center;
+}
+
+.hero h1{
+font-size:48px;
+letter-spacing:2px;
+}
+
+.hero h2{
+margin:10px 0;
+font-size:28px;
+}
+
+.hero p{
+margin-top:10px;
+font-size:20px;
+}
+
+button{
+padding:12px 28px;
+border:none;
+background:#c5a86a;
+color:#0f2e1d;
+font-weight:bold;
+cursor:pointer;
+border-radius:30px;
+margin-top:25px;
+transition:0.3s;
+font-size:15px;
+}
+
+button:hover{
+background:#f5f1e8;
+}
+
+.beige{
+background:#f3e8d8;
+color:#0f2e1d;
+}
+
+.dark{
+background:#1c3b29;
+}
+
+.countdown{
+font-size:22px;
+margin-top:20px;
+font-weight:500;
+}
+
+input{
+padding:12px;
+width:80%;
+max-width:320px;
+border-radius:25px;
+border:none;
+margin:15px 0;
+font-size:14px;
+}
+
+footer{
+padding:40px;
+background:#0a1f13;
+font-size:14px;
+letter-spacing:1px;
+}
+
+a{
+text-decoration:none;
+}
+</style>
+</head>
+
+<body>
+
+<audio id="music" loop>
+<source src="musica.mp3" type="audio/mpeg">
+</audio>
+
+<section class="hero">
+<h1>Daniel Fernando</h1>
+<h2>&</h2>
+<h1>Ana Josse</h1>
+<p>Nos Casamos</p>
+<button onclick="startInvitation()">Abrir Invitación</button>
+</section>
+
+<section>
+<h2>Con la bendición de Dios</h2>
+<p style="margin-top:20px; max-width:700px; margin-left:auto; margin-right:auto;">
+“Y si alguno prevaleciere contra uno, dos le resistirán;  
+y cordón de tres dobleces no se rompe pronto.”  
+<br><strong>Eclesiastés 4:12</strong>
+</p>
+</section>
+
+<section class="beige">
+<h2>28 de Marzo 2026</h2>
+<p style="margin-top:10px;">5:00 PM</p>
+<div class="countdown" id="countdown"></div>
+</section>
+
+<section class="dark">
+<h2>Ceremonia & Recepción</h2>
+<p style="margin-top:20px;">
+El Mirador HN<br>
+El Hatillo, Tegucigalpa, Honduras
+</p>
+<a href="https://www.google.com/maps/search/El+Mirador+HN+El+Hatillo+Tegucigalpa" target="_blank">
+<button>Ver Ubicación</button>
+</a>
+</section>
+
+<section class="beige">
+<h2>Código de Vestimenta</h2>
+<p style="margin-top:20px;"><strong>Etiqueta</strong></p>
+<p>
+Hombres: Traje formal o smoking<br>
+Mujeres: Vestido largo o cóctel elegante
+</p>
+</section>
+
+<section>
+<h2>Confirmación de Asistencia</h2>
+
+<p style="margin-top:20px;">Confirmar por WhatsApp:</p>
+<a href="https://wa.me/50431790033?text=Hola%20confirmo%20mi%20asistencia%20a%20la%20boda%20de%20Daniel%20y%20Ana" target="_blank">
+<button>Confirmar por WhatsApp</button>
+</a>
+
+<p style="margin-top:40px;">O confirma aquí:</p>
+<form onsubmit="sendForm(event)">
+<input type="text" id="name" placeholder="Tu nombre completo" required><br>
+<button type="submit">Confirmar Asistencia</button>
+</form>
+
+<p id="formMessage" style="margin-top:15px;"></p>
+</section>
+
+<footer>
+Daniel & Ana • 28/03/2026 • Tegucigalpa, Honduras
+</footer>
+
+<script>
+function startInvitation(){
+document.getElementById('music').play();
+window.scrollTo({top:window.innerHeight, behavior:'smooth'});
+}
+
+const countdown = document.getElementById("countdown");
+const weddingDate = new Date("March 28, 2026 17:00:00").getTime();
+
+setInterval(function(){
+let now = new Date().getTime();
+let distance = weddingDate - now;
+
+let days = Math.floor(distance / (1000 * 60 * 60 * 24));
+let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+countdown.innerHTML = days + " días " + hours + " horas "
++ minutes + " minutos " + seconds + " segundos ";
+}, 1000);
+
+function sendForm(event){
+event.preventDefault();
+let name = document.getElementById("name").value;
+document.getElementById("formMessage").innerHTML =
+"Gracias " + name + ", hemos recibido tu confirmación ❤️";
+}
+</script>
+
+</body>
+</html>
