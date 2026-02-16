@@ -330,7 +330,7 @@
       clip-path: polygon(25% 6%, 75% 6%, 98% 50%, 75% 94%, 25% 94%, 2% 50%);
       transform:rotate(-10deg);
       background:
-        url('https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+        url('assets/fotos/FOTO_14.jpeg') center/cover no-repeat;
       border-radius:14px;
     }
     .hexDecor{
@@ -520,7 +520,7 @@
     .ph.g{grid-column:1 / span 5; grid-row:3 / span 1; min-height:200px;}
 
     .ph.a::before{background-image:url('https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=1200&q=80');}
-    .ph.b::before{background-image:url('https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=1200&q=80');}
+    .ph.b::before{background-image:url('assets/fotos/FOTO_14.jpeg');}
     .ph.c::before{background-image:url('https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80');}
     .ph.d::before{background-image:url('https://images.unsplash.com/photo-1523437237164-d442d57cc3c9?auto=format&fit=crop&w=1200&q=80');}
     .ph.e::before{background-image:url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80');}
@@ -958,6 +958,58 @@
     50%{ transform: scaleY(1.15); opacity:1; }
   }
 
+
+  /* ===== Galería (fotos reales) ===== */
+  .galleryGrid{
+    display:grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 14px;
+    margin-top: 18px;
+  }
+  .gItem{
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 10px 26px rgba(0,0,0,.10);
+    background: #fff;
+    min-height: 180px;
+  }
+  .gItem img{
+    width:100%;
+    height:100%;
+    object-fit: cover;
+    display:block;
+  }
+  /* layout tipo collage suave */
+  .gItem.a{grid-column: span 5; grid-row: span 2; min-height: 320px;}
+  .gItem.b{grid-column: span 4; grid-row: span 2; min-height: 320px;}
+  .gItem.c{grid-column: span 3; grid-row: span 1; min-height: 220px;}
+  .gItem.d{grid-column: span 3; grid-row: span 1; min-height: 220px;}
+  .gItem.e{grid-column: span 6; grid-row: span 2; min-height: 360px;}
+  .gItem.f{grid-column: span 6; grid-row: span 2; min-height: 360px;}
+  .gItem.g{grid-column: span 4; grid-row: span 1; min-height: 240px;}
+  .gItem.h{grid-column: span 4; grid-row: span 1; min-height: 240px;}
+  .gItem.i{grid-column: span 4; grid-row: span 1; min-height: 240px;}
+  .gItem.j{grid-column: span 6; grid-row: span 2; min-height: 340px;}
+  .gItem.k{grid-column: span 6; grid-row: span 2; min-height: 340px;}
+  .gItem.l{grid-column: span 6; grid-row: span 2; min-height: 340px;}
+  .gItem.m{grid-column: span 6; grid-row: span 2; min-height: 340px;}
+
+  @media (max-width: 900px){
+    .galleryGrid{grid-template-columns: repeat(6, 1fr);}
+    .gItem.a,.gItem.b{grid-column: span 6;}
+    .gItem.c,.gItem.d,.gItem.g,.gItem.h,.gItem.i{grid-column: span 3;}
+  }
+  @media (max-width: 560px){
+    .galleryGrid{grid-template-columns: repeat(2, 1fr); gap: 10px;}
+    .gItem{grid-column: span 2 !important; min-height: 220px;}
+  }
+
+  .formActions{
+    display:flex;
+    justify-content:flex-end;
+    margin-top: 12px;
+  }
+
 </style>
 </head>
 
@@ -1234,17 +1286,20 @@
   <!-- ============ GALERÍA ============ -->
   <section class="section reveal paper-soft" id="galeria">
     <div class="container">
-      <div class="galleryGrid" aria-label="Galería (placeholder)">
-        <div class="ph a"></div>
-        <div class="ph b"></div>
-        <div class="ph c"></div>
-        <div class="ph d"></div>
-        <div class="ph e"></div>
-        <div class="ph f"></div>
-        <div class="ph g"></div>
-      </div>
-      <div style="margin-top:18px;color:rgba(6,31,20,.65);font-size:13px;">
-        (Luego reemplazamos estas fotos por las de ustedes 😊)
+            <div class="galleryGrid" aria-label="Galería de fotos">
+        <figure class="gItem a"><img loading="lazy" src="assets/fotos/FOTO_1.JPEG" alt="Foto 1"></figure>
+        <figure class="gItem b"><img loading="lazy" src="assets/fotos/FOTO_2.jpg" alt="Foto 2"></figure>
+        <figure class="gItem c"><img loading="lazy" src="assets/fotos/FOTO_3.JPEG" alt="Foto 3"></figure>
+        <figure class="gItem d"><img loading="lazy" src="assets/fotos/FOTO_4.JPEG" alt="Foto 4"></figure>
+        <figure class="gItem e"><img loading="lazy" src="assets/fotos/FOTO_5.JPEG" alt="Foto 5"></figure>
+        <figure class="gItem f"><img loading="lazy" src="assets/fotos/FOTO_6.jpg" alt="Foto 6"></figure>
+        <figure class="gItem g"><img loading="lazy" src="assets/fotos/FOTO_7.JPEG" alt="Foto 7"></figure>
+        <figure class="gItem h"><img loading="lazy" src="assets/fotos/FOTO_8.JPEG" alt="Foto 8"></figure>
+        <figure class="gItem i"><img loading="lazy" src="assets/fotos/FOTO_9.JPEG" alt="Foto 9"></figure>
+        <figure class="gItem j"><img loading="lazy" src="assets/fotos/FOTO_10.JPEG" alt="Foto 10"></figure>
+        <figure class="gItem k"><img loading="lazy" src="assets/fotos/FOTO_11.JPEG" alt="Foto 11"></figure>
+        <figure class="gItem l"><img loading="lazy" src="assets/fotos/FOTO_12.JPEG" alt="Foto 12"></figure>
+        <figure class="gItem m"><img loading="lazy" src="assets/fotos/FOTO_13.jpeg" alt="Foto 13"></figure>
       </div>
     </div>
   </section>
@@ -1387,6 +1442,146 @@
 </section>
 
 
+
+
+<section class="section reveal paper" id="itinerario">
+  <div class="itinerary">
+    <div class="itHeader">
+      <h2 class="itTitle">Itinerario de Boda</h2>
+      <p class="itSub">Para que disfrutes cada momento</p>
+    </div>
+
+    <div class="timeline">
+      <div class="tItem">
+        <span class="tDot" aria-hidden="true"></span>
+        <div class="tIconWrap" aria-hidden="true">
+          <svg class="tIcon" viewBox="0 0 24 24">
+            <path d="M3 20h18"></path>
+            <path d="M5 20V9l7-5 7 5v11"></path>
+            <path d="M10 20v-6h4v6"></path>
+            <path d="M9 9h6"></path>
+          </svg>
+        </div>
+        <div class="tText">
+          <p class="tTime">5:00 a 6:00 p.m.</p>
+          <p class="tDesc">Inicia la ceremonia civil y religiosa</p>
+        </div>
+      </div>
+
+      <div class="tItem">
+        <span class="tDot" aria-hidden="true"></span>
+        <div class="tIconWrap" aria-hidden="true">
+          <svg class="tIcon" viewBox="0 0 24 24">
+            <path d="M8 21V5a3 3 0 0 1 3-3h0a3 3 0 0 1 3 3v16"></path>
+            <path d="M8 11h6"></path>
+            <path d="M18 9l3 8a2 2 0 0 1-2 2h-3"></path>
+            <path d="M18 9h-3l-1 3"></path>
+          </svg>
+        </div>
+        <div class="tText">
+          <p class="tTime">6:00 a 7:00 p.m.</p>
+          <p class="tDesc">Brindis familiar</p>
+        </div>
+      </div>
+
+      <div class="tItem">
+        <span class="tDot" aria-hidden="true"></span>
+        <div class="tIconWrap" aria-hidden="true">
+          <svg class="tIcon" viewBox="0 0 24 24">
+            <path d="M4 7h4l2-2h4l2 2h4v12H4z"></path>
+            <path d="M12 11a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"></path>
+          </svg>
+        </div>
+        <div class="tText">
+          <p class="tTime">7:00 a 7:30 p.m.</p>
+          <p class="tDesc">Sesión de fotos de los novios</p>
+        </div>
+      </div>
+
+      <div class="tItem">
+        <span class="tDot" aria-hidden="true"></span>
+        <div class="tIconWrap" aria-hidden="true">
+          <svg class="tIcon" viewBox="0 0 24 24">
+            <path d="M7 18h10"></path>
+            <path d="M6 10h12"></path>
+            <path d="M7 10V7a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v3"></path>
+            <path d="M6 10l-2 3v5h16v-5l-2-3"></path>
+          </svg>
+        </div>
+        <div class="tText">
+          <p class="tTime">7:30 a 9:00 p.m.</p>
+          <p class="tDesc">Cena y banquete</p>
+        </div>
+      </div>
+
+      <div class="tItem">
+        <span class="tDot" aria-hidden="true"></span>
+        <div class="tIconWrap" aria-hidden="true">
+          <svg class="tIcon" viewBox="0 0 24 24">
+            <path d="M7.5 8.5a3 3 0 1 0 0 6"></path>
+            <path d="M16.5 8.5a3 3 0 1 1 0 6"></path>
+            <path d="M9 12h6"></path>
+            <path d="M12 12v6"></path>
+          </svg>
+        </div>
+        <div class="tText">
+          <p class="tTime">9:30 p.m.</p>
+          <p class="tDesc">Primer baile de los esposos</p>
+        </div>
+      </div>
+
+      <div class="tItem">
+        <span class="tDot" aria-hidden="true"></span>
+        <div class="tIconWrap" aria-hidden="true">
+          <svg class="tIcon" viewBox="0 0 24 24">
+            <path d="M9 18V5l12-2v13"></path>
+            <path d="M9 9l12-2"></path>
+            <circle cx="7" cy="18" r="2"></circle>
+            <circle cx="19" cy="16" r="2"></circle>
+          </svg>
+        </div>
+        <div class="tText">
+          <p class="tTime">9:40 a 10:00 p.m.</p>
+          <p class="tDesc">Diversión</p>
+        </div>
+      </div>
+
+      <div class="tItem">
+        <span class="tDot" aria-hidden="true"></span>
+        <div class="tIconWrap" aria-hidden="true">
+          <svg class="tIcon" viewBox="0 0 24 24">
+            <path d="M6 21h12"></path>
+            <path d="M7 21c0-4 10-4 10 0"></path>
+            <path d="M8 9h8"></path>
+            <path d="M9 3h6l-1 6H10z"></path>
+            <path d="M7 13h10"></path>
+          </svg>
+        </div>
+        <div class="tText">
+          <p class="tTime">10:00 a 10:30 p.m.</p>
+          <p class="tDesc">Partida de pastel, ramo y liga</p>
+        </div>
+      </div>
+
+      <div class="tItem">
+        <span class="tDot" aria-hidden="true"></span>
+        <div class="tIconWrap" aria-hidden="true">
+          <svg class="tIcon" viewBox="0 0 24 24">
+            <path d="M12 21s-7-4.5-9-9a5 5 0 0 1 8-5 5 5 0 0 1 8 5c-2 4.5-9 9-9 9z"></path>
+          </svg>
+        </div>
+        <div class="tText">
+          <p class="tTime">11:00 p.m.</p>
+          <p class="tDesc">Termina la celebración de la boda</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
 <!-- ============ RSVP / VESTIMENTA / REGALOS ============ -->
   <section class="section reveal paper" id="rsvp">
     <div class="container">
@@ -1512,10 +1707,8 @@
             <textarea class="field" id="msgText" placeholder="Mensaje" required></textarea>
           </div>
 
-          <div class="captchaRow">
-            <button class="btn playBtn" type="submit">Enviar</button>
-          </div>
-        </form>
+          <div class="formActions"><button class="btn" id="msgSendBtn" type="submit">Enviar</button></div>
+          </form>
       </div>
     </div>
   </section>
@@ -1536,7 +1729,7 @@ try{
   /* ===============================
      CONFIG
   =============================== */
-  const GOOGLE_SCRIPT_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxfeRPWkBwkugwnm6Dar373SV2b0U6SxwDCbTbGxVwD78pbLb3zUBWJTrGCy8Gn6dTn7g/exec";
+  const GOOGLE_SCRIPT_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbydVohcSn33mosxSOO9tzlRChurWh3UHoaKIgUEpR0R56NukCryGIWKPTSiftAmZrjU9g/exec";
   const WEDDING_DATE_ISO = "2026-03-28T17:00:00"; // 5:00 PM
 
   /* ===============================
@@ -1570,255 +1763,28 @@ try{
   const flap = document.getElementById("flap");
 
   function openInvitation(){
-    envWrap.classList.add("open");
-    flap.style.transform = "rotateX(160deg)";
+  // Marca como abierta (por si el navegador recarga al enviar formularios)
+  try{ sessionStorage.setItem("inv_opened","1"); }catch(e){}
 
-    // No forzamos autoplay (navegadores lo bloquean). Se habilita con Play.
-    gate.style.transition = "opacity 550ms ease";
-    gate.style.opacity = "0";
+  envelope.classList.add("open");
 
-    setTimeout(() => {
-      gate.style.display = "none";
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }, 760);
-  }
-
-  envWrap.addEventListener("click", openInvitation);
-  envWrap.addEventListener("keydown", (e) => {
-    if(e.key === "Enter" || e.key === " "){ e.preventDefault(); openInvitation(); }
-  });
-
-  /* ===============================
-     PLAY / PAUSE
-  =============================== */
+  // Inicia música (permitido porque este clic es una interacción del usuario)
   const audio = document.getElementById("music");
-  const playBtn = document.getElementById("playBtn");
-  let playing = false;
-
-  playBtn.addEventListener("click", async () => {
-    try{
-      if(!playing){
-        await audio.play();
-        playing = true;
-        playBtn.textContent = "Pausa";
-      }else{
-        audio.pause();
-        playing = false;
-        playBtn.textContent = "Play";
-      }
-    }catch(e){
-      alert("Tu navegador bloqueó el audio. Intenta nuevamente.");
-    }
+  audio.play().then(() => {
+    syncPlayButton(true);
+  }).catch(() => {
+    // Si el navegador bloquea autoplay, el botón Play/Pausa seguirá funcionando
+    syncPlayButton(false);
   });
 
-  /* ===============================
-     COUNTDOWN
-  =============================== */
-  const weddingDate = new Date(WEDDING_DATE_ISO).getTime();
-  function tick(){
-    const now = Date.now();
-    const d = weddingDate - now;
+  // Fade out overlay
+  gate.style.transition = "opacity 550ms ease";
+  gate.style.opacity = "0";
 
-    const cdDays = document.getElementById("cdDays");
-    const cdHours = document.getElementById("cdHours");
-    const cdMins = document.getElementById("cdMins");
-    const cdSecs = document.getElementById("cdSecs");
-
-    if(d <= 0){
-      cdDays.textContent = "0";
-      cdHours.textContent = "0";
-      cdMins.textContent = "0";
-      cdSecs.textContent = "0";
-      return;
-    }
-    const days = Math.floor(d / (1000*60*60*24));
-    const hours = Math.floor((d % (1000*60*60*24)) / (1000*60*60));
-    const mins = Math.floor((d % (1000*60*60)) / (1000*60));
-    const secs = Math.floor((d % (1000*60)) / 1000);
-
-    cdDays.textContent = String(days);
-    cdHours.textContent = String(hours);
-    cdMins.textContent = String(mins);
-    cdSecs.textContent = String(secs);
-  }
-  tick();
-  setInterval(tick, 1000);
-
-  /* ===============================
-     ADD TO CALENDAR (.ics)
-  =============================== */
-  function buildICS(){
-    // Básico y compatible
-    const start = "20260328T230000Z"; // Tegucigalpa (-06) => 17:00 local ~= 23:00Z (aprox)
-    const end   = "20260329T010000Z"; // +2h
-    const title = "Boda de Daniel y Ana Josse";
-    const loc   = "El Mirador HN, El Hatillo, Tegucigalpa, Honduras";
-    const desc  = "Ceremonia y recepción - El Mirador HN";
-    return [
-      "BEGIN:VCALENDAR",
-      "VERSION:2.0",
-      "PRODID:-//Boda Peralta Machado//ES",
-      "BEGIN:VEVENT",
-      `DTSTAMP:${new Date().toISOString().replace(/[-:]/g,'').split('.')[0]}Z`,
-      `DTSTART:${start}`,
-      `DTEND:${end}`,
-      `SUMMARY:${title}`,
-      `LOCATION:${loc}`,
-      `DESCRIPTION:${desc}`,
-      "END:VEVENT",
-      "END:VCALENDAR"
-    ].join("\r\n");
-  }
-
-  document.getElementById("addToCalendar").addEventListener("click", (e) => {
-    e.preventDefault();
-    const ics = buildICS();
-    const blob = new Blob([ics], {type: "text/calendar;charset=utf-8"});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "Boda_Daniel_AnaJosse.ics";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-  });
-
-  /* ===============================
-     MODAL REGALOS (placeholder)
-  =============================== */
-  const giftModal = document.getElementById("giftModal");
-  document.getElementById("openGiftModal").addEventListener("click", () => giftModal.classList.add("show"));
-  document.getElementById("closeGiftModal").addEventListener("click", () => giftModal.classList.remove("show"));
-  giftModal.addEventListener("click", (e) => {
-    if(e.target === giftModal) giftModal.classList.remove("show");
-  });
-
-  /* ===============================
-     RSVP a Google Sheets
-  =============================== */
-  const rsvpForm = document.getElementById("rsvpForm");
-  const rsvpBtn  = document.getElementById("rsvpBtn");
-  const rsvpMsg  = document.getElementById("rsvpMsg");
-
-  rsvpForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const name = (document.getElementById("rsvpName").value || "").trim();
-    if(!name){ rsvpMsg.textContent = "Escribe tu nombre."; return; }
-
-    rsvpBtn.disabled = true;
-    rsvpMsg.textContent = "Enviando confirmación...";
-
-    try{
-      const body = new URLSearchParams({
-        type: "rsvp",
-        name,
-        ua: navigator.userAgent
-      }).toString();
-
-      const res = await fetch(GOOGLE_SCRIPT_WEBAPP_URL, {
-        method: "POST",
-        headers: {"Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"},
-        body: body
-      });
-
-      const data = await res.json().catch(()=> ({}));
-      if(res.ok && (data.status === "ok" || data.result === "success")){
-        rsvpMsg.innerHTML = `Gracias <strong>${escapeHtml(name)}</strong>, hemos recibido tu confirmación 💚`;
-        document.getElementById("rsvpName").value = "";
-      }else{
-        rsvpMsg.textContent = "No se pudo guardar. Revisa tu Apps Script (acceso: Cualquiera).";
-      }
-    }catch(err){
-      rsvpMsg.textContent = "Error de conexión. Intenta de nuevo.";
-    }finally{
-      rsvpBtn.disabled = false;
-    }
-  });
-
-  /* ===============================
-     MENSAJE A LOS NOVIOS (con captcha suma)
-  =============================== */
-  const msgForm = document.getElementById("msgForm");
-  const msgBtn  = document.getElementById("msgBtn");
-  const msgStatus = document.getElementById("msgStatus");
-  msgForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const name = (document.getElementById("msgName").value || "").trim();
-    const text = (document.getElementById("msgText").value || "").trim();
-    if(!name || !text){
-      msgStatus.textContent = "Completa tu nombre y el mensaje.";
-      return;
-    }
-    msgBtn.disabled = true;
-    msgStatus.textContent = "Enviando mensaje...";
-
-    try{
-      const body = new URLSearchParams({
-        type: "mensaje",
-        name,
-        message: text,
-        ua: navigator.userAgent
-      }).toString();
-
-      const res = await fetch(GOOGLE_SCRIPT_WEBAPP_URL, {
-        method: "POST",
-        headers: {"Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"},
-        body: body
-      });
-
-      const data = await res.json().catch(()=> ({}));
-      if(res.ok && (data.status === "ok" || data.result === "success")){
-        msgStatus.innerHTML = `¡Gracias <strong>${escapeHtml(name)}</strong>! Mensaje enviado 💚`;
-        document.getElementById("msgName").value = "";
-        document.getElementById("msgText").value = "";
-      }else{
-        msgStatus.textContent = "No se pudo enviar. Revisa tu Apps Script.";
-      }
-    }catch(err){
-      msgStatus.textContent = "Error de conexión. Intenta de nuevo.";
-    }finally{
-      msgBtn.disabled = false;
-    }
-  });
-
-  function escapeHtml(str){
-    return str.replace(/[&<>"']/g, (m) => ({
-      "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
-    }[m]));
-  }
-
-  /* ===============================
-     Toggle visual (modo claro/oscuro del sitio)
-  =============================== */
-  const modeToggle = document.getElementById("modeToggle");
-  modeToggle.addEventListener("click", () => {
-    document.body.classList.toggle("light");
-  });
-
-
-  /* ===============================
-     REVEAL ON SCROLL (animación suave)
-  =============================== */
-  (function(){
-    const els = Array.from(document.querySelectorAll(".reveal"));
-    if(!("IntersectionObserver" in window)){
-      els.forEach(el => el.classList.add("in"));
-      return;
-    }
-    const io = new IntersectionObserver((entries) => {
-      for(const ent of entries){
-        if(ent.isIntersecting){
-          ent.target.classList.add("in");
-          io.unobserve(ent.target);
-        }
-      }
-    }, {threshold: 0.14, rootMargin: "0px 0px -8% 0px"});
-
-    els.forEach(el => io.observe(el));
-  })();
-
-
+  setTimeout(() => {
+    gate.style.display = "none";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, 700);
 }catch(e){console.error(e);}
 </script>
 
