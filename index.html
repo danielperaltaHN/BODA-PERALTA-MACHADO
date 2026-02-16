@@ -922,6 +922,39 @@
       .tDesc{ font-size: 14px; }
     }
 
+
+  /* === Música: estado del botón === */
+  #musicBtn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    transition: transform .18s ease, filter .18s ease, box-shadow .22s ease, background .22s ease;
+    will-change: transform;
+  }
+  #musicBtn:active{ transform: scale(.98); }
+  #musicBtn.music-playing{
+    filter: brightness(1.03);
+    box-shadow: 0 14px 28px rgba(0,0,0,.18);
+  }
+  #musicBtn .eq{
+    width:14px;height:14px;display:none;position:relative;
+  }
+  #musicBtn.music-playing .eq{ display:inline-block; }
+  #musicBtn .eq i{
+    position:absolute; bottom:0; width:3px; border-radius:3px;
+    background: rgba(11,43,27,.75);
+    animation: eq 720ms ease-in-out infinite;
+  }
+  #musicBtn .eq i:nth-child(1){ left:0; height:9px; animation-delay:0ms; }
+  #musicBtn .eq i:nth-child(2){ left:5px; height:13px; animation-delay:120ms; }
+  #musicBtn .eq i:nth-child(3){ left:10px; height:7px; animation-delay:240ms; }
+
+  @keyframes eq{
+    0%,100%{ transform: scaleY(.55); opacity:.8; }
+    50%{ transform: scaleY(1.15); opacity:1; }
+  }
+
 </style>
 </head>
 
@@ -933,7 +966,7 @@
 
   <!-- Música (pon tu archivo musica.mp3 en el repo) -->
   <audio id="music" loop>
-    <source src="musica.mp3" type="audio/mpeg">
+    <source src="CANCION.mp3" type="audio/mpeg">
   </audio>
 
   <!-- ============ PORTADA / SOBRE ============ -->
@@ -1812,34 +1845,94 @@ try{
 }catch(e){console.error(e);}
 </script>
 
-<script>
-const music = document.getElementById("bgMusic");
-const btnMusic = document.getElementById("musicBtn");
 
-// Autoplay when envelope opens (if function exists)
-try{
-  const originalOpen = window.openInvitation;
-  if(typeof originalOpen === "function"){
-    window.openInvitation = function(){
-      originalOpen();
-      music.play().then(()=>{
-        if(btnMusic) btnMusic.innerHTML = "⏸ Pausa";
-      }).catch(()=>{});
+<script>
+(() => {
+  const music = document.getElementById("bgMusic");
+  const btn = document.getElementById("musicBtn");
+  const label = btn ? btn.querySelector(".label") : null;
+
+  if(!music) return;
+
+  const KEY = "boda_music_state_v1"; // "playing" | "paused"
+  const setState = (state) => {
+    try{ localStorage.setItem(KEY, state); }catch(e){}
+    if(!btn || !label) return;
+    if(state === "playing"){
+      btn.classList.add("music-playing");
+      label.textContent = "⏸ Pausa";
+    }else{
+      btn.classList.remove("music-playing");
+      label.textContent = "▶ Play";
+    }
+  };
+
+  const getState = () => {
+    try{ return localStorage.getItem(KEY) || "paused"; }catch(e){ return "paused"; }
+  };
+
+  // Sync initial UI
+  setState(getState());
+
+  async function safePlay(){
+    try{
+      await music.play();
+      setState("playing");
+      return true;
+    }catch(e){
+      // Autoplay may be blocked until user gesture; we'll try again on next tap.
+      return false;
     }
   }
-}catch(e){}
 
-function toggleMusic(){
-  if(!music) return;
-  if(music.paused){
-    music.play().then(()=>{
-      if(btnMusic) btnMusic.innerHTML = "⏸ Pausa";
-    }).catch(()=>{});
-  }else{
-    music.pause();
-    if(btnMusic) btnMusic.innerHTML = "▶ Play";
+  function safePause(){
+    try{ music.pause(); }catch(e){}
+    setState("paused");
   }
-}
+
+  // Public function used by button onclick
+  window.toggleMusic = async function(){
+    if(music.paused){
+      await safePlay();
+    }else{
+      safePause();
+    }
+  };
+
+  // Autoplay when opening envelope (click = user gesture ✅)
+  const wrap = document.getElementById("envelopeWrap");
+  if(wrap){
+    wrap.addEventListener("click", async () => {
+      // If user previously left it "playing", start it automatically
+      if(getState() === "playing"){
+        await safePlay();
+      }
+    }, { once:false });
+  }
+
+  // If user wants music playing and refreshes, attempt play on first interaction anywhere
+  if(getState() === "playing"){
+    const tryOnFirstGesture = async () => {
+      await safePlay();
+      window.removeEventListener("pointerdown", tryOnFirstGesture);
+      window.removeEventListener("keydown", tryOnFirstGesture);
+    };
+    window.addEventListener("pointerdown", tryOnFirstGesture, { once:true });
+    window.addEventListener("keydown", tryOnFirstGesture, { once:true });
+  }
+
+  // Keep UI in sync if track ends or is paused externally
+  music.addEventListener("pause", () => {
+    // If it paused because it ended, mark paused
+    if(music.currentTime >= (music.duration || 0) - 0.25){
+      setState("paused");
+      music.currentTime = 0;
+    }else{
+      setState("paused");
+    }
+  });
+  music.addEventListener("play", () => setState("playing"));
+})();
 </script>
 
 </body>
