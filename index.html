@@ -800,6 +800,128 @@
     /* Animación suave opcional (no oculta contenido) */
     .reveal.in{opacity:1; transform:none;}
 
+
+    /* ===========================
+       ITINERARIO (V6)
+       =========================== */
+    .itinerary{
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .itHeader{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:10px;
+      margin-bottom: 26px;
+    }
+    .itTitle{
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      font-size: clamp(26px, 3.4vw, 40px);
+      color: var(--ink);
+      margin: 0;
+    }
+    .itSub{
+      color: var(--muted);
+      font-size: 14px;
+      letter-spacing: .06em;
+      margin: 0;
+    }
+    .timeline{
+      position: relative;
+      display: grid;
+      gap: 18px;
+      padding: 8px 0 10px;
+    }
+    .timeline::before{
+      content:"";
+      position:absolute;
+      left: 40px;
+      top: 8px;
+      bottom: 8px;
+      width: 2px;
+      background: linear-gradient(180deg, rgba(184,148,85,.0), rgba(184,148,85,.55), rgba(184,148,85,.0));
+    }
+    .tItem{
+      position: relative;
+      display:grid;
+      grid-template-columns: 86px 1fr;
+      align-items:center;
+      gap: 16px;
+      padding: 14px 16px 14px 0;
+      border-radius: 18px;
+      background: rgba(231,242,236,.62);
+      border: 1px solid rgba(6,31,20,.08);
+      box-shadow: 0 10px 22px rgba(0,0,0,.06);
+      overflow:hidden;
+    }
+    .tItem::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: radial-gradient(420px 160px at 10% 10%, rgba(44,195,138,.10), transparent 60%);
+      pointer-events:none;
+    }
+    .tIconWrap{
+      position: relative;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      height: 62px;
+      width: 62px;
+      margin-left: 10px;
+      border-radius: 999px;
+      background: rgba(212,234,223,.85);
+      border: 1px solid rgba(184,148,85,.22);
+      box-shadow: 0 10px 18px rgba(0,0,0,.08);
+    }
+    .tDot{
+      position:absolute;
+      left: 39px;
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--gold);
+      box-shadow: 0 0 0 6px rgba(184,148,85,.16);
+      z-index: 2;
+    }
+    .tText{
+      position: relative;
+      z-index: 1;
+      text-align: left;
+      padding-right: 8px;
+    }
+    .tTime{
+      font-weight: 700;
+      color: var(--ink);
+      font-size: 15px;
+      letter-spacing: .02em;
+      margin: 0 0 4px 0;
+    }
+    .tDesc{
+      margin: 0;
+      color: #163c2a;
+      font-size: 15px;
+      line-height: 1.35;
+    }
+    .tIcon{
+      width: 30px;
+      height: 30px;
+      stroke: rgba(6,31,20,.78);
+      stroke-width: 1.8;
+      fill: none;
+    }
+    @media (max-width: 520px){
+      .timeline::before{ left: 34px; }
+      .tItem{ grid-template-columns: 76px 1fr; }
+      .tIconWrap{ width: 56px; height: 56px; }
+      .tDot{ left: 33px; }
+      .tDesc{ font-size: 14px; }
+    }
+
 </style>
 </head>
 
@@ -1224,7 +1346,142 @@
     </div>
   </section>
 
-  <footer>
+  
+<section class="section reveal paper" id="itinerario">
+  <div class="itinerary">
+    <div class="itHeader">
+      <h2 class="itTitle">Itinerario de Boda</h2>
+      <p class="itSub">Para que disfrutes cada momento</p>
+    </div>
+
+    <div class="timeline">
+      <div class="tItem">
+        <span class="tDot" aria-hidden="true"></span>
+        <div class="tIconWrap" aria-hidden="true">
+          <svg class="tIcon" viewBox="0 0 24 24">
+            <path d="M3 20h18"></path>
+            <path d="M5 20V9l7-5 7 5v11"></path>
+            <path d="M10 20v-6h4v6"></path>
+            <path d="M9 9h6"></path>
+          </svg>
+        </div>
+        <div class="tText">
+          <p class="tTime">5:00 a 6:00 p.m.</p>
+          <p class="tDesc">Inicia la ceremonia civil y religiosa</p>
+        </div>
+      </div>
+
+      <div class="tItem">
+        <span class="tDot" aria-hidden="true"></span>
+        <div class="tIconWrap" aria-hidden="true">
+          <svg class="tIcon" viewBox="0 0 24 24">
+            <path d="M8 21V5a3 3 0 0 1 3-3h0a3 3 0 0 1 3 3v16"></path>
+            <path d="M8 11h6"></path>
+            <path d="M18 9l3 8a2 2 0 0 1-2 2h-3"></path>
+            <path d="M18 9h-3l-1 3"></path>
+          </svg>
+        </div>
+        <div class="tText">
+          <p class="tTime">6:00 a 7:00 p.m.</p>
+          <p class="tDesc">Brindis familiar</p>
+        </div>
+      </div>
+
+      <div class="tItem">
+        <span class="tDot" aria-hidden="true"></span>
+        <div class="tIconWrap" aria-hidden="true">
+          <svg class="tIcon" viewBox="0 0 24 24">
+            <path d="M4 7h4l2-2h4l2 2h4v12H4z"></path>
+            <path d="M12 11a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"></path>
+          </svg>
+        </div>
+        <div class="tText">
+          <p class="tTime">7:00 a 7:30 p.m.</p>
+          <p class="tDesc">Sesión de fotos de los novios</p>
+        </div>
+      </div>
+
+      <div class="tItem">
+        <span class="tDot" aria-hidden="true"></span>
+        <div class="tIconWrap" aria-hidden="true">
+          <svg class="tIcon" viewBox="0 0 24 24">
+            <path d="M7 18h10"></path>
+            <path d="M6 10h12"></path>
+            <path d="M7 10V7a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v3"></path>
+            <path d="M6 10l-2 3v5h16v-5l-2-3"></path>
+          </svg>
+        </div>
+        <div class="tText">
+          <p class="tTime">7:30 a 9:00 p.m.</p>
+          <p class="tDesc">Cena y banquete</p>
+        </div>
+      </div>
+
+      <div class="tItem">
+        <span class="tDot" aria-hidden="true"></span>
+        <div class="tIconWrap" aria-hidden="true">
+          <svg class="tIcon" viewBox="0 0 24 24">
+            <path d="M7.5 8.5a3 3 0 1 0 0 6"></path>
+            <path d="M16.5 8.5a3 3 0 1 1 0 6"></path>
+            <path d="M9 12h6"></path>
+            <path d="M12 12v6"></path>
+          </svg>
+        </div>
+        <div class="tText">
+          <p class="tTime">9:30 p.m.</p>
+          <p class="tDesc">Primer baile de los esposos</p>
+        </div>
+      </div>
+
+      <div class="tItem">
+        <span class="tDot" aria-hidden="true"></span>
+        <div class="tIconWrap" aria-hidden="true">
+          <svg class="tIcon" viewBox="0 0 24 24">
+            <path d="M9 18V5l12-2v13"></path>
+            <path d="M9 9l12-2"></path>
+            <circle cx="7" cy="18" r="2"></circle>
+            <circle cx="19" cy="16" r="2"></circle>
+          </svg>
+        </div>
+        <div class="tText">
+          <p class="tTime">9:40 a 10:00 p.m.</p>
+          <p class="tDesc">Diversión</p>
+        </div>
+      </div>
+
+      <div class="tItem">
+        <span class="tDot" aria-hidden="true"></span>
+        <div class="tIconWrap" aria-hidden="true">
+          <svg class="tIcon" viewBox="0 0 24 24">
+            <path d="M6 21h12"></path>
+            <path d="M7 21c0-4 10-4 10 0"></path>
+            <path d="M8 9h8"></path>
+            <path d="M9 3h6l-1 6H10z"></path>
+            <path d="M7 13h10"></path>
+          </svg>
+        </div>
+        <div class="tText">
+          <p class="tTime">10:00 a 10:30 p.m.</p>
+          <p class="tDesc">Partida de pastel, ramo y liga</p>
+        </div>
+      </div>
+
+      <div class="tItem">
+        <span class="tDot" aria-hidden="true"></span>
+        <div class="tIconWrap" aria-hidden="true">
+          <svg class="tIcon" viewBox="0 0 24 24">
+            <path d="M12 21s-7-4.5-9-9a5 5 0 0 1 8-5 5 5 0 0 1 8 5c-2 4.5-9 9-9 9z"></path>
+          </svg>
+        </div>
+        <div class="tText">
+          <p class="tTime">11:00 p.m.</p>
+          <p class="tDesc">Termina la celebración de la boda</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<footer>
     Daniel &amp; Ana Josse • 28/03/2026 • Tegucigalpa, Honduras
   </footer>
 
@@ -1547,3 +1804,4 @@ try{
 </script>
 </body>
 </html>
+
