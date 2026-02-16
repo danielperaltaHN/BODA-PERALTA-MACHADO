@@ -926,6 +926,11 @@
 </head>
 
 <body>
+
+<audio id="bgMusic" preload="auto">
+  <source src="CANCION.mp3" type="audio/mpeg">
+</audio>
+
   <!-- Música (pon tu archivo musica.mp3 en el repo) -->
   <audio id="music" loop>
     <source src="musica.mp3" type="audio/mpeg">
@@ -1806,5 +1811,36 @@ try{
 
 }catch(e){console.error(e);}
 </script>
+
+<script>
+const music = document.getElementById("bgMusic");
+const btnMusic = document.getElementById("musicBtn");
+
+// Autoplay when envelope opens (if function exists)
+try{
+  const originalOpen = window.openInvitation;
+  if(typeof originalOpen === "function"){
+    window.openInvitation = function(){
+      originalOpen();
+      music.play().then(()=>{
+        if(btnMusic) btnMusic.innerHTML = "⏸ Pausa";
+      }).catch(()=>{});
+    }
+  }
+}catch(e){}
+
+function toggleMusic(){
+  if(!music) return;
+  if(music.paused){
+    music.play().then(()=>{
+      if(btnMusic) btnMusic.innerHTML = "⏸ Pausa";
+    }).catch(()=>{});
+  }else{
+    music.pause();
+    if(btnMusic) btnMusic.innerHTML = "▶ Play";
+  }
+}
+</script>
+
 </body>
 </html>
