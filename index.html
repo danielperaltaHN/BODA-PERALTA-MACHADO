@@ -1513,13 +1513,8 @@
           </div>
 
           <div class="captchaRow">
-            <span>Antes de enviar, realiza la suma</span>
-            <span id="sumLabel" style="font-weight:700;color:rgba(184,148,85,.96);">0 + 0 =</span>
-            <input class="captchaInput" id="sumInput" type="number" inputmode="numeric" placeholder="?" required>
-            <button class="btn" id="msgBtn" type="submit">Enviar</button>
+            <button class="btn playBtn" type="submit">Enviar</button>
           </div>
-
-          <div class="statusMsg" id="msgStatus"></div>
         </form>
       </div>
     </div>
@@ -1747,34 +1742,14 @@ try{
   const msgForm = document.getElementById("msgForm");
   const msgBtn  = document.getElementById("msgBtn");
   const msgStatus = document.getElementById("msgStatus");
-  const sumLabel = document.getElementById("sumLabel");
-  const sumInput = document.getElementById("sumInput");
-
-  let a = 0, b = 0;
-  function newSum(){
-    a = Math.floor(Math.random()*20) + 1;
-    b = Math.floor(Math.random()*20) + 1;
-    sumLabel.textContent = `${a} + ${b} =`;
-    sumInput.value = "";
-  }
-  newSum();
-
   msgForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const name = (document.getElementById("msgName").value || "").trim();
     const text = (document.getElementById("msgText").value || "").trim();
-    const ans  = parseInt(sumInput.value, 10);
-
     if(!name || !text){
       msgStatus.textContent = "Completa tu nombre y el mensaje.";
       return;
     }
-    if(ans !== (a+b)){
-      msgStatus.textContent = "La suma es incorrecta. Intenta de nuevo 🙂";
-      newSum();
-      return;
-    }
-
     msgBtn.disabled = true;
     msgStatus.textContent = "Enviando mensaje...";
 
@@ -1797,7 +1772,6 @@ try{
         msgStatus.innerHTML = `¡Gracias <strong>${escapeHtml(name)}</strong>! Mensaje enviado 💚`;
         document.getElementById("msgName").value = "";
         document.getElementById("msgText").value = "";
-        newSum();
       }else{
         msgStatus.textContent = "No se pudo enviar. Revisa tu Apps Script.";
       }
