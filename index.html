@@ -10,27 +10,25 @@
 
   <style>
     :root{
-      /* Verde lujo fresco + dorado suave (sin rojo / blanco / beige) */
+      /* Verde fresco + dorado (sin rojo/blanco/beige) */
       --bg0:#041a11;
-      --bg1:#063324;
-      --bg2:#0a4e36;
-      --bg3:#0f6b49;
+      --bg1:#073021;
+      --bg2:#0c4a31;
       --mint:#2cc38a;
 
       /* “Papel” verdoso (evita blanco/beige) */
       --paper:#e7f2ec;
-      --paper2:#d4eadf;
-      --paper3:#c8e3d7;
+      --paper2:#d7ebe1;
+      --paper3:#cfe6db;
 
       --ink:#061f14;
       --muted:#2b5a43;
 
       --gold:#b89455;
-      --gold2:#d7be86;
-      --gold3:#9f7c3d;
+      --gold2:#d2b47a;
 
-      --shadow: 0 24px 90px rgba(0,0,0,.30);
-      --soft: 0 16px 40px rgba(0,0,0,.14);
+      --shadow: 0 20px 70px rgba(0,0,0,.28);
+      --soft: 0 14px 34px rgba(0,0,0,.14);
       --radius:22px;
 
       --container: 1080px;
@@ -729,85 +727,7 @@
       .dateMid{font-size:64px}
       .countNums{grid-template-columns:repeat(2,1fr)}
     }
-  
-    /* ===========================
-       MICRO-ANIMACIONES PREMIUM
-       =========================== */
-    .env-wrap{
-      will-change: transform, filter;
-    }
-    .env-svg{
-      transition: transform .25s ease, filter .25s ease;
-      transform-origin: 50% 60%;
-    }
-    .env-wrap:hover .env-svg{
-      transform: translateY(-3px) rotate(-0.6deg);
-      filter: drop-shadow(0 18px 24px rgba(0,0,0,.14));
-    }
-    .env-wrap:active .env-svg{
-      transform: translateY(-1px) scale(.995);
-    }
-    /* brillo suave encima del sobre */
-    .env-wrap::after{
-      content:"";
-      position:absolute;
-      inset: 0;
-      border-radius:18px;
-      background: radial-gradient(320px 120px at 35% 28%, rgba(255,255,255,.18), transparent 62%);
-      opacity:.0;
-      transition: opacity .25s ease;
-      pointer-events:none;
-    }
-    .env-wrap:hover::after{opacity:.85}
-
-    /* solapa con perspectiva 3D real */
-    .flap{
-      transform-style: preserve-3d;
-      backface-visibility: hidden;
-    }
-    .open .flap{
-      transform: rotateX(165deg);
-    }
-
-    /* Carta (más “premium” cuando abre) */
-    .open .env-shadow{
-      background:radial-gradient(closest-side, rgba(0,0,0,.26), transparent 72%);
-    }
-
-    /* Hex foto: más elegante + flotación */
-    @keyframes floaty{
-      0%,100%{ transform: translateY(0) rotate(-10deg); }
-      50%{ transform: translateY(-6px) rotate(-10deg); }
-    }
-    .hex::before{
-      background: rgba(200,227,215,.52);
-      border:1px solid rgba(184,148,85,.38);
-    }
-    .hex::after{
-      background: rgba(231,242,236,.92);
-      border:2px solid rgba(184,148,85,.40);
-      box-shadow: 0 18px 40px rgba(0,0,0,.18);
-    }
-    .hexImg{
-      box-shadow: inset 0 0 0 1px rgba(6,31,20,.08);
-    }
-    .hex{
-      animation: floaty 5.6s ease-in-out infinite;
-    }
-
-    /* Reveal suave al hacer scroll */
-    .reveal{
-      opacity:0;
-      transform: translateY(18px);
-      transition: opacity .6s ease, transform .6s ease;
-      will-change: opacity, transform;
-    }
-    .reveal.in{
-      opacity:1;
-      transform: translateY(0);
-    }
-
-</style>
+  </style>
 </head>
 
 <body>
@@ -899,7 +819,7 @@
   <!-- ============ HERO ============ -->
   <section class="hero" id="inicio">
     <div class="hero-grid">
-      <div class="hero-left reveal">
+      <div class="hero-left">
         <div class="playRow">
           <span class="playLabel">Presiona Play/Pausa para escuchar nuestra canción:</span>
           <button class="playBtn" id="playBtn" type="button">Play</button>
@@ -931,7 +851,7 @@
         </div>
       </div>
 
-      <div class="hero-right reveal">
+      <div class="hero-right">
         <div class="hex" aria-label="Foto (placeholder)">
           <div class="hexImg"></div>
           <svg class="hexDecor" viewBox="0 0 260 210" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -945,7 +865,7 @@
   </section>
 
   <!-- ============ FECHA / PADRES / CITA ============ -->
-  <section class="section reveal paper-soft" id="fecha">
+  <section class="section paper-soft" id="fecha">
     <div class="container">
       <div class="parentsTop">Con la bendición de nuestros padres</div>
 
@@ -1010,7 +930,7 @@
   </section>
 
   <!-- ============ CEREMONIA / RECEPCIÓN ============ -->
-  <section class="section reveal paper" id="lugares">
+  <section class="section paper" id="lugares">
     <div class="container">
       <div style="max-width:860px;margin:0 auto;">
         <svg style="width:min(560px, 80vw);opacity:.42;margin:0 auto 10px;display:block" viewBox="0 0 800 180" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -1076,7 +996,7 @@
   </section>
 
   <!-- ============ GALERÍA ============ -->
-  <section class="section reveal paper-soft" id="galeria">
+  <section class="section paper-soft" id="galeria">
     <div class="container">
       <div class="galleryGrid" aria-label="Galería (placeholder)">
         <div class="ph a"></div>
@@ -1094,16 +1014,8 @@
   </section>
 
   <!-- ============ RSVP / VESTIMENTA / REGALOS ============ -->
-  <section class="section reveal paper" id="rsvp">
-    <div class="container">
-      <div class="rsvpBanner">
-        <p>Será de gran ayuda confirmar a nuestros invitados, por favor haz clic en el siguiente botón y háznoslo saber:</p>
-        <button class="btn" type="button" onclick="document.getElementById('confirmacion').scrollIntoView({behavior:'smooth'});">
-          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
-          Confirmar Asistencia
-        </button>
-      </div>
-
+  <section class="section paper" id="rsvp">
+    
       <div class="split2">
         <div class="infoBlock">
           <svg class="infoIcon" viewBox="0 0 64 64" aria-hidden="true">
@@ -1167,7 +1079,7 @@
   </div>
 
   <!-- ============ CONFIRMACIÓN (WhatsApp + Sheet) ============ -->
-  <section class="section reveal paper-soft" id="confirmacion">
+  <section class="section paper-soft" id="confirmacion">
     <div class="container">
       <h2 style="color:rgba(6,31,20,.88);">Confirmación de Asistencia</h2>
       <div class="divider"></div>
@@ -1201,7 +1113,7 @@
   </section>
 
   <!-- ============ MENSAJE A LOS NOVIOS ============ -->
-  <section class="section reveal paper" id="mensaje">
+  <section class="section paper" id="mensaje">
     <div class="container">
       <div class="msgHead">¡Para nosotros será un honor contar con tu presencia en este hermoso día!</div>
       <div class="msgTitle">Mensaje para los novios</div>
@@ -1524,29 +1436,6 @@
   modeToggle.addEventListener("click", () => {
     document.body.classList.toggle("light");
   });
-
-
-  /* ===============================
-     REVEAL ON SCROLL (animación suave)
-  =============================== */
-  (function(){
-    const els = Array.from(document.querySelectorAll(".reveal"));
-    if(!("IntersectionObserver" in window)){
-      els.forEach(el => el.classList.add("in"));
-      return;
-    }
-    const io = new IntersectionObserver((entries) => {
-      for(const ent of entries){
-        if(ent.isIntersecting){
-          ent.target.classList.add("in");
-          io.unobserve(ent.target);
-        }
-      }
-    }, {threshold: 0.14, rootMargin: "0px 0px -8% 0px"});
-
-    els.forEach(el => io.observe(el));
-  })();
-
 </script>
 </body>
 </html>
