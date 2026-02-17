@@ -252,7 +252,7 @@ img { max-width: 100%; height: auto; }
     }
     .playRow{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
     .playLabel{font-size:13px;opacity:.85}
-    .playBtn{
+    .musicBtn{
       background:rgba(184,148,85,.96);
       color:var(--ink);
       border:none;
@@ -969,7 +969,7 @@ img { max-width: 100%; height: auto; }
 
 
   /* === Música: estado del botón === */
-  #playBtn{
+  #musicBtn, .music-btn{
     display:inline-flex;
     align-items:center;
     justify-content:center;
@@ -977,23 +977,23 @@ img { max-width: 100%; height: auto; }
     transition: transform .18s ease, filter .18s ease, box-shadow .22s ease, background .22s ease;
     will-change: transform;
   }
-  #playBtn:active{ transform: scale(.98); }
-  #playBtn.music-playing{
+  #musicBtn:active, .music-btn:active{ transform: scale(.98); }
+  #musicBtn.music-playing{
     filter: brightness(1.03);
     box-shadow: 0 14px 28px rgba(0,0,0,.18);
   }
-  #playBtn .eq{
+  #musicBtn .eq{
     width:14px;height:14px;display:none;position:relative;
   }
-  #playBtn.music-playing .eq{ display:inline-block; }
-  #playBtn .eq i{
+  #musicBtn.music-playing .eq{ display:inline-block; }
+  #musicBtn .eq i{
     position:absolute; bottom:0; width:3px; border-radius:3px;
     background: rgba(11,43,27,.75);
     animation: eq 720ms ease-in-out infinite;
   }
-  #playBtn .eq i:nth-child(1){ left:0; height:9px; animation-delay:0ms; }
-  #playBtn .eq i:nth-child(2){ left:5px; height:13px; animation-delay:120ms; }
-  #playBtn .eq i:nth-child(3){ left:10px; height:7px; animation-delay:240ms; }
+  #musicBtn .eq i:nth-child(1){ left:0; height:9px; animation-delay:0ms; }
+  #musicBtn .eq i:nth-child(2){ left:5px; height:13px; animation-delay:120ms; }
+  #musicBtn .eq i:nth-child(3){ left:10px; height:7px; animation-delay:240ms; }
 
   @keyframes eq{
     0%,100%{ transform: scaleY(.55); opacity:.8; }
@@ -1429,6 +1429,21 @@ body{
 /* Make section backgrounds + floral always centered/clipped */
 .section, .hero, .sobre, .pagina { overflow: hidden; }
 
+
+/* ==== WebApp / Mobile hardening (v9.6.4) ==== */
+html, body { width: 100%; max-width: 100%; overflow-x: hidden; }
+*, *::before, *::after { box-sizing: border-box; }
+img, svg, video { max-width: 100%; height: auto; }
+.section, section { padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
+@media (max-width: 520px){
+  .inv-card, .card, .panel, .ticket, .invite-ticket { width: 100% !important; max-width: 100% !important; }
+  .btn, button { max-width: 100%; }
+  .countdown-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .countdown-box { min-width: 0 !important; }
+  .rsvp-actions, .rsvp-buttons { flex-direction: column !important; gap: 12px !important; align-items: stretch !important; }
+  .rsvp-actions button, .rsvp-buttons button { width: 100% !important; }
+}
+
 </style>
 </head>
 
@@ -1525,7 +1540,7 @@ body{
       <div class="hero-left reveal">
         <div class="playRow">
           <span class="playLabel">Presiona Play/Pausa para escuchar nuestra canción:</span>
-          <button class="playBtn" id="playBtn" type="button">Play</button>
+          <button id="musicBtn" class="music-btn" type="button" aria-label="Reproducir o pausar música"><span class="label">▶ Play</span></button>
         </div>
 
         <div class="heroTitle">
@@ -2098,7 +2113,7 @@ body{
 (() => {
   const gate = document.getElementById("gate");
   const wrap = document.getElementById("envWrap") || document.getElementById("envelopeWrap");
-  const audio = document.getElementById("bgMusic") || document.getElementById("music");
+  const audio = document.getElementById("bgMusic") || document.getElementById("bgMusic");
   const musicBtn = document.getElementById("musicBtn");
   const label = musicBtn ? musicBtn.querySelector(".label") : null;
 
@@ -2144,7 +2159,7 @@ body{
 
 /** ====== Botón Play/Pausa (UI) ====== */
 (function bindPlayButton(){
-  const btn = document.getElementById("playBtn");
+  const btn = document.getElementById("musicBtn");
   if(!btn) return;
 
   // evita que el click dispare otros handlers (p.ej. abrir invitación)
@@ -2158,7 +2173,7 @@ body{
   btn.addEventListener("touchstart", handler, {passive:false});
 
   // Mantener el texto/estado del botón sincronizado
-  const audio = document.getElementById("music");
+  const audio = document.getElementById("bgMusic");
   if(audio){
     audio.addEventListener("play", () => { if(typeof window.setMusicUI === "function") window.setMusicUI(); });
     audio.addEventListener("pause", () => { if(typeof window.setMusicUI === "function") window.setMusicUI(); });
