@@ -2,13 +2,81 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <title>Ana Josse & Daniel | Invitación</title>
 
   <!-- Fuentes (similar feel a la referencia) -->
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
 
   <style>
+/* ===== V10.2 UX HARDENING (A + D) ===== */
+:root{
+  --pageMax: 1120px;
+  --gutter: clamp(14px, 4vw, 26px);
+  --radius: 22px;
+  --radiusSm: 16px;
+}
+
+*{ box-sizing:border-box; }
+html,body{ width:100%; overflow-x:hidden; }
+body{ margin:0; }
+
+/* Prevent webview odd scaling from causing horizontal drift */
+img, svg, video{ max-width:100%; height:auto; display:block; }
+
+/* Universal centering wrapper */
+.wrapper, .wrap, .container, .section-inner{
+  width:100%;
+  max-width: var(--pageMax);
+  margin-left:auto;
+  margin-right:auto;
+  padding-left: var(--gutter);
+  padding-right: var(--gutter);
+}
+
+/* Sections: always centered and clipped so florals don't create overflow */
+section, .section, .sec{
+  position:relative;
+  overflow:hidden;
+}
+
+/* Cards / blocks: centered with consistent radius */
+.card, .panel, .box, .tile, .infoCard, .rsvpCard, .giftCard, .quoteCard{
+  border-radius: var(--radius) !important;
+  margin-left:auto !important;
+  margin-right:auto !important;
+  max-width: min(720px, 100%);
+}
+
+/* Text alignment consistency */
+h1,h2,h3,p,small,span{ overflow-wrap:anywhere; }
+
+/* Buttons: never overflow on mobile */
+button, .btn, a.btn{
+  max-width: min(520px, 100%);
+  width: 100%;
+  margin-left:auto !important;
+  margin-right:auto !important;
+}
+
+/* Inputs: never overflow */
+input, textarea, select{
+  max-width: min(520px, 100%);
+  width: 100%;
+  margin-left:auto !important;
+  margin-right:auto !important;
+  border-radius: 999px;
+}
+
+/* Safe-area padding for iOS webviews */
+@supports(padding: max(0px)){
+  body{
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+  }
+}
+
+
 /* === Responsive hardening (v9.6.1) === */
 *, *::before, *::after { box-sizing: border-box; }
 html, body { width: 100%; overflow-x: hidden; -webkit-text-size-adjust: 100%; }
@@ -1444,6 +1512,19 @@ img, svg, video { max-width: 100%; height: auto; }
   .rsvp-actions button, .rsvp-buttons button { width: 100% !important; }
 }
 
+
+/* Floral corners: keep inside and responsive */
+.floral-corner, .corner-flower, .floral{
+  pointer-events:none;
+  position:absolute;
+  width: clamp(90px, 22vw, 170px);
+  opacity: .85;
+  filter: saturate(1.05) contrast(1.02);
+}
+.floral-corner.tl, .corner-flower.tl{ top: -10px; left: -10px; }
+.floral-corner.tr, .corner-flower.tr{ top: -10px; right:-10px; transform: scaleX(-1); }
+.floral-corner.bl, .corner-flower.bl{ bottom:-10px; left: -10px; transform: scaleY(-1); }
+.floral-corner.br, .corner-flower.br{ bottom:-10px; right:-10px; transform: scale(-1); }
 </style>
 
 <style id="v10-ux-premium">
@@ -2636,6 +2717,61 @@ choiceBtns.forEach((btn) => {
 
   // Preload a bit more reliably
   audio.preload = 'auto';
+})();
+</script>
+
+
+<script>
+/* ===== V10.2 Audio Toggle Robust (Desktop + WebView) ===== */
+(function(){
+  const audio = document.getElementById("bgMusic") || document.getElementById("music");
+  const btn = document.getElementById("musicBtn") || document.getElementById("musicToggle");
+  if(!audio || !btn) return;
+
+  // Ensure button doesn't submit forms
+  try{ btn.type = "button"; }catch(e){}
+
+  const label = btn.querySelector(".label") || btn;
+
+  function setLabel(){
+    const playing = !audio.paused;
+    if(label){
+      label.textContent = playing ? "⏸ Pausa" : "▶ Play";
+    }
+    btn.setAttribute("aria-pressed", playing ? "true" : "false");
+  }
+
+  async function safePlay(){
+    try{
+      await audio.play();
+      setLabel();
+      return true;
+    }catch(e){
+      // Autoplay policies may block. User click should allow; keep label consistent.
+      setLabel();
+      return false;
+    }
+  }
+
+  function safePause(){
+    try{ audio.pause(); }catch(e){}
+    setLabel();
+  }
+
+  btn.addEventListener("click", async (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    if(audio.paused){
+      await safePlay();
+    }else{
+      safePause();
+    }
+    if(navigator.vibrate) navigator.vibrate(8);
+  }, {passive:false});
+
+  audio.addEventListener("play", setLabel);
+  audio.addEventListener("pause", setLabel);
+  setLabel();
 })();
 </script>
 
