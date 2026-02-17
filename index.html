@@ -1043,6 +1043,38 @@
       pointer-events:none;
     }
 
+
+    /* ========== V8.6: Centrado perfecto de Padres (&) ========== */
+    .parentsGrid{
+      max-width: 980px;
+      margin-left:auto;
+      margin-right:auto;
+      column-gap: 56px;
+      align-items: center; /* centra el & respecto a ambos bloques */
+      justify-items: center;
+    }
+    .parentsGrid .and{
+      padding-top: 0 !important;
+      font-size: 42px;
+      line-height: 1;
+      align-self: center;
+      justify-self: center;
+    }
+
+    @media (max-width: 720px){
+      .parentsGrid{
+        grid-template-columns: 1fr;
+        gap: 14px;
+        text-align:center;
+      }
+      .parentsGrid .and{
+        grid-column: 1;
+        font-size: 34px;
+        margin: 2px 0 6px;
+      }
+      .parentsCol{justify-self:center;}
+    }
+
 </style>
 </head>
 
