@@ -1868,7 +1868,7 @@ function escapeHtml(str){
 }
 
 /** ====== RSVP -> Google Sheets (robusto) ====== */
-const RSVP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxLs7S8dhF5VierEkWAMcyZLezUwo66IlULas3xBdTOIvRaxqA8EPZIk5R5e3eXiT-x3A/exec";
+const RSVP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxLsj8083O01TA46ivwlhigWQRlEaZ7d-1vFuvPCUFTdPSME2OTqJIecxRhsh6WL4FieQ/exec";
 
 (function initRsvpForm(){
   const form = document.getElementById("rsvpForm");
@@ -1916,15 +1916,20 @@ choiceBtns.forEach((btn) => {
         body
       });
 
-      const data = await res.json().catch(() => ({}));
+      // Apps Script a veces responde como texto/HTML aunque el guardado sea exitoso.
+      const raw = await res.text();
+      let data = {};
+      try { data = JSON.parse(raw); } catch (_) { /* ignore */ }
 
-      if(res.ok && (data.status === "ok" || data.result === "success")){
+      const okFlag = res.ok && (!data || Object.keys(data).length === 0 || data.status === "ok" || data.result === "success");
+
+      if(okFlag){
         msgEl.innerHTML = attend==="No"
           ? `Gracias <strong>${escapeHtml(name)}</strong>. Hemos registrado tu respuesta.`
           : `¡Gracias <strong>${escapeHtml(name)}</strong>! Confirmación recibida.`;
         nameEl.value = "";
       }else{
-        msgEl.textContent = "No se pudo guardar. Intenta de nuevo en unos segundos.";
+        msgEl.textContent = (data && data.error) ? data.error : "No se pudo guardar. Intenta de nuevo en unos segundos.";
       }
     } catch(err) {
       msgEl.textContent = "Error de conexión. Intenta de nuevo.";
