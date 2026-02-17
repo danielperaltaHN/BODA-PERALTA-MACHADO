@@ -314,7 +314,7 @@
       z-index:0;
       content:"";
       position:absolute; inset:-18px;
-      background:rgba(215,235,225,.25);
+      background:rgba(215,235,225,.15);
       clip-path: polygon(25% 6%, 75% 6%, 98% 50%, 75% 94%, 25% 94%, 2% 50%);
       border:1px solid rgba(184,148,85,.35);
       transform:rotate(-10deg);
@@ -639,7 +639,7 @@
     .field{
       width:100%;
       border:1px solid rgba(6,31,20,.12);
-      background:rgba(215,235,225,.25);
+      background:rgba(215,235,225,.15);
       border-radius:10px;
       padding:14px 14px;
       font-size:14px;
@@ -790,12 +790,12 @@
     }
     .hex::before{
       z-index:0;
-      background: rgba(200,227,215,.25);
+      background: rgba(200,227,215,.15);
       border:1px solid rgba(184,148,85,.38);
     }
     .hex::after{
       z-index:2;
-      background: rgba(231,242,236,.92);
+      background: rgba(231,242,236,.15);
       border:2px solid rgba(184,148,85,.40);
       box-shadow: 0 18px 40px rgba(0,0,0,.18);
     }
@@ -1751,197 +1751,6 @@
   <div class="modeToggle" id="modeToggle" aria-label="Cambiar modo">
     <div class="modeKnob"></div>
   </div>
-
-<script>
-/* ===============================
-   SOBRE: apertura robusta (V8 Fix)
-   =============================== */
-(function(){
-  const gate = document.getElementById("gate");
-  document.body.classList.add("gate-open");
-  const wrap = document.getElementById("envWrap") || document.getElementById("envelopeWrap");
-  const audio = document.getElementById("bgMusic") || document.getElementById("bgMusic");
-
-  function syncPlayButton(isPlaying){
-    const btn = document.getElementById("playBtn");
-    if(!btn) return;
-    const label = btn.querySelector(".label") || btn;
-    if(isPlaying){
-      btn.classList.add("music-playing");
-      if(label) label.textContent = "⏸ Pausa";
-    }else{
-      btn.classList.remove("music-playing");
-      if(label) label.textContent = "▶ Play";
-    }
-  }
-
-  window.openInvitation = function(){
-    try{ sessionStorage.setItem("inv_opened","1"); }catch(e){}
-
-    // animación del sobre (si existe CSS .open)
-    try{
-      if(wrap) wrap.classList.add("open");
-      const env = document.getElementById("envelope");
-      if(env) env.classList.add("open");
-    }catch(e){}
-
-    // música: intenta reproducir (permitido por clic)
-    if(audio){
-      audio.play().then(() => syncPlayButton(true)).catch(() => syncPlayButton(false));
-    }
-
-    // cerrar overlay
-    if(gate){
-      gate.style.transition = "opacity 550ms ease";
-      gate.style.opacity = "0";
-      setTimeout(() => {
-        gate.style.display = "none";
-    document.body.classList.remove("gate-open");
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }, 700);
-    }
-  };
-
-  // listeners (click + teclado)
-  if(wrap){
-    wrap.style.cursor = "pointer";
-    wrap.addEventListener("click", (e) => {
-      e.preventDefault();
-      window.openInvitation();
-    });
-    wrap.addEventListener("keydown", (e) => {
-      if(e.key === "Enter" || e.key === " "){
-        e.preventDefault();
-        window.openInvitation();
-      }
-    });
-  }
-
-  // si el usuario recarga luego de abrir, no volver a mostrar el sobre
-  try{
-    if(sessionStorage.getItem("inv_opened") === "1" && gate){
-      gate.style.display = "none";
-    document.body.classList.remove("gate-open");
-    }
-  }catch(e){}
-}
-
-/* ====== Botón Play/Pausa ====== */
-(function(){
-  const btn = document.getElementById("playBtn");
-  const audio = document.getElementById("bgMusic");
-  if(!btn || !audio) return;
-
-  // Estado inicial
-  syncPlayButton(!audio.paused);
-
-  btn.addEventListener("click", (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if(audio.paused){
-      audio.play().then(() => syncPlayButton(true)).catch(() => {});
-    }else{
-      audio.pause();
-      syncPlayButton(false);
-    }
-  });
-
-  audio.addEventListener("play", () => syncPlayButton(true));
-  audio.addEventListener("pause", () => syncPlayButton(false));
-})();
-)();
-</script>
-
-
-<script>
-(() => {
-  const music = document.getElementById("bgMusic");
-  const btn = document.getElementById("playBtn");
-  const label = btn ? btn.querySelector(".label") : null;
-
-  if(!music) return;
-
-  const KEY = "boda_music_state_v1"; // "playing" | "paused"
-  const setState = (state) => {
-    try{ localStorage.setItem(KEY, state); }catch(e){}
-    if(!btn || !label) return;
-    if(state === "playing"){
-      btn.classList.add("music-playing");
-      label.textContent = "⏸ Pausa";
-    }else{
-      btn.classList.remove("music-playing");
-      label.textContent = "▶ Play";
-    }
-  };
-
-  const getState = () => {
-    try{ return localStorage.getItem(KEY) || "paused"; }catch(e){ return "paused"; }
-  };
-
-  // Sync initial UI
-  setState(getState());
-
-  async function safePlay(){
-    try{
-      await music.play();
-      setState("playing");
-      return true;
-    }catch(e){
-      // Autoplay may be blocked until user gesture; we'll try again on next tap.
-      return false;
-    }
-  }
-
-  function safePause(){
-    try{ music.pause(); }catch(e){}
-    setState("paused");
-  }
-
-  // Public function used by button onclick
-  window.toggleMusic = async function(){
-    if(music.paused){
-      await safePlay();
-    }else{
-      safePause();
-    }
-  };
-
-  // Autoplay when opening envelope (click = user gesture ✅)
-  const wrap = document.getElementById("envWrap") || document.getElementById("envelopeWrap");
-  if(wrap){
-    wrap.addEventListener("click", async () => {
-      // If user previously left it "playing", start it automatically
-      if(getState() === "playing"){
-        await safePlay();
-      }
-    }, { once:false });
-  }
-
-  // If user wants music playing and refreshes, attempt play on first interaction anywhere
-  if(getState() === "playing"){
-    const tryOnFirstGesture = async () => {
-      await safePlay();
-      window.removeEventListener("pointerdown", tryOnFirstGesture);
-      window.removeEventListener("keydown", tryOnFirstGesture);
-    };
-    window.addEventListener("pointerdown", tryOnFirstGesture, { once:true });
-    window.addEventListener("keydown", tryOnFirstGesture, { once:true });
-  }
-
-  // Keep UI in sync if track ends or is paused externally
-  music.addEventListener("pause", () => {
-    // If it paused because it ended, mark paused
-    if(music.currentTime >= (music.duration || 0) - 0.25){
-      setState("paused");
-      music.currentTime = 0;
-    }else{
-      setState("paused");
-    }
-  });
-  music.addEventListener("play", () => setState("playing"));
-})();
-</script>
-
 
 <script>
 /* ===== V8 Fix7: Countdown + robust image loading (GitHub Pages is case-sensitive) ===== */
