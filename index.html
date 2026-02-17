@@ -61,7 +61,7 @@ img { max-width: 100%; height: auto; }
     a{color:inherit;text-decoration:none}
 
     .container{max-width:var(--container);margin:0 auto;padding:0 20px}
-    .section {padding:78px 0
+    .section {padding:78px 0;
   padding-left: var(--vwPad);
   padding-right: var(--vwPad);
   overflow: hidden;
@@ -1583,6 +1583,88 @@ input:focus, textarea:focus, select:focus{
   max-width: 40vw;
   pointer-events: none;
 }
+
+/* --- V10.1 patch: centering + mobile/webapp stability --- */
+html, body { width: 100%; max-width: 100%; overflow-x: hidden; }
+body { margin: 0; }
+*, *::before, *::after { box-sizing: border-box; }
+.section, .section-inner, .container, .wrap, .hero-grid, .rsvp-wrap, .gift-wrap, .itinerary-wrap, .gallery-wrap {
+  width: 100%;
+  max-width: min(1100px, 100%);
+  margin-left: auto;
+  margin-right: auto;
+}
+@media (max-width: 900px){
+  .section, .section-inner, .container, .wrap, .hero-grid, .rsvp-wrap, .gift-wrap, .itinerary-wrap, .gallery-wrap {
+    max-width: 100%;
+  }
+}
+
+/* Ensure key cards are centered on mobile */
+.countBox, .dateCard, .verseBox, .inv-card, .rsvp-card, .gift-card {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+.countBox, .dateCard, .verseBox { width: min(720px, 100%); }
+
+/* Prevent any legacy left offsets from pushing content */
+[class*="wrap"], [class*="Wrap"], [class*="container"], [class*="Container"]{
+  margin-inline: auto;
+}
+
+/* Premium gift modal (restore aesthetics on V10) */
+#giftModal.giftModalOverlay{
+  background: rgba(9, 33, 24, .42) !important;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  padding: clamp(14px, 3vw, 24px);
+}
+#giftModal .giftModalCard{
+  width: min(720px, 100%);
+  border-radius: 22px !important;
+  border: 1px solid rgba(255,255,255,.18);
+  box-shadow: 0 20px 60px rgba(0,0,0,.25);
+  overflow: hidden;
+}
+#giftModal .giftModalHeader{
+  padding: 18px 18px 6px;
+  text-align: center;
+}
+#giftModal .giftModalTitle{
+  margin: 0;
+  font-family: var(--serif, "Playfair Display", serif);
+  letter-spacing: .02em;
+  font-size: clamp(20px, 3.2vw, 28px);
+}
+#giftModal .giftModalClose{
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,.12);
+  background: rgba(255,255,255,.78);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 10px 26px rgba(0,0,0,.12);
+}
+#giftModal .giftModalClose:hover{ transform: translateY(-1px); }
+#giftModal .giftOption{
+  border-radius: 16px !important;
+}
+#giftModal .giftOption .optValue{
+  font-variant-numeric: tabular-nums;
+  letter-spacing: .06em;
+}
+
+/* Safer tap targets on mobile webviews */
+@media (max-width: 520px){
+  .music-btn, .btn, button{
+    max-width: 100%;
+  }
+}
+
 </style>
 
 </head>
