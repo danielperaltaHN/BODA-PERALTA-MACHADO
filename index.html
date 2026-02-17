@@ -1018,6 +1018,24 @@
   /* Transiciones un poco más suaves */
   .gate{transition:opacity 550ms ease;}
   
+
+    /* === FIX: Click/Tap fiable para abrir el sobre === */
+    #envWrap, #envelopeWrap{
+      position:relative;
+      z-index: 999999;
+      pointer-events:auto;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+    #envWrap .env-svg, #envWrap .env-svg *,
+    #envelopeWrap .env-svg, #envelopeWrap .env-svg *{
+      pointer-events:none;
+    }
+    #envWrap #envelope, #envWrap #envelope *,
+    #envelopeWrap #envelope, #envelopeWrap #envelope *{
+      pointer-events:none;
+    }
+
 </style>
 </head>
 
@@ -2005,5 +2023,96 @@
   }
 })();
 </script>
+
+<script>
+/* ===============================
+   V8 FIX: Abrir sobre siempre (PC/iPhone) + música controlable
+================================ */
+(() => {
+  const gate = document.getElementById("gate");
+  const wrap = document.getElementById("envWrap") || document.getElementById("envelopeWrap");
+  const audio = document.getElementById("bgMusic") || document.getElementById("music");
+  const musicBtn = document.getElementById("musicBtn");
+  const label = musicBtn ? musicBtn.querySelector(".label") : null;
+
+  let opened = false;
+
+  function setMusicUI(playing){
+    if(!musicBtn) return;
+    if(playing){
+      musicBtn.classList.add("music-playing");
+      if(label) label.textContent = "⏸ Pausa";
+    }else{
+      musicBtn.classList.remove("music-playing");
+      if(label) label.textContent = "▶ Play";
+    }
+  }
+
+  async function tryPlay(){
+    if(!audio) return false;
+    try{
+      await audio.play();
+      setMusicUI(true);
+      return true;
+    }catch(e){
+      return false;
+    }
+  }
+
+  function pauseMusic(){
+    if(!audio) return;
+    try{ audio.pause(); }catch(e){}
+    setMusicUI(false);
+  }
+
+  window.toggleMusic = async function(ev){
+    if(ev){ ev.preventDefault(); ev.stopPropagation(); }
+    if(!audio) return;
+    if(audio.paused){
+      await tryPlay();
+    }else{
+      pauseMusic();
+    }
+  };
+
+  window.openInvitation = async function(ev){
+    if(ev){ ev.preventDefault(); ev.stopPropagation(); }
+    if(opened) return;
+    opened = true;
+
+    if(wrap) wrap.classList.add("open");
+
+    if(gate){
+      gate.style.transition = "opacity 550ms ease";
+      gate.style.opacity = "0";
+      setTimeout(() => {
+        gate.style.display = "none";
+        document.body.classList.add("inv-open");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }, 700);
+    }
+
+    await tryPlay();
+  };
+
+  if(wrap){
+    ["pointerup","touchend","click"].forEach(evt => {
+      wrap.addEventListener(evt, (e) => window.openInvitation(e), { passive:false });
+    });
+    wrap.addEventListener("keydown", (e) => {
+      if(e.key === "Enter" || e.key === " "){
+        e.preventDefault();
+        window.openInvitation(e);
+      }
+    });
+  }
+
+  if(audio){
+    audio.addEventListener("play", () => setMusicUI(true));
+    audio.addEventListener("pause", () => setMusicUI(false));
+  }
+})();
+</script>
+
 </body>
 </html>
