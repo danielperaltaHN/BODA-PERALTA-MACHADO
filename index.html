@@ -1103,6 +1103,38 @@
   border-color: rgba(160,140,90,.75);
   color: #111;
 }
+
+/* --- Regalos modal (cuentas) --- */
+.optList{display:grid;gap:12px;margin-top:14px}
+.optItem{
+  width:100%;
+  text-align:left;
+  border:1px solid rgba(140,120,70,.25);
+  background:rgba(255,255,255,.55);
+  border-radius:18px;
+  padding:14px 14px;
+  cursor:pointer;
+  transition:transform .12s ease, box-shadow .12s ease, background .12s ease;
+}
+.optItem:hover{box-shadow:0 10px 24px rgba(0,0,0,.08); background:rgba(255,255,255,.7)}
+.optItem:active{transform:scale(.99)}
+.optLabel{font-weight:600;color:#233;line-height:1.2;margin-bottom:6px}
+.optValue{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  letter-spacing:.6px; color:#2d2d2d; font-size:14px}
+.copyToast{
+  position:absolute; right:18px; bottom:18px;
+  background:#2a3a33; color:#fff;
+  padding:10px 12px; border-radius:14px;
+  box-shadow:0 12px 30px rgba(0,0,0,.18);
+  opacity:0; transform:translateY(6px);
+  pointer-events:none;
+  transition:opacity .18s ease, transform .18s ease;
+  font-size:14px;
+}
+.copyToast.show{opacity:1; transform:translateY(0)}
+body.modal-open{overflow:hidden}
+.modal.is-open{display:flex}
+
 </style>
 </head>
 
@@ -1591,20 +1623,39 @@
   </section>
 
   <!-- Modal Regalos -->
-  <div class="modal" id="giftModal" role="dialog" aria-modal="true" aria-label="Opciones de regalo">
-    <div class="modalCard">
-      <div class="modalHead">
-        <div class="modalTitle">Opciones de regalo</div>
-        <button class="xBtn" id="closeGiftModal" aria-label="Cerrar">×</button>
+  <div class="modal" id="giftModal" aria-hidden="true">
+    <div class="modal__backdrop" data-gift-close></div>
+    <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="giftTitle">
+      <button class="modal__close" type="button" aria-label="Cerrar" data-gift-close>&times;</button>
+      <h3 id="giftTitle">Opciones de regalo</h3>
+      <p class="modal__subtitle">
+        Nuestro mejor regalo es tu presencia. Si deseas hacernos un obsequio, puedes usar cualquiera de estas cuentas.
+        <strong>Toca una para copiar el número</strong>.
+      </p>
+
+      <div class="optList" id="giftOptList">
+        <button class="optItem" type="button" data-copy="742840331">
+          <div class="optLabel">Cuenta de ahorro BAC en lempiras — Ana Josse Machado</div>
+          <div class="optValue">742840331</div>
+        </button>
+
+        <button class="optItem" type="button" data-copy="758816101">
+          <div class="optLabel">Cuenta de ahorro BAC en lempiras — Daniel Peralta</div>
+          <div class="optValue">758816101</div>
+        </button>
+
+        <button class="optItem" type="button" data-copy="758779591">
+          <div class="optLabel">Cuenta de ahorro BAC en dólares — Daniel Peralta</div>
+          <div class="optValue">758779591</div>
+        </button>
+
+        <button class="optItem" type="button" data-copy="200015045832">
+          <div class="optLabel">Cuenta de ahorro FICOHSA en lempiras — Daniel Peralta</div>
+          <div class="optValue">200015045832</div>
+        </button>
       </div>
-      <div class="optList" id="giftOptions">
-        <div><strong>Opción 1:</strong> (pendiente)</div>
-        <div><strong>Opción 2:</strong> (pendiente)</div>
-        <div><strong>Opción 3:</strong> (pendiente)</div>
-      </div>
-      <div class="optHint">
-        Cuando me pases tus opciones reales (cuentas/links), las ponemos aquí con botones.
-      </div>
+
+      <div class="copyToast" id="giftToast" role="status" aria-live="polite">Copiado ✓</div>
     </div>
   </div>
 
@@ -1930,6 +1981,89 @@ choiceBtns.forEach((btn) => {
   });
 })();
 
+</script>
+
+
+<script>
+(function(){
+  const openBtn = document.getElementById('openGiftModal');
+  const modal = document.getElementById('giftModal');
+  const toast = document.getElementById('giftToast');
+  const optList = document.getElementById('giftOptList');
+
+  if(!openBtn || !modal) return;
+
+  function openModal(){
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden','false');
+    document.body.classList.add('modal-open');
+  }
+
+  function closeModal(){
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden','true');
+    document.body.classList.remove('modal-open');
+  }
+
+  openBtn.addEventListener('click', function(e){
+    e.preventDefault();
+    openModal();
+  });
+
+  modal.addEventListener('click', function(e){
+    const t = e.target;
+    if(t && t.hasAttribute && t.hasAttribute('data-gift-close')) closeModal();
+  });
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && modal.classList.contains('is-open')) closeModal();
+  });
+
+  let toastTimer = null;
+  function showToast(msg){
+    if(!toast) return;
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=>toast.classList.remove('show'), 1400);
+  }
+
+  async function copyText(text){
+    try{
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+    }catch(err){}
+    // Fallback
+    try{
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly','');
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      const ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      return ok;
+    }catch(err2){
+      return false;
+    }
+  }
+
+  if(optList){
+    optList.addEventListener('click', async function(e){
+      const btn = e.target.closest('.optItem');
+      if(!btn) return;
+      const val = btn.getAttribute('data-copy') || '';
+      if(!val) return;
+
+      const ok = await copyText(val);
+      showToast(ok ? 'Copiado ✓' : 'No se pudo copiar');
+    });
+  }
+})();
 </script>
 
 </body>
