@@ -1135,6 +1135,158 @@
 body.modal-open{overflow:hidden}
 .modal.is-open{display:flex}
 
+
+/* ===========================
+   v9.4 — Modal regalos (polish)
+   =========================== */
+.modal{
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;
+  place-items: center;
+  padding: 18px;
+}
+.modal.is-open{ display: grid; }
+
+.modal__overlay{
+  position: absolute;
+  inset: 0;
+  background: rgba(14, 20, 17, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.modal__content{
+  position: relative;
+  width: min(860px, 96vw);
+  max-height: min(86vh, 820px);
+  overflow: auto;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.94), rgba(244, 251, 246, 0.96));
+  border: 1px solid rgba(176, 132, 72, 0.28);
+  box-shadow: 0 28px 80px rgba(0,0,0,0.35);
+  padding: 26px 26px 22px;
+}
+
+.modal__head{
+  text-align: center;
+  padding: 6px 56px 10px;
+}
+.modal__title{
+  margin: 0;
+  font-size: clamp(22px, 2.6vw, 34px);
+  letter-spacing: 0.02em;
+}
+.modal__subtitle{
+  margin: 8px auto 0;
+  max-width: 58ch;
+  color: rgba(0,0,0,0.65);
+  line-height: 1.45;
+}
+
+.modal__close{
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.92);
+  border: 1px solid rgba(176, 132, 72, 0.35);
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.15);
+}
+.modal__close:hover{
+  transform: translateY(-1px);
+  background: rgba(255,255,255,0.98);
+}
+.modal__close:active{ transform: translateY(0px) scale(0.98); }
+
+.optList{
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+.optItem{
+  width: 100%;
+  text-align: left;
+  border-radius: 18px;
+  padding: 14px 16px;
+  background: rgba(255,255,255,0.75);
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 10px 22px rgba(0,0,0,0.08);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 10px 14px;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+.optItem:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 16px 34px rgba(0,0,0,0.12);
+  border-color: rgba(176, 132, 72, 0.22);
+}
+.optItem:active{ transform: translateY(0px) scale(0.995); }
+
+.optLabel{
+  font-weight: 600;
+  color: rgba(0,0,0,0.78);
+}
+.optValue{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  background: rgba(176, 132, 72, 0.10);
+  border: 1px dashed rgba(176, 132, 72, 0.45);
+  color: rgba(0,0,0,0.72);
+  padding: 10px 12px;
+  border-radius: 14px;
+  white-space: nowrap;
+}
+.optHint{
+  grid-column: 1 / -1;
+  font-size: 13px;
+  color: rgba(0,0,0,0.52);
+  margin-top: -4px;
+}
+
+.copyToast{
+  position: fixed;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  background: rgba(255,255,255,0.92);
+  border: 1px solid rgba(176, 132, 72, 0.30);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.18);
+  color: rgba(0,0,0,0.72);
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+@media (max-width: 640px){
+  .modal{ padding: 12px; }
+  .modal__content{
+    width: 100%;
+    max-height: 88vh;
+    padding: 18px 16px 16px;
+    border-radius: 20px;
+  }
+  .modal__head{ padding: 4px 52px 8px; }
+  .optItem{
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .optValue{ width: fit-content; }
+}
+
 </style>
 </head>
 
@@ -1637,21 +1789,25 @@ body.modal-open{overflow:hidden}
         <button class="optItem" type="button" data-copy="742840331">
           <div class="optLabel">Cuenta de ahorro BAC en lempiras — Ana Josse Machado</div>
           <div class="optValue">742840331</div>
+                  <div class="optHint">Toca para copiar</div>
         </button>
 
         <button class="optItem" type="button" data-copy="758816101">
           <div class="optLabel">Cuenta de ahorro BAC en lempiras — Daniel Peralta</div>
           <div class="optValue">758816101</div>
+                  <div class="optHint">Toca para copiar</div>
         </button>
 
         <button class="optItem" type="button" data-copy="758779591">
           <div class="optLabel">Cuenta de ahorro BAC en dólares — Daniel Peralta</div>
           <div class="optValue">758779591</div>
+                  <div class="optHint">Toca para copiar</div>
         </button>
 
         <button class="optItem" type="button" data-copy="200015045832">
           <div class="optLabel">Cuenta de ahorro FICOHSA en lempiras — Daniel Peralta</div>
           <div class="optValue">200015045832</div>
+                  <div class="optHint">Toca para copiar</div>
         </button>
       </div>
 
