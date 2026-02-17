@@ -1891,6 +1891,31 @@
     }
   };
 
+/** ====== Botón Play/Pausa (UI) ====== */
+(function bindPlayButton(){
+  const btn = document.getElementById("playBtn");
+  if(!btn) return;
+
+  // evita que el click dispare otros handlers (p.ej. abrir invitación)
+  const handler = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if(typeof window.toggleMusic === "function") window.toggleMusic();
+  };
+
+  btn.addEventListener("click", handler);
+  btn.addEventListener("touchstart", handler, {passive:false});
+
+  // Mantener el texto/estado del botón sincronizado
+  const audio = document.getElementById("music");
+  if(audio){
+    audio.addEventListener("play", () => { if(typeof window.setMusicUI === "function") window.setMusicUI(); });
+    audio.addEventListener("pause", () => { if(typeof window.setMusicUI === "function") window.setMusicUI(); });
+    audio.addEventListener("ended", () => { if(typeof window.setMusicUI === "function") window.setMusicUI(); });
+  }
+})();
+
+
   window.openInvitation = async function(ev){
     if(ev){ ev.preventDefault(); ev.stopPropagation(); }
     if(opened) return;
