@@ -1525,6 +1525,218 @@ img, svg, video { max-width: 100%; height: auto; }
 .floral-corner.tr, .corner-flower.tr{ top: -10px; right:-10px; transform: scaleX(-1); }
 .floral-corner.bl, .corner-flower.bl{ bottom:-10px; left: -10px; transform: scaleY(-1); }
 .floral-corner.br, .corner-flower.br{ bottom:-10px; right:-10px; transform: scale(-1); }
+
+
+/* ===== v10.3 Mobile/perfect centering overrides ===== */
+:root{
+  --page-max: 1100px;
+}
+html, body{
+  width:100%;
+  max-width:100%;
+  overflow-x:hidden;
+}
+*{ box-sizing:border-box; }
+
+/* Force every section content to be centered */
+.section, section{
+  padding-left: clamp(14px, 4vw, 28px);
+  padding-right: clamp(14px, 4vw, 28px);
+}
+.container, .wrap, .sectionInner, .section-inner{
+  width:100%;
+  max-width: var(--page-max);
+  margin-left:auto;
+  margin-right:auto;
+}
+
+/* HERO countdown card centered on all viewports */
+.countBox{
+  margin-left:auto !important;
+  margin-right:auto !important;
+}
+
+/* Ticket/date box: prevent overflow of right column on mobile */
+.ticket{
+  width:100%;
+  max-width: 920px;
+  margin-left:auto;
+  margin-right:auto;
+}
+.ticketGrid{
+  display:grid;
+  grid-template-columns: minmax(0,1fr) auto minmax(0,1fr);
+  gap: clamp(10px, 3vw, 18px);
+  align-items:center;
+}
+.ticketGrid *{ min-width:0; }
+.ticketSide{
+  text-align:center;
+  white-space:normal;
+}
+.ticketSide .ticketCity{
+  word-break:break-word;
+  overflow-wrap:anywhere;
+}
+
+/* Verse/quote centered inside its card */
+.quoteBox{
+  width:100%;
+  max-width: 920px;
+  margin-left:auto;
+  margin-right:auto;
+  text-align:center;
+}
+.quoteBox .quoteText{
+  text-align:center;
+}
+.quoteBox .quoteRef{
+  text-align:center;
+}
+
+/* RSVP: keep everything inside frame and centered */
+.rsvpCard, .rsvpWrap{
+  width:100%;
+  max-width: 900px;
+  margin-left:auto;
+  margin-right:auto;
+}
+.rsvpChoices{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap: 10px;
+  flex-wrap:wrap;
+}
+.rsvpChoices .pill{
+  flex: 1 1 240px;
+  max-width: 320px;
+}
+.rsvpForm{
+  width:100%;
+  max-width: 720px;
+  margin-left:auto;
+  margin-right:auto;
+}
+.rsvpForm .btn, .rsvpForm button{
+  width:100%;
+  max-width: 360px;
+  margin-left:auto;
+  margin-right:auto;
+  display:block;
+}
+
+/* Gifts modal: premium look and no giant ovals */
+.modal{
+  position:fixed;
+  inset:0;
+  display:none;
+  z-index:9999;
+}
+.modal[aria-hidden="false"]{ display:block; }
+.modal__backdrop{
+  position:absolute;
+  inset:0;
+  background: rgba(6, 38, 30, .55);
+  backdrop-filter: blur(10px);
+}
+.modal__panel{
+  position:relative;
+  width: min(720px, calc(100vw - 28px));
+  max-height: min(78vh, 760px);
+  overflow:auto;
+  margin: 10vh auto 0;
+  padding: clamp(16px, 4vw, 22px);
+  border-radius: 22px;
+  background: rgba(255,255,255,.78);
+  box-shadow: 0 28px 70px rgba(0,0,0,.25);
+  border: 1px solid rgba(255,255,255,.55);
+}
+.modal__close{
+  position:absolute;
+  top: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,.08);
+  background: rgba(255,255,255,.85);
+  box-shadow: 0 8px 22px rgba(0,0,0,.12);
+  font-size: 22px;
+  line-height: 40px;
+  cursor:pointer;
+}
+.modal__panel h3{
+  margin: 0 48px 6px 0;
+  text-align:center;
+}
+.modal__subtitle{
+  text-align:center;
+  max-width: 56ch;
+  margin: 0 auto 14px;
+}
+.optList{
+  display:grid;
+  gap: 12px;
+}
+.optItem{
+  width:100%;
+  text-align:left;
+  border-radius: 18px;
+  padding: 14px 14px 12px;
+  background: rgba(255,255,255,.7);
+  border: 1px solid rgba(0,0,0,.06);
+  box-shadow: 0 10px 26px rgba(0,0,0,.10);
+}
+.optItem:active{ transform: scale(.99); }
+.optLabel{
+  font-weight: 650;
+  margin-bottom: 6px;
+}
+.optValue{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px dashed rgba(0,0,0,.18);
+  background: rgba(255,255,255,.85);
+  font-variant-numeric: tabular-nums;
+}
+.optHint{
+  margin-top: 8px;
+  opacity: .75;
+  font-size: .92rem;
+}
+
+/* WebApp zoom resilience: avoid off-center due to fixed widths */
+@media (max-width: 520px){
+  .hero-grid{
+    grid-template-columns: 1fr !important;
+    justify-items:center;
+    text-align:center;
+  }
+  .countBox{
+    width: 100% !important;
+    max-width: 520px !important;
+  }
+  .countNums{
+    grid-template-columns: repeat(2, minmax(0,1fr)) !important;
+  }
+  .ticketGrid{
+    grid-template-columns: 1fr auto 1fr;
+  }
+  .ticketSide{
+    font-size: .95rem;
+  }
+  .ticketSide .ticketCity{
+    font-size: .95rem;
+  }
+  .modal__panel{
+    margin-top: 8vh;
+    width: calc(100vw - 22px);
+  }
+}
 </style>
 
 <style id="v10-ux-premium">
