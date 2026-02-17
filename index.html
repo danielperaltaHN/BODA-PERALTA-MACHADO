@@ -1718,32 +1718,7 @@
     </div>
   </section>
 
-  <!-- ============ MENSAJE A LOS NOVIOS ============ -->
-  <section class="section reveal paper" id="mensaje">
-    <div class="container">
-      <div class="msgHead">¡Para nosotros será un honor contar con tu presencia en este hermoso día!</div>
-      <div class="msgTitle">Mensaje para los novios</div>
-      <div class="msgSub">
-        Utiliza el siguiente formulario para enviarnos un mensaje que guardaremos como recuerdo de este día especial:
-      </div>
-
-      <div class="formWrap">
-        <form id="msgForm">
-          <div class="fieldRow">
-            <input class="field" type="text" id="msgName" placeholder="Nombre" required>
-          </div>
-          <div class="fieldRow">
-            <textarea class="field" id="msgText" placeholder="Mensaje" required></textarea>
-          </div>
-
-          <div class="formActions"><button class="btn" id="msgSendBtn" type="submit">Enviar</button></div>
-          </form>
-      </div>
-    </div>
-  </section>
-
-  
-<footer>
+  <footer>
     Daniel &amp; Ana Josse • 28/03/2026 • Tegucigalpa, Honduras
   </footer>
 
@@ -1953,6 +1928,65 @@
     audio.addEventListener("pause", () => setMusicUI(false));
   }
 })();
+
+/** ====== Util ====== */
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, (m) => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
+  }[m]));
+}
+
+/** ====== RSVP -> Google Sheets (robusto) ====== */
+const RSVP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbydVohcSn33mosxSOO9tzlRChurWh3UHoaKIgUEpR0R56NukCryGIWKPTSiftAmZrjU9g/exec";
+
+(function initRsvpForm(){
+  const form = document.getElementById("rsvpForm");
+  const nameEl = document.getElementById("rsvpName");
+  const msgEl  = document.getElementById("rsvpMsg");
+  const btnEl  = document.getElementById("rsvpBtn");
+  if(!form || !nameEl || !msgEl || !btnEl) return;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const name = (nameEl.value || "").trim();
+    if(!name){
+      msgEl.textContent = "Por favor escribe tu nombre.";
+      return;
+    }
+
+    btnEl.disabled = true;
+    msgEl.textContent = "Enviando confirmación...";
+
+    try {
+      const body = new URLSearchParams({
+        action: "rsvp",
+        name,
+        ua: navigator.userAgent
+      }).toString();
+
+      const res = await fetch(RSVP_SCRIPT_URL, {
+        method: "POST",
+        headers: {"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8"},
+        body
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if(res.ok && (data.status === "ok" || data.result === "success")){
+        msgEl.innerHTML = `¡Gracias <strong>${escapeHtml(name)}</strong>! Confirmación recibida.`;
+        nameEl.value = "";
+      }else{
+        msgEl.textContent = "No se pudo guardar. Intenta de nuevo en unos segundos.";
+      }
+    } catch(err) {
+      msgEl.textContent = "Error de conexión. Intenta de nuevo.";
+    } finally {
+      btnEl.disabled = false;
+    }
+  });
+})();
+
 </script>
 
 </body>
