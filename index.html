@@ -1075,6 +1075,34 @@
       .parentsCol{justify-self:center;}
     }
 
+
+
+/* RSVP choice (Sí / No) */
+.rsvpChoice{
+  display:flex;
+  gap:12px;
+  justify-content:center;
+  align-items:center;
+  flex-wrap:wrap;
+  margin: 18px 0 10px;
+}
+.choiceBtn{
+  appearance:none;
+  border:1px solid rgba(160,140,90,.55);
+  background: rgba(255,255,255,.55);
+  color: var(--ink);
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease, background .15s ease, border-color .15s ease;
+}
+.choiceBtn:hover{ transform: translateY(-1px); box-shadow: 0 10px 18px rgba(0,0,0,.10); }
+.choiceBtn.is-active{
+  background: var(--gold);
+  border-color: rgba(160,140,90,.75);
+  color: #111;
+}
 </style>
 </head>
 
@@ -1515,13 +1543,8 @@
 <!-- ============ RSVP / VESTIMENTA / REGALOS ============ -->
   <section class="section reveal paper" id="rsvp">
     <div class="container">
-      <div class="rsvpBanner">
-        <p>Será de gran ayuda confirmar a nuestros invitados, por favor haz clic en el siguiente botón y háznoslo saber:</p>
-        <button class="btn" type="button" onclick="document.getElementById('confirmacion').scrollIntoView({behavior:'smooth'});">
-          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
-          Confirmar Asistencia
-        </button>
-      </div>
+      
+
 
       <div class="split2">
         <div class="infoBlock">
@@ -1604,6 +1627,13 @@
 
       <div class="formWrap">
         <form id="rsvpForm">
+
+<div class="rsvpChoice" aria-label="Confirmación de asistencia">
+  <button type="button" class="choiceBtn is-active" data-value="Sí">Sí, asistiré</button>
+  <button type="button" class="choiceBtn" data-value="No">Con gratitud, no podré asistir</button>
+  <input type="hidden" id="rsvpAttend" value="Sí" />
+</div>
+
           <div class="fieldRow">
             <input class="field" type="text" id="rsvpName" placeholder="Nombre completo" required>
           </div>
@@ -1844,6 +1874,18 @@ const RSVP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbydVohcSn33mosx
   const form = document.getElementById("rsvpForm");
   const nameEl = document.getElementById("rsvpName");
   const msgEl  = document.getElementById("rsvpMsg");
+
+// Selector elegante: Sí / No
+const choiceBtns = Array.from(document.querySelectorAll(".rsvpChoice .choiceBtn"));
+const attendInput = document.getElementById("rsvpAttend");
+choiceBtns.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    choiceBtns.forEach((b) => b.classList.remove("is-active"));
+    btn.classList.add("is-active");
+    if (attendInput) attendInput.value = btn.dataset.value || "Sí";
+  });
+});
+
   const btnEl  = document.getElementById("rsvpBtn");
   if(!form || !nameEl || !msgEl || !btnEl) return;
 
@@ -1860,9 +1902,11 @@ const RSVP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbydVohcSn33mosx
     msgEl.textContent = "Enviando confirmación...";
 
     try {
+      const attend = (document.getElementById("rsvpAttend")?.value || "Sí");
       const body = new URLSearchParams({
         action: "rsvp",
         name,
+        attend,
         ua: navigator.userAgent
       }).toString();
 
@@ -1875,7 +1919,9 @@ const RSVP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbydVohcSn33mosx
       const data = await res.json().catch(() => ({}));
 
       if(res.ok && (data.status === "ok" || data.result === "success")){
-        msgEl.innerHTML = `¡Gracias <strong>${escapeHtml(name)}</strong>! Confirmación recibida.`;
+        msgEl.innerHTML = attend==="No"
+          ? `Gracias <strong>${escapeHtml(name)}</strong>. Hemos registrado tu respuesta.`
+          : `¡Gracias <strong>${escapeHtml(name)}</strong>! Confirmación recibida.`;
         nameEl.value = "";
       }else{
         msgEl.textContent = "No se pudo guardar. Intenta de nuevo en unos segundos.";
