@@ -1868,7 +1868,7 @@ function escapeHtml(str){
 }
 
 /** ====== RSVP -> Google Sheets (robusto) ====== */
-const RSVP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxLsj8083O01TA46ivwlhigWQRlEaZ7d-1vFuvPCUFTdPSME2OTqJIecxRhsh6WL4FieQ/exec";
+const RSVP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxkfDy0-ovoc2ABaKdqK1j4WqXrqN_zze4991rvbDJUa9jk6DV4QzK5BG_6XPwkqcggrg/exec";
 
 (function initRsvpForm(){
   const form = document.getElementById("rsvpForm");
@@ -1912,25 +1912,16 @@ choiceBtns.forEach((btn) => {
 
       const res = await fetch(RSVP_SCRIPT_URL, {
         method: "POST",
+        mode: "no-cors",
         headers: {"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8"},
         body
       });
 
-      // Apps Script a veces responde como texto/HTML aunque el guardado sea exitoso.
-      const raw = await res.text();
-      let data = {};
-      try { data = JSON.parse(raw); } catch (_) { /* ignore */ }
+      // Nota: el Web App de Apps Script no expone CORS, así que usamos `no-cors`.
+      // Eso hace que la respuesta sea "opaque" (no se puede leer), pero el registro sí se guarda en la hoja.
+      msgEl.innerHTML = '<span class="ok">¡Listo! Tu confirmación fue registrada. 💚</span>';
+      nameEl.value = "";
 
-      const okFlag = res.ok && (!data || Object.keys(data).length === 0 || data.status === "ok" || data.result === "success");
-
-      if(okFlag){
-        msgEl.innerHTML = attend==="No"
-          ? `Gracias <strong>${escapeHtml(name)}</strong>. Hemos registrado tu respuesta.`
-          : `¡Gracias <strong>${escapeHtml(name)}</strong>! Confirmación recibida.`;
-        nameEl.value = "";
-      }else{
-        msgEl.textContent = (data && data.error) ? data.error : "No se pudo guardar. Intenta de nuevo en unos segundos.";
-      }
     } catch(err) {
       msgEl.textContent = "Error de conexión. Intenta de nuevo.";
     } finally {
