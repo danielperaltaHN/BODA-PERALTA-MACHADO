@@ -116,7 +116,9 @@
         radial-gradient(1100px 740px at 88% 82%, rgba(7,48,33,.34), transparent 62%),
         linear-gradient(180deg, rgba(4,26,17,.86), rgba(7,48,33,.92));
       backdrop-filter: blur(8px);
-    }
+      pointer-events:none;
+}
+
 
     .gate-card{
       position:relative;
@@ -330,7 +332,7 @@
       clip-path: polygon(25% 6%, 75% 6%, 98% 50%, 75% 94%, 25% 94%, 2% 50%);
       transform:rotate(-10deg);
       background:
-        url('assets/fotos/FOTO_14.jpeg') center/cover no-repeat;
+        url('assets/fotos/FOTO_14.jpg') center/cover no-repeat;
       border-radius:14px;
     }
     .hexDecor{
@@ -520,7 +522,7 @@
     .ph.g{grid-column:1 / span 5; grid-row:3 / span 1; min-height:200px;}
 
     .ph.a::before{background-image:url('https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=1200&q=80');}
-    .ph.b::before{background-image:url('assets/fotos/FOTO_14.jpeg');}
+    .ph.b::before{background-image:url('assets/fotos/FOTO_14.jpg');}
     .ph.c::before{background-image:url('https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80');}
     .ph.d::before{background-image:url('https://images.unsplash.com/photo-1523437237164-d442d57cc3c9?auto=format&fit=crop&w=1200&q=80');}
     .ph.e::before{background-image:url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80');}
@@ -927,7 +929,7 @@
 
 
   /* === Música: estado del botón === */
-  #musicBtn{
+  #playBtn{
     display:inline-flex;
     align-items:center;
     justify-content:center;
@@ -935,23 +937,23 @@
     transition: transform .18s ease, filter .18s ease, box-shadow .22s ease, background .22s ease;
     will-change: transform;
   }
-  #musicBtn:active{ transform: scale(.98); }
-  #musicBtn.music-playing{
+  #playBtn:active{ transform: scale(.98); }
+  #playBtn.music-playing{
     filter: brightness(1.03);
     box-shadow: 0 14px 28px rgba(0,0,0,.18);
   }
-  #musicBtn .eq{
+  #playBtn .eq{
     width:14px;height:14px;display:none;position:relative;
   }
-  #musicBtn.music-playing .eq{ display:inline-block; }
-  #musicBtn .eq i{
+  #playBtn.music-playing .eq{ display:inline-block; }
+  #playBtn .eq i{
     position:absolute; bottom:0; width:3px; border-radius:3px;
     background: rgba(11,43,27,.75);
     animation: eq 720ms ease-in-out infinite;
   }
-  #musicBtn .eq i:nth-child(1){ left:0; height:9px; animation-delay:0ms; }
-  #musicBtn .eq i:nth-child(2){ left:5px; height:13px; animation-delay:120ms; }
-  #musicBtn .eq i:nth-child(3){ left:10px; height:7px; animation-delay:240ms; }
+  #playBtn .eq i:nth-child(1){ left:0; height:9px; animation-delay:0ms; }
+  #playBtn .eq i:nth-child(2){ left:5px; height:13px; animation-delay:120ms; }
+  #playBtn .eq i:nth-child(3){ left:10px; height:7px; animation-delay:240ms; }
 
   @keyframes eq{
     0%,100%{ transform: scaleY(.55); opacity:.8; }
@@ -1010,6 +1012,12 @@
     margin-top: 12px;
   }
 
+
+  /* Bloquea scroll mientras está la portada (evita saltos en móvil) */
+  body.gate-open{overflow:hidden; height:100vh;}
+  /* Transiciones un poco más suaves */
+  .gate{transition:opacity 550ms ease;}
+  
 </style>
 </head>
 
@@ -1020,10 +1028,6 @@
 </audio>
 
   <!-- Música (pon tu archivo musica.mp3 en el repo) -->
-  <audio id="music" loop>
-    <source src="CANCION.mp3" type="audio/mpeg">
-  </audio>
-
   <!-- ============ PORTADA / SOBRE ============ -->
   <div class="gate" id="gate" aria-label="Portada de invitación">
     <div class="gate-card" role="dialog" aria-modal="true">
@@ -1287,19 +1291,19 @@
   <section class="section reveal paper-soft" id="galeria">
     <div class="container">
             <div class="galleryGrid" aria-label="Galería de fotos">
-        <figure class="gItem a"><img loading="lazy" src="assets/fotos/FOTO_1.JPEG" alt="Foto 1"></figure>
+        <figure class="gItem a"><img loading="lazy" src="assets/fotos/FOTO_1.jpg" alt="Foto 1"></figure>
         <figure class="gItem b"><img loading="lazy" src="assets/fotos/FOTO_2.jpg" alt="Foto 2"></figure>
-        <figure class="gItem c"><img loading="lazy" src="assets/fotos/FOTO_3.JPEG" alt="Foto 3"></figure>
-        <figure class="gItem d"><img loading="lazy" src="assets/fotos/FOTO_4.JPEG" alt="Foto 4"></figure>
-        <figure class="gItem e"><img loading="lazy" src="assets/fotos/FOTO_5.JPEG" alt="Foto 5"></figure>
+        <figure class="gItem c"><img loading="lazy" src="assets/fotos/FOTO_3.jpg" alt="Foto 3"></figure>
+        <figure class="gItem d"><img loading="lazy" src="assets/fotos/FOTO_4.jpg" alt="Foto 4"></figure>
+        <figure class="gItem e"><img loading="lazy" src="assets/fotos/FOTO_5.jpg" alt="Foto 5"></figure>
         <figure class="gItem f"><img loading="lazy" src="assets/fotos/FOTO_6.jpg" alt="Foto 6"></figure>
-        <figure class="gItem g"><img loading="lazy" src="assets/fotos/FOTO_7.JPEG" alt="Foto 7"></figure>
-        <figure class="gItem h"><img loading="lazy" src="assets/fotos/FOTO_8.JPEG" alt="Foto 8"></figure>
-        <figure class="gItem i"><img loading="lazy" src="assets/fotos/FOTO_9.JPEG" alt="Foto 9"></figure>
-        <figure class="gItem j"><img loading="lazy" src="assets/fotos/FOTO_10.JPEG" alt="Foto 10"></figure>
-        <figure class="gItem k"><img loading="lazy" src="assets/fotos/FOTO_11.JPEG" alt="Foto 11"></figure>
-        <figure class="gItem l"><img loading="lazy" src="assets/fotos/FOTO_12.JPEG" alt="Foto 12"></figure>
-        <figure class="gItem m"><img loading="lazy" src="assets/fotos/FOTO_13.jpeg" alt="Foto 13"></figure>
+        <figure class="gItem g"><img loading="lazy" src="assets/fotos/FOTO_7.jpg" alt="Foto 7"></figure>
+        <figure class="gItem h"><img loading="lazy" src="assets/fotos/FOTO_8.jpg" alt="Foto 8"></figure>
+        <figure class="gItem i"><img loading="lazy" src="assets/fotos/FOTO_9.jpg" alt="Foto 9"></figure>
+        <figure class="gItem j"><img loading="lazy" src="assets/fotos/FOTO_10.jpg" alt="Foto 10"></figure>
+        <figure class="gItem k"><img loading="lazy" src="assets/fotos/FOTO_11.jpg" alt="Foto 11"></figure>
+        <figure class="gItem l"><img loading="lazy" src="assets/fotos/FOTO_12.jpg" alt="Foto 12"></figure>
+        <figure class="gItem m"><img loading="lazy" src="assets/fotos/FOTO_13.jpg" alt="Foto 13"></figure>
       </div>
     </div>
   </section>
@@ -1729,11 +1733,12 @@
    =============================== */
 (function(){
   const gate = document.getElementById("gate");
+  document.body.classList.add("gate-open");
   const wrap = document.getElementById("envWrap") || document.getElementById("envelopeWrap");
-  const audio = document.getElementById("bgMusic") || document.getElementById("music");
+  const audio = document.getElementById("bgMusic") || document.getElementById("bgMusic");
 
   function syncPlayButton(isPlaying){
-    const btn = document.getElementById("musicBtn");
+    const btn = document.getElementById("playBtn");
     if(!btn) return;
     const label = btn.querySelector(".label") || btn;
     if(isPlaying){
@@ -1766,6 +1771,7 @@
       gate.style.opacity = "0";
       setTimeout(() => {
         gate.style.display = "none";
+    document.body.classList.remove("gate-open");
         window.scrollTo({ top: 0, behavior: "smooth" });
       }, 700);
     }
@@ -1790,16 +1796,42 @@
   try{
     if(sessionStorage.getItem("inv_opened") === "1" && gate){
       gate.style.display = "none";
+    document.body.classList.remove("gate-open");
     }
   }catch(e){}
+}
+
+/* ====== Botón Play/Pausa ====== */
+(function(){
+  const btn = document.getElementById("playBtn");
+  const audio = document.getElementById("bgMusic");
+  if(!btn || !audio) return;
+
+  // Estado inicial
+  syncPlayButton(!audio.paused);
+
+  btn.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if(audio.paused){
+      audio.play().then(() => syncPlayButton(true)).catch(() => {});
+    }else{
+      audio.pause();
+      syncPlayButton(false);
+    }
+  });
+
+  audio.addEventListener("play", () => syncPlayButton(true));
+  audio.addEventListener("pause", () => syncPlayButton(false));
 })();
+)();
 </script>
 
 
 <script>
 (() => {
   const music = document.getElementById("bgMusic");
-  const btn = document.getElementById("musicBtn");
+  const btn = document.getElementById("playBtn");
   const label = btn ? btn.querySelector(".label") : null;
 
   if(!music) return;
@@ -1885,5 +1917,93 @@
 })();
 </script>
 
+
+<script>
+/* ===== V8 Fix7: Countdown + robust image loading (GitHub Pages is case-sensitive) ===== */
+(function(){
+  // ----- Countdown -----
+  function pad2(n){ return String(n).padStart(2,"0"); }
+  function updateCountdown(){
+    // Wedding: 28 Mar 2026, 5:00 PM Tegucigalpa (-06:00). Use local time on device.
+    const target = new Date(2026, 2, 28, 17, 0, 0); // month is 0-based
+    const now = new Date();
+    let diff = target.getTime() - now.getTime();
+    if(!Number.isFinite(diff)) return;
+
+    const elDays = document.getElementById("cdDays");
+    const elHours = document.getElementById("cdHours");
+    const elMins = document.getElementById("cdMins");
+    const elSecs = document.getElementById("cdSecs");
+    if(!elDays || !elHours || !elMins || !elSecs) return;
+
+    if(diff <= 0){
+      elDays.textContent = "0";
+      elHours.textContent = "0";
+      elMins.textContent = "0";
+      elSecs.textContent = "0";
+      return;
+    }
+
+    const s = Math.floor(diff/1000);
+    const days = Math.floor(s / 86400);
+    const hours = Math.floor((s % 86400) / 3600);
+    const mins = Math.floor((s % 3600) / 60);
+    const secs = s % 60;
+
+    elDays.textContent = String(days);
+    elHours.textContent = pad2(hours);
+    elMins.textContent = pad2(mins);
+    elSecs.textContent = pad2(secs);
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  // ----- Prevent any accidental "jump to top" on submit buttons -----
+  document.querySelectorAll("form").forEach(f=>{
+    f.addEventListener("submit",(e)=>{ e.preventDefault(); }, true);
+  });
+
+  // ----- Robust image loader: tries .jpg/.jpeg/.JPG/.JPEG when one fails -----
+  const exts = [".jpg",".jpeg",".JPG",".JPEG"];
+  function tryNext(img, base, i){
+    if(i >= exts.length){ return; }
+    img.src = base + exts[i];
+  }
+  function attachFallback(img){
+    if(!img || !img.getAttribute) return;
+    const src = img.getAttribute("src") || "";
+    if(!src) return;
+    const base = src.replace(/\.(jpg|jpeg|JPG|JPEG)$/, "");
+    img.addEventListener("error", function(){
+      const current = img.getAttribute("src") || "";
+      const curBase = current.replace(/\.(jpg|jpeg|JPG|JPEG)$/, "");
+      const idx = exts.findIndex(e => current.endsWith(e));
+      tryNext(img, curBase || base, (idx >= 0 ? idx+1 : 0));
+    });
+  }
+  document.querySelectorAll("img").forEach(attachFallback);
+
+  // ----- Hex photo: if background doesn't load, swap via preload + fallback -----
+  const hex = document.querySelector(".hex-photo");
+  if(hex){
+    const url = getComputedStyle(hex).backgroundImage || "";
+    const m = url.match(/url\(["']?([^"')]+)["']?\)/);
+    const first = m ? m[1] : "assets/fotos/FOTO_14.jpg";
+    const base = first.replace(/\.(jpg|jpeg|JPG|JPEG)$/, "");
+    const probe = new Image();
+    let idx = 0;
+    function setBg(u){ hex.style.backgroundImage = `url('${u}')`; }
+    function load(){
+      probe.src = base + exts[idx];
+    }
+    probe.onload = ()=> setBg(probe.src);
+    probe.onerror = ()=>{
+      idx += 1;
+      if(idx < exts.length) load();
+    };
+    load();
+  }
+})();
+</script>
 </body>
 </html>
