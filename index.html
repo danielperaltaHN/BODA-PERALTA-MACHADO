@@ -3070,7 +3070,7 @@ img, svg, video, canvas{ max-width:100%; height:auto; }
 
       <div class="quoteBox">
         <div class="quoteText">“Nosotros amamos porque él nos amó primero.”</div>
-        <div class="quoteRef">1 Juan 4:19</div>
+        <div class="quoteRef">1 Juan 4:19 </div>
       </div>
     </div>
   </section>
@@ -3326,12 +3326,15 @@ img, svg, video, canvas{ max-width:100%; height:auto; }
             Mujeres: Vestido largo elegante<br><br>
             <strong><p class="noKidsNote">
 Colores no permitidos:</strong> rojo, blanco y beige
-  </p>          
+</p>
+
   <strong>No niños:</strong> Amamos a los niños, pero en esta ocasión queremos que disfruten en un ambiente tranquilo y totalmente para adultos.
 </p>
-            
-<p class="alcoholNote">
+
+<p class="noKidsNote">
   <strong>Bebidas alcohólicas:</strong> No se permite el ingreso de bebidas alcohólicas y no se estarán ofreciendo durante el evento. Agradecemos su comprensión.
+</p>
+
 
           </div>
         </div>
@@ -3570,8 +3573,16 @@ Colores no permitidos:</strong> rojo, blanco y beige
     // Sanitiza básico (evita inyectar HTML)
     const invitados = invitadosRaw.replace(/[<>]/g, "");
 
-    if(paxLineEl) paxLineEl.textContent = `- ${invitados} -`;
-    if(guestLineEl) guestLineEl.textContent = "INVITADOS";
+      // Calcula cantidad de invitados (según separadores comunes: " y ", "&", comas)
+  const parts = invitados
+    .split(/\s+y\s+|\s*&\s*|\s*,\s*|\s*;\s*/i)
+    .map(s => s.trim())
+    .filter(Boolean);
+  const count = Math.max(1, parts.length);
+  const labelTxt = (count === 1) ? "INVITADO" : "INVITADOS";
+
+  if(paxLineEl) paxLineEl.textContent = `- ${invitados} — ${count} ${(count===1)?"persona":"personas"} -`;
+  if(guestLineEl) guestLineEl.textContent = labelTxt;
   })();
   let opened = false;
 
