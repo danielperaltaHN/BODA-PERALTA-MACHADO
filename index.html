@@ -3376,7 +3376,7 @@ img, svg, video, canvas{ max-width:100%; height:auto; }
       <div class="divider"></div>
 
       <div style="margin-top:22px;">
-        <a href="https://wa.me/50431790033?text=Hola%20confirmo%20mi%20asistencia%20a%20la%20boda%20de%20Daniel%20y%20Ana%20Josse" target="_blank" rel="noopener">
+        <a href="https://wa.me/50431790033?text=Hola%20confirmo%20mi%20asistencia%20a%20la%20boda%20de%20Daniel%20y%20Ana%20Josse" id="waConfirm" target="_blank" rel="noopener">
           <button class="btn" type="button">
             <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 11.6a8.5 8.5 0 0 1-12.7 7.3L3 20l1.2-4.6a8.5 8.5 0 1 1 16.3-3.8z"/><path d="M8.5 8.8c.6-1.1 1.2-1.1 1.7-.9.5.2 1.1 1.5 1 1.9-.1.4-.3.7-.6 1 .7 1.4 1.8 2.5 3.2 3.2.3-.3.6-.5 1-.6.4-.1 1.7.5 1.9 1 .2.5.2 1.1-.9 1.7"/></svg>
             Confirmar por WhatsApp
@@ -3655,6 +3655,38 @@ const RSVP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxkfDy0-ovoc2AB
   const nameEl = document.getElementById("rsvpName");
   const msgEl  = document.getElementById("rsvpMsg");
 
+
+  // ===== RSVP amarrado al invitado (?invitados=...) =====
+  const params = new URLSearchParams(window.location.search);
+  const invitadosRaw = (params.get("invitados") || "").trim();
+  const invitados = invitadosRaw ? invitadosRaw.replace(/[<>]/g, "") : "";
+
+  // Si viene en el link, prellenamos y bloqueamos el nombre (evita cambios)
+  if (nameEl && invitados){
+    nameEl.value = invitados;
+    nameEl.readOnly = true;
+    nameEl.setAttribute("aria-readonly", "true");
+  }
+
+  // WhatsApp: arma el mensaje con el nombre del invitado y el estado Sí/No
+  const waLink = document.getElementById("waConfirm");
+  function buildWaText(attend){
+    const who = invitados || (nameEl?.value || "").trim() || "Un invitado";
+    const status = (attend || "Sí").toLowerCase().startsWith("s") ? "Sí asistiré" : "No podré asistir";
+    if (status.startsWith("Sí")){
+      return `Hola, soy/ somos ${who}. Confirmo/confirmamos: ${status} a la boda de Daniel y Ana Josse.`;
+    }
+    return `Hola, soy/ somos ${who}. Con gratitud confirmo/confirmamos: ${status} a la boda de Daniel y Ana Josse.`;
+  }
+  if (waLink){
+    waLink.addEventListener("click", (e) => {
+      try{
+        const attend = (document.getElementById("rsvpAttend")?.value || "Sí");
+        const text = buildWaText(attend);
+        waLink.href = "https://wa.me/50431790033?text=" + encodeURIComponent(text);
+      }catch(_){}
+    });
+  }
 // Selector elegante: Sí / No
 const choiceBtns = Array.from(document.querySelectorAll(".rsvpChoice .choiceBtn"));
 const attendInput = document.getElementById("rsvpAttend");
@@ -3672,7 +3704,7 @@ choiceBtns.forEach((btn) => {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const name = (nameEl.value || "").trim();
+    const name = (invitados || (nameEl.value || "")).trim();
     if(!name){
       msgEl.textContent = "Por favor escribe tu nombre.";
       return;
