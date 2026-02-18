@@ -258,7 +258,189 @@ img { max-width: 100%; height: auto; }
       outline:none;
     }
     .env-svg{width:100%;display:block;filter: drop-shadow(0 16px 20px rgba(0,0,0,.12));}
-    .env-shadow{
+
+    /* --- Animación suave de apertura del sobre --- */
+    .env-svg .flap{
+      transform-origin:50% 0%;
+      transform-box:fill-box;
+      transition:transform 650ms cubic-bezier(.2,.9,.2,1);
+    }
+
+/* ===== Envelope: la tarjeta sale del sobre ===== */
+.env-letter{
+  position:absolute;
+  left:50%;
+  bottom:14%;
+  width:min(84%, 520px);
+  height:62%;
+  transform: translate(-50%, 22%) scale(.94);
+  transform-origin: bottom center;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.90));
+  box-shadow: 0 26px 60px rgba(0,0,0,.22);
+  border: 1px solid rgba(255,255,255,.35);
+  opacity: 0;
+  z-index: 2; /* debajo de la tapa, encima del cuerpo */
+  overflow:hidden;
+  transition: transform 900ms cubic-bezier(.2,.9,.2,1), opacity 350ms ease;
+}
+.env-letter-inner{
+  height:100%;
+  padding: 28px 22px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap: 16px;
+}
+.env-letter-rule{
+  width: 62%;
+  max-width: 240px;
+  height: 1px;
+  background: rgba(176, 150, 95, .55);
+}
+.env-letter-monogram{
+  font-family: var(--font-title, serif);
+  letter-spacing: .08em;
+  font-weight: 600;
+  font-size: clamp(18px, 4.2vw, 26px);
+  color: rgba(176, 150, 95, .95);
+}
+
+/* Secuencia de apertura */
+.gate.is-opening .env-svg .flap{
+  transform: rotateX(180deg);
+}
+.gate.is-opening .env-letter{
+  opacity: 1;
+  transform: translate(-50%, -78%) scale(1.02);
+}
+
+/* Cuando ya entramos a la invitación, ocultamos carta + sobre */
+body.gate-done #gate{
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 550ms ease;
+}
+
+/* El contenido aparece suavemente cuando termina el sobre */
+body:not(.gate-done) #appContent{
+  opacity: 0;
+  transform: translateY(18px);
+  filter: blur(2px);
+  pointer-events: none;
+}
+body.gate-done #appContent{
+  opacity: 1;
+  transform: none;
+  filter: none;
+  pointer-events: auto;
+  transition: opacity 650ms ease, transform 650ms cubic-bezier(.2,.8,.2,1), filter 650ms ease;
+}
+body.gate-done .env-letter{
+  opacity: 0;
+  transform: translate(-50%, -110%) scale(1.04);
+}
+    .env-svg .seal{
+      transform-origin:50% 50%;
+      transform-box:fill-box;
+      transition:transform 420ms cubic-bezier(.2,.9,.2,1), opacity 420ms ease;
+    }
+    .gate{
+      transition:opacity 520ms ease;
+    }
+    .gate-card{
+      transition:transform 900ms cubic-bezier(.2,.9,.2,1), opacity 520ms ease;
+      will-change:transform, opacity;
+    }
+    .env-wrap{
+      transition:transform 900ms cubic-bezier(.2,.9,.2,1), opacity 520ms ease;
+      will-change:transform, opacity;
+    }
+
+    .gate.is-opening .env-svg .flap{
+      transform: rotate(-180deg) translateY(-2px);
+    }
+    .gate.is-opening .env-svg .seal{
+      transform: scale(.85);
+      opacity:.35;
+    }
+    .gate.is-opening .env-wrap{
+      transform: translateY(10px) scale(.98);
+      opacity:.92;
+    }
+    .gate.is-opening .gate-card{
+      transform: translateY(-14px) scale(.99);
+    }
+    .gate.is-fading{
+      opacity:0;
+      pointer-events:none;
+    }
+    /* Carta que sale del sobre */
+    .env-letter{
+      position:absolute;
+      left:50%;
+      bottom:18px;
+      width:min(360px, 92vw);
+      height:220px;
+      transform: translate(-50%, 28%) scale(.98);
+      opacity:0;
+      border-radius:18px;
+      background: rgba(255,255,255,.92);
+      border:1px solid rgba(255,255,255,.55);
+      box-shadow: 0 18px 50px rgba(0,0,0,.28);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      z-index:1;
+      overflow:hidden;
+      will-change: transform, opacity;
+      pointer-events:none;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+    .env-letter::before{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        radial-gradient(900px 280px at 50% -40%, rgba(200,170,110,.25), transparent 55%),
+        radial-gradient(600px 240px at 0% 110%, rgba(160,210,195,.22), transparent 55%);
+      opacity:.9;
+    }
+    .env-letter-inner{ position:relative; padding:22px 18px; }
+    .env-letter-title{
+      font-family: "Playfair Display", Georgia, serif;
+      font-weight:600;
+      letter-spacing:.2px;
+      font-size: clamp(22px, 5.2vw, 30px);
+      line-height:1.05;
+      color: rgba(10,25,20,.92);
+      margin-bottom:10px;
+    }
+    .env-letter-title .amp{
+      color: var(--gold);
+      font-weight:700;
+    }
+    .env-letter-sub{
+      font-family: "Montserrat", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      letter-spacing:.22em;
+      text-transform:uppercase;
+      font-size: 12px;
+      color: rgba(20,40,35,.65);
+    }
+
+    @keyframes letterOut{
+      0%   { transform: translate(-50%, 32%) scale(.98); opacity:0; }
+      18%  { opacity:1; }
+      65%  { transform: translate(-50%, -24%) scale(1.02); opacity:1; }
+      100% { transform: translate(-50%, -36%) scale(1.02); opacity:1; }
+    }
+    .gate.is-opening .env-letter{
+      animation: letterOut 1050ms cubic-bezier(.16,.95,.18,1) 120ms forwards;
+    }
+
+          .env-shadow{
       width:92%;height:18px;margin:10px auto 0;
       background:radial-gradient(closest-side, rgba(0,0,0,.22), transparent 74%);
       filter:blur(1px);
@@ -321,15 +503,23 @@ img { max-width: 100%; height: auto; }
     .playRow{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
     .playLabel{font-size:13px;opacity:.85}
     .musicBtn{
-      background:rgba(184,148,85,.96);
-      color:var(--ink);
+      width:min(520px, 92vw);
+      margin:12px auto 0;
+      padding:0;
       border:none;
-      border-radius:10px;
-      padding:8px 14px;
+      border-radius:0;
+      background:transparent;
+      color:rgba(231,242,236,.92);
+      font-weight:600;
+      letter-spacing:.2px;
       cursor:pointer;
-      font-weight:700;
-      box-shadow:0 10px 18px rgba(0,0,0,.18);
+      text-decoration:underline;
+      text-underline-offset:6px;
+      -webkit-tap-highlight-color: transparent;
+      box-shadow:none;
     }
+    .musicBtn:active{opacity:.7}
+    .musicBtn:focus-visible{outline:2px solid rgba(184,148,85,.55); outline-offset:6px}
 
     .heroTitle{
       margin-top:20px;
@@ -553,17 +743,22 @@ img { max-width: 100%; height: auto; }
       margin-top:40px;
     }
     .eventCard{
-      background:rgba(231,242,236,.88);
-      border:1px solid rgba(184,148,85,.18);
-      border-radius:18px;
-      padding:26px 18px 24px;
-      box-shadow:var(--soft);
-    }
-    .eventIcon{
+  background:rgba(190, 227, 208, .72);
+  border:1px solid rgba(0,0,0,.08);
+  border-radius:28px;
+  padding:26px 22px 34px;
+  text-align:center;
+  box-shadow:0 20px 45px rgba(0,0,0,.10);
+  max-width: 720px;
+  margin-left:auto;
+  margin-right:auto;
+}
+.eventCard > :last-child{margin-bottom:0}
+.eventIcon{
       width:62px;height:62px;margin:0 auto 10px;
       stroke:rgba(184,148,85,.95);
       fill:none;stroke-width:2;
-    }
+    ; margin-top:0}
     .eventTitle{
       font-family:'Playfair Display',serif;
       font-size:22px;
@@ -1037,39 +1232,44 @@ img { max-width: 100%; height: auto; }
 
 
   /* === Música: estado del botón === */
+  /* En móvil/WebView queremos un control limpio (sin óvalo/píldora),
+     solo texto Play/Pausa centrado, con área táctil suficiente. */
   #musicBtn, .music-btn{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    gap:10px;
-    transition: transform .18s ease, filter .18s ease, box-shadow .22s ease, background .22s ease;
-    will-change: transform;
-  }
-  #musicBtn:active, .music-btn:active{ transform: scale(.98); }
-  #musicBtn.music-playing{
-    filter: brightness(1.03);
-    box-shadow: 0 14px 28px rgba(0,0,0,.18);
-  }
-  #musicBtn .eq{
-    width:14px;height:14px;display:none;position:relative;
-  }
-  #musicBtn.music-playing .eq{ display:inline-block; }
-  #musicBtn .eq i{
-    position:absolute; bottom:0; width:3px; border-radius:3px;
-    background: rgba(11,43,27,.75);
-    animation: eq 720ms ease-in-out infinite;
-  }
-  #musicBtn .eq i:nth-child(1){ left:0; height:9px; animation-delay:0ms; }
-  #musicBtn .eq i:nth-child(2){ left:5px; height:13px; animation-delay:120ms; }
-  #musicBtn .eq i:nth-child(3){ left:10px; height:7px; animation-delay:240ms; }
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
 
-  @keyframes eq{
-    0%,100%{ transform: scaleY(.55); opacity:.8; }
-    50%{ transform: scaleY(1.15); opacity:1; }
+    width: auto !important;
+    max-width: none !important;
+
+    padding: 6px 10px !important; /* área táctil */
+    border-radius: 0 !important;
+
+    color: rgba(255,255,255,.92);
+    font-weight: 600;
+    letter-spacing: .2px;
+    cursor: pointer;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 1px;
+    text-decoration-color: rgba(255,255,255,.35);
   }
-
-
-  /* ===== Galería (fotos reales) ===== */
+  .music-btn:hover{
+    color: rgba(255,255,255,1);
+    text-decoration-color: rgba(255,255,255,.6);
+  }
+  .music-btn:active{transform: translateY(1px);}
+  .music-btn.is-playing{
+    color: rgba(255,255,255,1);
+    text-decoration-color: rgba(255,255,255,.7);
+  }
+/* ===== Galería (fotos reales) ===== */
   .galleryGrid{
     display:grid;
     grid-template-columns: repeat(12, 1fr);
@@ -1737,6 +1937,242 @@ html, body{
     width: calc(100vw - 22px);
   }
 }
+
+/* ===================== v10.5 Mobile alignment & fit (iOS/Android webview) ===================== */
+html, body { overflow-x: hidden; }
+*, *::before, *::after { box-sizing: border-box; }
+
+@media (max-width: 420px){
+  :root{ --vwPad: 14px; } /* keep equal L/R padding */
+
+  /* General: keep every card perfectly centered and never overflow */
+  .container{ width: min(100%, 980px); margin-inline: auto; padding-inline: 0; }
+  .paper{ width: min(92vw, 980px); margin-inline: auto; }
+  .paperInner{ width: 100%; margin-inline: auto; }
+
+  /* Gate (envelope) — keep everything centered inside the white card */
+  .gateCard{ width: min(92vw, 520px); margin-inline: auto; }
+  .gateCard .envWrap{ width: 100%; display: flex; justify-content: center; }
+  .gateCard .env{ max-width: 100%; }
+
+  /* Countdown block */
+  .countBox{ width: min(92vw, 520px); margin-inline: auto; }
+  .countGrid{ gap: 12px; }
+  .countItem{ min-width: 0; } /* prevents grid overflow */
+
+  /* Hexagon */
+  .hexWrap{ width: 100%; display: flex; justify-content: center; }
+  .hex{ transform: none !important; } /* avoid any accidental translate */
+  .hexPhoto{ max-width: 100%; }
+
+  /* Date card: switch to stacked layout so text never gets cut */
+  .dateCard{
+    width: min(92vw, 520px);
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 18px 16px;
+    text-align: center;
+  }
+  .dateMid{
+    order: 1;
+    font-size: clamp(56px, 18vw, 72px);
+    line-height: 1;
+  }
+  .dateSide{
+    order: 2;
+    width: 100%;
+    font-size: 14px;
+    letter-spacing: .22em;
+  }
+  .dateSide .dateBottom{
+    margin-top: 6px;
+    font-size: 14px;
+    letter-spacing: .20em;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  /* Verse card: keep it inside the white panel and centered */
+  .quoteBox{
+    width: min(92vw, 520px);
+    margin: 16px auto 0;
+    padding: 18px 16px;
+    text-align: center;
+  }
+  .quoteBox .quoteRef{ display:block; margin-top: 10px; }
+
+  /* Two-event cards (Ceremonia/Recepción) */
+  .eventsGrid{ width: 100%; display: flex; flex-direction: column; gap: 16px; align-items: center; }
+  .eventCard{ width: min(92vw, 520px); margin-inline: auto; }
+  .eventCard .eventBtn{ width: 100%; }
+
+  /* Dress code + gifts */
+  .infoGrid{ width: 100%; display: flex; flex-direction: column; gap: 22px; align-items: center; }
+  .infoCard{ width: min(92vw, 520px); margin-inline: auto; }
+  .infoCard .ctaBtn{ width: 100%; }
+
+  /* RSVP block: ensure buttons are perfectly centered and full-width */
+  .rsvpWrap{ width: min(92vw, 520px); margin-inline: auto; }
+  .rsvpChoices{ width: 100%; display: grid; grid-template-columns: 1fr; gap: 12px; }
+  .rsvpChoices button{ width: 100%; }
+  .rsvpForm{ width: 100%; }
+  .rsvpForm .rsvpSend{ width: 100%; }
+
+  /* Gift modal: replace “ovals” with clean cards on mobile */
+  .modalCard{ width: min(92vw, 520px); border-radius: 22px; }
+  .optItem{
+    border-radius: 18px !important;
+    padding: 14px 14px !important;
+  }
+  .optItem .optNum{
+    border-radius: 14px !important;
+    padding: 10px 12px !important;
+  }
+  .optItem .optHint{ margin-top: 8px; }
+
+  /* Make sure the close button never overlaps text */
+  .modalClose{
+    width: 42px; height: 42px;
+    border-radius: 14px;
+  }
+}
+
+
+
+/* ===== v10.7 Responsive fixes (all phones / iOS + Android) ===== */
+html, body{width:100%; overflow-x:hidden;}
+body{max-width:100%;}
+img, svg, video, canvas{max-width:100%; height:auto;}
+
+/* Ensure every major card is truly centered */
+.container, .sectionInner{margin-left:auto; margin-right:auto;}
+
+/* Prevent any child from forcing horizontal scroll */
+*{max-width:100%;}
+
+/* Mobile-first centering + safe padding */
+ (max-width: 600px){
+  :root{ --vwPad: max(16px, env(safe-area-inset-left)); }
+  body{ padding-left: 0; padding-right: 0; }
+  .container, .sectionInner{ padding-left: var(--vwPad) !important; padding-right: var(--vwPad) !important; }
+
+  /* Titles + logo */
+  .hero, .hero *{ text-align:center; }
+  .heroTitle{ margin-left:auto !important; margin-right:auto !important; }
+
+  /* Count box */
+  .countBox{ width:100% !important; margin-left:auto !important; margin-right:auto !important; }
+  .countGrid{ grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .countCell{ min-width:0; }
+
+  /* Date card: avoid clipping on narrow screens */
+  .dateCard{ width:100% !important; max-width: 520px !important; margin-left:auto !important; margin-right:auto !important; padding: 16px 14px !important; display:grid !important; grid-template-columns: 1fr !important; row-gap: 10px !important; text-align:center !important; }
+  .dateCard > div{ min-width:0; }
+  .dateSide{ font-size: clamp(12px, 3.3vw, 14px) !important; letter-spacing: .18em !important; }
+  .dateLine{ margin-left:auto !important; margin-right:auto !important; }
+  .bigDate{ font-size: clamp(44px, 12vw, 66px) !important; }
+  .smallYear{ font-size: 12px !important; letter-spacing: .2em !important; }
+  .time{ font-size: clamp(12px, 3.3vw, 14px) !important; }
+  .place{ font-size: clamp(12px, 3.3vw, 14px) !important; letter-spacing: .14em !important; white-space: normal !important; word-break: keep-all; }
+
+  /* Verse box: keep inside white container */
+  .verseBox{ width:100% !important; max-width: 520px !important; margin: 14px auto 0 !important; }
+
+  /* Two-column sections (Ceremonia/Recepción): center cards */
+  .twoCol{ grid-template-columns: 1fr !important; justify-items: center !important; }
+  .locationCard{ width:100% !important; max-width: 520px !important; margin-left:auto !important; margin-right:auto !important; }
+
+  /* Hex photo: center */
+  .hexWrap{ margin-left:auto !important; margin-right:auto !important; }
+
+  /* Dress code + gifts: center all text and buttons */
+  .splitInfo{ grid-template-columns: 1fr !important; justify-items:center !important; text-align:center !important; }
+  .splitInfo .col{ width:100% !important; max-width: 520px !important; }
+  .btn, button, a.btn{ width:100% !important; max-width: 520px !important; margin-left:auto !important; margin-right:auto !important; }
+
+  /* RSVP: stack buttons + center */
+  .rsvpCard{ width:100% !important; max-width: 520px !important; margin-left:auto !important; margin-right:auto !important; }
+  .rsvpActions{ display:flex !important; flex-direction:column !important; gap:12px !important; align-items:stretch !important; }
+  .rsvpActions .btn{ max-width:none !important; }
+
+  /* Gift modal: remove “oval” look and keep consistent padding */
+  .giftModalCard{ width: min(520px, calc(100vw - (var(--vwPad) * 2))) !important; margin-left:auto !important; margin-right:auto !important; border-radius: 22px !important; }
+  .giftItem{ border-radius: 18px !important; padding: 14px 14px !important; }
+  .giftItemTitle{ font-size: 14px !important; line-height: 1.25 !important; }
+  .giftNum{ border-radius: 14px !important; padding: 10px 12px !important; display:inline-flex !important; width:auto !important; max-width: 100% !important; }
+  .giftNum code{ font-size: 16px !important; }
+
+  /* Any accidental horizontal offsets */
+  [style*="translate"], [style*="left"], [style*="right"]{ max-width:100%; }
+}
+
+ (max-width: 380px){
+  .heroTitle{ font-size: clamp(40px, 11vw, 54px) !important; }
+  .btn, button, a.btn{ font-size: 15px !important; }
+}
+
+
+
+/* v10.7.1 Modal polish + true mobile panel sizing */
+ (max-width: 600px){
+  .modal__panel{ width: min(520px, calc(100vw - (var(--vwPad) * 2))) !important; margin-left:auto !important; margin-right:auto !important; border-radius: 24px !important; padding: 18px 14px !important; }
+  .modal__close{ right: 10px !important; left: auto !important; top: 10px !important; width: 40px !important; height: 40px !important; border-radius: 999px !important; }
+  .optItem{ border-radius: 18px !important; padding: 14px 14px !important; display:flex !important; flex-direction:column !important; gap: 10px !important; }
+  .optLabel{ font-size: 14px !important; line-height: 1.25 !important; }
+  .optValue{ align-self:flex-start !important; width:auto !important; max-width:100% !important; padding: 10px 12px !important; border-radius: 14px !important; }
+  .optValue code{ font-size: 16px !important; }
+}
+
+
+
+/* v10.7.1 – Fix: centrar el recuadro "Nos casamos en" en cualquier smartphone */
+@media (max-width: 640px){
+  .countBox{
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box;
+  }
+}
+
+
+/* v10.7.5 – mobile polish */
+@media (max-width: 520px){
+  .container{padding-left:16px; padding-right:16px}
+  .eventCard{padding-left:18px; padding-right:18px; border-radius:26px}
+}
+
+
+/* v10.7.5 – fix button centering & consistency */
+.eventBtnRow{margin-top:18px; display:flex; justify-content:center}
+.btn{
+  max-width:min(520px, 100%);
+  width:100%;
+  margin-left:auto;
+  margin-right:auto;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  padding:14px 18px;
+  border-radius:999px;
+  text-decoration:none;
+  border:1px solid rgba(0,0,0,.10);
+  box-sizing:border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+.btnGold{
+  background:linear-gradient(180deg, rgba(198,163,92,.95), rgba(176,136,63,.95));
+  color:#15201a;
+  box-shadow:0 16px 34px rgba(0,0,0,.14);
+}
+.btnGold:active{transform:translateY(1px)}
+
 </style>
 
 <style id="v10-ux-premium">
@@ -1960,6 +2396,452 @@ body { margin: 0; }
 
 </style>
 
+<style id="v10_4_overrides">
+
+/* ===== V10.4 Mobile-perfect centering + modal polish (overrides) ===== */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { width: 100%; max-width: 100%; margin: 0; padding: 0; overflow-x: hidden; }
+img, svg, video { max-width: 100%; height: auto; }
+:root{
+  --page-gutter: clamp(14px, 4.5vw, 28px);
+  --card-radius: 22px;
+  --card-radius-sm: 18px;
+}
+
+/* Make the main inner container truly centered everywhere */
+.section-inner,
+.container,
+.wrap,
+.wrapper,
+main {
+  width: min(1100px, 100%);
+  margin-inline: auto !important;
+  padding-inline: var(--page-gutter) !important;
+}
+
+/* Prevent any child from forcing horizontal scroll */
+.section-inner > *,
+.container > * { max-width: 100%; }
+
+/* Countdown card */
+.countBox { margin-inline: auto !important; }
+.countNums { width: 100%; }
+.countCell { min-width: 0; }
+
+/* Date card: avoid clipping on the right column */
+.dateCard{
+  width: 100%;
+  margin-inline: auto !important;
+}
+.dateSide, .dateMid{ min-width: 0; }
+.dateSide, .dateMid { overflow: hidden; }
+.dateSide{ overflow-wrap:anywhere; }
+.dateMidNum{ line-height: 1; }
+
+@media (max-width: 520px){
+  /* Keep everything centered and inside the white background on webview */
+  body { -webkit-text-size-adjust: 100%; }
+
+  /* Countdown panel sizing */
+  .countBox{
+    max-width: 520px !important;
+    width: 100% !important;
+  }
+
+    /* Date card responsive tuning (no cut) */
+  .dateCard{
+    grid-template-columns: 1fr 110px 1fr !important;
+    gap: 10px !important;
+    padding: 18px !important;
+    border-radius: var(--card-radius) !important;
+  }
+  .dateMid{ font-size: 56px !important; line-height: 1 !important; }
+  .dateBottom{ font-size: 12px !important; letter-spacing: .18em !important; }
+  .dateCard > div:nth-child(1) .dateSide,
+  .dateCard > div:nth-child(3) .dateSide{
+    font-size: 14px !important;
+    letter-spacing: .16em !important;
+    line-height: 1.15 !important;
+    white-space: normal !important;
+    text-align: center !important;
+  }
+  .dateCard > div:nth-child(3) .dateSide{ word-break: break-word !important; }
+
+  /* Verse box: keep centered within white rounded card */
+  .quoteBox{
+    width: 100% !important;
+    max-width: 520px !important;
+    margin-inline: auto !important;
+    border-radius: var(--card-radius) !important;
+  }
+
+  /* RSVP: stack + center all interactive elements */
+  .rsvpChoice{
+    width: 100% !important;
+    max-width: 520px !important;
+    margin-inline: auto !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    justify-items: stretch !important;
+  }
+  .rsvpChoice button{ width: 100% !important; }
+
+  .fieldWrap{
+    width: 100% !important;
+    max-width: 520px !important;
+    margin-inline: auto !important;
+  }
+  .sendRow{
+    width: 100% !important;
+    max-width: 520px !important;
+    margin-inline: auto !important;
+    display: flex !important;
+    justify-content: center !important;
+  }
+  .sendRow .btn{ width: 100% !important; max-width: 520px !important; }
+
+  /* Buttons: avoid weird oversize pills in webview */
+  button.btn { border-radius: 999px; }
+}
+
+/* ===== Gift modal premium + fix "big ovals" ===== */
+#giftModal[aria-hidden="false"]{ display:block; }
+#giftModal .modal__panel{
+  width: min(720px, 92vw) !important;
+  max-height: min(82vh, 760px);
+  overflow: auto;
+  border-radius: 26px !important;
+  padding: 18px 16px 16px !important;
+}
+#giftModal h3{ margin-top: 4px !important; }
+#giftModal .modal__close{
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 999px !important;
+  display: grid !important;
+  place-items: center !important;
+  font-size: 24px !important;
+  line-height: 1 !important;
+}
+#giftModal .optList{
+  display: grid !important;
+  gap: 12px !important;
+  margin-top: 14px !important;
+}
+#giftModal .optItem{
+  width: 100% !important;
+  border-radius: var(--card-radius-sm) !important;
+  padding: 14px 14px !important;
+  text-align: left !important;
+  display: grid !important;
+  grid-template-columns: 1fr auto !important;
+  gap: 6px 12px !important;
+  align-items: center !important;
+}
+#giftModal .optLabel{
+  grid-column: 1 / -1;
+  font-weight: 600;
+}
+#giftModal .optValue{
+  justify-self: start;
+  font-variant-numeric: tabular-nums;
+  padding: 8px 12px;
+  border-radius: 14px;
+}
+#giftModal .optHint{
+  justify-self: end;
+  opacity: .8;
+}
+
+/* Safety: never allow any section background to cause horizontal shift */
+section { overflow-x: clip; }
+
+</style>
+
+<style id="v10_6_mobile_layout_fix">
+/* v10.6 — mobile/webapp centering + overflow fixes (WhatsApp iOS/Android) */
+html, body { width: 100%; max-width: 100%; overflow-x: hidden; }
+* { box-sizing: border-box; }
+
+/* Safer viewport for iOS webviews */
+:root{
+  --safe-l: env(safe-area-inset-left, 0px);
+  --safe-r: env(safe-area-inset-right, 0px);
+}
+
+/* Global wrapper: keep content centered with symmetric gutters */
+.wrap,
+.container,
+main,
+.main,
+#app,
+.page {
+  width: 100% !important;
+  max-width: 760px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: calc(16px + var(--safe-l)) !important;
+  padding-right: calc(16px + var(--safe-r)) !important;
+}
+
+section, .section { width: 100% !important; }
+
+/* Hero (countdown) — use correct class names (.hero-grid) */
+.hero-grid{ grid-template-columns: 1fr !important; gap: 18px !important; }
+.hero-left{ text-align: center !important; align-items: center !important; }
+.hero-left > *{ margin-left:auto !important; margin-right:auto !important; }
+
+/* Countdown box centered and never wider than viewport */
+.countBox{ width: 100% !important; max-width: 560px !important; margin: 0 auto !important; }
+.countGrid{ width: 100% !important; }
+
+/* Fix any vw-based widths that cause horizontal drift in iOS */
+.card, .panel, .sheet, .glass, .contentCard, .countBox,
+.dateCard, .quoteBox, .locationCard, .rsvpCard{
+  max-width: 100% !important;
+}
+
+/* Date card — prevent right column clipping on small screens */
+.dateCard{ margin-left:auto !important; margin-right:auto !important; }
+.dateCard > div{ min-width: 0 !important; }
+.dateSide{ white-space: normal !important; overflow-wrap: anywhere !important; }
+
+@media (max-width: 420px){
+  .dateCard{
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:center !important;
+    gap: 10px !important;
+    padding: 16px !important;
+  }
+  .dateMid{ order: 1 !important; }
+  .dateSide{ font-size: 15px !important; letter-spacing: 1.4px !important; text-align:center !important; }
+  .dateBottom{ font-size: 15px !important; letter-spacing: 1.6px !important; text-align:center !important; }
+}
+
+/* Verse box — keep inside white card */
+.quoteBox{
+  width: 100% !important;
+  max-width: 560px !important;
+  margin: 12px auto 0 auto !important;
+}
+
+/* Location cards — center both ceremony & reception blocks */
+.locGrid{ grid-template-columns: 1fr !important; }
+.locationCard{ width: 100% !important; max-width: 560px !important; margin-left:auto !important; margin-right:auto !important; }
+
+/* Buttons — always centered, consistent width */
+.btn, button, a.btn{
+  max-width: 560px !important;
+  width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* RSVP — center elements, prevent overflow */
+.rsvpCard, .rsvpWrap, .rsvpPanel{ width: 100% !important; max-width: 560px !important; margin-left:auto !important; margin-right:auto !important; }
+.rsvpActions, .rsvpButtons{ display:flex !important; flex-direction:column !important; gap: 10px !important; align-items:stretch !important; }
+.rsvpActions .btn, .rsvpButtons .btn{ max-width: 560px !important; }
+
+/* Hexagon photo / media — center */
+.hexWrap, .hexagon, .hexFrame, .photoHex{ margin-left:auto !important; margin-right:auto !important; display:block !important; }
+
+/* Toggle switch — keep inside safe area */
+.themeToggle, .toggle, #themeToggle, .switch{
+  right: calc(16px + var(--safe-r)) !important;
+  left: auto !important;
+}
+
+/* Gift modal — remove "oval" look and keep consistent cards */
+.modal__panel{
+  width: min(560px, calc(100% - 24px)) !important;
+  max-width: 560px !important;
+  margin: 0 auto !important;
+}
+.optList{ display:grid !important; gap: 12px !important; }
+.optItem{
+  border-radius: 18px !important;
+  padding: 14px 14px !important;
+}
+.optAccount{
+  border-radius: 14px !important;
+}
+
+/* Prevent any element from pushing width */
+img, svg, video{ max-width:100% !important; height:auto !important; }
+
+/* --- v10.7.2: extra symmetry for ALL phones --- */
+ (max-width: 720px){
+  :root{
+    --pad: 16px;
+  }
+  .hero-grid{
+    padding-left: max(var(--pad), var(--safe-l)) !important;
+    padding-right: max(var(--pad), var(--safe-r)) !important;
+  }
+  .hero-left{
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:center !important;
+    text-align:center !important;
+  }
+  .heroTitle, .heroSub{
+    width: 100% !important;
+    text-align:center !important;
+  }
+  .countBox{
+    width: min(560px, calc(100vw - (max(var(--pad), var(--safe-l)) + max(var(--pad), var(--safe-r))))) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  .countGrid{
+    width: 100% !important;
+  }
+  .dateCard, .verseCard, .locationCard, .rsvpCard{
+    width: 100% !important;
+    max-width: 560px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+}
+
+</style>
+
+
+<style>
+/* ===== V10.7.3 – Improved vertical spacing for blessing section ===== */
+
+.section-blessing {
+    padding-top: clamp(50px, 10vh, 100px) !important;
+    padding-bottom: clamp(50px, 10vh, 100px) !important;
+}
+
+.section-blessing .card-white {
+    padding-top: clamp(40px, 8vh, 80px) !important;
+    padding-bottom: clamp(40px, 8vh, 80px) !important;
+    border-radius: 28px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: 92vw !important;
+}
+
+.section-blessing,
+.section-blessing * {
+    text-align: center !important;
+}
+</style>
+
+
+<style id="v10_7_4_mobile_layout_hardfix">
+/* ===== V10.7.4 Mobile hard-fix: prevent right drift / clipping in webviews ===== */
+:root{
+  --page-gutter: max(16px, env(safe-area-inset-left));
+  --page-gutter-r: max(16px, env(safe-area-inset-right));
+}
+html, body{
+  width:100%;
+  max-width:100%;
+  overflow-x:hidden;
+}
+*, *::before, *::after{ box-sizing:border-box; }
+
+/* Force true centering for all core wrappers (many rules exist above; this wins). */
+.container,
+.wrap,
+.wrapper,
+.sectionInner,
+.section-inner,
+.sectionInner *,
+.section-inner *,
+main,
+#app,
+.page,
+#main,
+#mainContent{
+  max-width: 100% !important;
+}
+
+.container, .wrap, .wrapper, main, #app, .page, #main, #mainContent{
+  width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: max(16px, env(safe-area-inset-left)) !important;
+  padding-right: max(16px, env(safe-area-inset-right)) !important;
+}
+
+/* Paper / white panels must stay centered with equal side spacing */
+.paper, .paperCard, .panel, .card, .section{
+  margin-inline: auto !important;
+}
+
+/* Event cards (Ceremonia/Recepción) */
+.twoCols{
+  grid-template-columns: 1fr !important;
+  justify-items: center !important;
+  gap: 18px !important;
+}
+.eventCard{
+  width: 100% !important;
+  max-width: 520px !important;
+  margin-inline: auto !important;
+}
+.eventCard .mapBtn, .mapBtn{
+  width: 100% !important;
+  max-width: 520px !important;
+}
+
+/* Date card text must never overflow */
+.dateCard, .date-card{
+  width: 100% !important;
+  max-width: 520px !important;
+  margin-inline: auto !important;
+}
+.dateCard *, .date-card *{
+  max-width: 100%;
+}
+.dateCard .right, .dateCard .place, .dateCard .city, .dateCard .time{
+  font-size: clamp(12px, 3.2vw, 16px) !important;
+  letter-spacing: .08em;
+}
+
+/* Verse card spacing */
+.verseCard, .verse-card{
+  width: 100% !important;
+  max-width: 520px !important;
+  margin-inline: auto !important;
+}
+
+/* Countdown block (green) center lock */
+.countdownCard, .countdown-card, #countdownCard{
+  width: 100% !important;
+  max-width: 520px !important;
+  margin-inline: auto !important;
+}
+
+/* Buttons alignment inside RSVP */
+.rsvpCard, .rsvp-card{
+  width: 100% !important;
+  max-width: 520px !important;
+  margin-inline: auto !important;
+}
+.rsvpCard .btn, .rsvpCard button, .rsvp-card .btn, .rsvp-card button{
+  width: 100% !important;
+  max-width: 520px !important;
+  margin-inline: auto !important;
+}
+
+/* Gift modal: replace stretched ovals with clean stacked cards */
+.giftModal .accountRow, .giftModal .accountItem, .giftModal .account-card{
+  width: 100% !important;
+  max-width: 520px !important;
+  margin-inline: auto !important;
+}
+
+/* Final safety: nothing should create horizontal scroll */
+img, svg, video, canvas{ max-width:100%; height:auto; }
+</style>
+
 </head>
 
 <body>
@@ -2018,6 +2900,14 @@ body { margin: 0; }
             <text x="380" y="304" text-anchor="middle" font-family="Playfair Display, serif" font-size="34" font-weight="700" fill="rgba(6,31,20,0.85)">D&amp;A</text>
           </g>
         </svg>
+        <div class="env-letter" aria-hidden="true">
+          <div class="env-letter-inner">
+            <div class="env-letter-rule"></div>
+            <div class="env-letter-monogram">D&amp;A</div>
+            <div class="env-letter-rule"></div>
+          </div>
+        </div>
+
 
         <div class="env-shadow"></div>
       </div>
@@ -2096,6 +2986,8 @@ body { margin: 0; }
       </div>
     </div>
   </section>
+  <div id="appContent">
+
 
   <!-- ============ FECHA / PADRES / CITA ============ -->
   <section class="section reveal paper-soft" id="fecha">
@@ -2696,26 +3588,29 @@ body { margin: 0; }
   }
 })();
 
-
-  window.openInvitation = async function(ev){
-    if(ev){ ev.preventDefault(); ev.stopPropagation(); }
+  window.openInvitation = function(ev){
+    try{ if(ev){ ev.preventDefault(); ev.stopPropagation(); } }catch(_){ }
     if(opened) return;
     opened = true;
 
-    if(wrap) wrap.classList.add("open");
+    // Animación del sobre
+    if(gate) gate.classList.add('is-opening');
+      setTimeout(() => { document.body.classList.add('gate-done'); }, 1100);
 
-    if(gate){
-      gate.style.transition = "opacity 550ms ease";
-      gate.style.opacity = "0";
-      setTimeout(() => {
-        gate.style.display = "none";
-        document.body.classList.add("inv-open");
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }, 700);
-    }
+    // Desvanecer portada después de que se note la apertura
+    setTimeout(() => { if(gate) gate.classList.add('is-fading'); }, 1080);
 
-    await tryPlay();
+    // Quitar portada y revelar contenido
+    setTimeout(() => {
+      if(gate) gate.style.display = 'none';
+      document.body.classList.add('inv-open');
+      try{ window.scrollTo({ top: 0, behavior: 'smooth' }); }catch(_){ window.scrollTo(0,0); }
+    }, 1680);
+
+    // Intenta reproducir audio (solo si el navegador lo permite por gesto)
+    try{ if(typeof tryPlay === 'function') tryPlay(); }catch(_){ }
   };
+
 
   if(wrap){
     ["pointerup","touchend","click"].forEach(evt => {
@@ -2743,7 +3638,7 @@ function escapeHtml(str){
 }
 
 /** ====== RSVP -> Google Sheets (robusto) ====== */
-const RSVP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxkfDy0-ovoc2ABaKdqK1j4WqXrqN_zze4991rvbDJUa9jk6DV4QzK5BG_6XPwkqcggrg/exec";
+const RSVP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxkfDy0-ovoc2ABaKdqK1j4WqXrqN_zze4991rvbDJUa9jk6DV4QzK5BG_6XPwkqcggrg/exec
 
 (function initRsvpForm(){
   const form = document.getElementById("rsvpForm");
@@ -2987,5 +3882,7 @@ choiceBtns.forEach((btn) => {
 })();
 </script>
 
+
+  </div>
 </body>
 </html>
