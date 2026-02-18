@@ -3518,6 +3518,22 @@ img, svg, video, canvas{ max-width:100%; height:auto; }
   const musicBtn = document.getElementById("musicBtn");
   const label = musicBtn ? musicBtn.querySelector(".label") : null;
 
+
+  // ===== Personalización por URL: ?invitados=Pepito%20y%20Pepita =====
+  const guestLineEl = document.getElementById("guestLine");
+  const paxLineEl   = document.getElementById("paxLine");
+
+  (function applyInviteesFromUrl(){
+    const params = new URLSearchParams(window.location.search);
+    const invitadosRaw = (params.get("invitados") || "").trim();
+    if(!invitadosRaw) return;
+
+    // Sanitiza básico (evita inyectar HTML)
+    const invitados = invitadosRaw.replace(/[<>]/g, "");
+
+    if(paxLineEl) paxLineEl.textContent = `- ${invitados} -`;
+    if(guestLineEl) guestLineEl.textContent = "INVITADOS";
+  })();
   let opened = false;
 
   function setMusicUI(playing){
